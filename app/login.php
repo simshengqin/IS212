@@ -1,6 +1,6 @@
 <?php
   require_once 'include/common.php';
-  //require_once 'include/token.php';
+  require_once 'include/token.php';
 
   $error = '';
 
@@ -17,7 +17,7 @@
         if ( $student != null && $student->authenticate($password) ) {
             $_SESSION['token'] = generate_token($userid);
             $_SESSION['user'] = $student;
-            header("Location: addBidPage.php");
+            header("Location: landingPage.php");
             return;
 
         } else {

@@ -1,5 +1,10 @@
 <?php
   require_once 'include/common.php';
+  require_once 'include/protect.php'; 
+
+  if (isset($_SESSION["user"])){
+    $student = $_SESSION["user"]; // retrive the student's information.
+  }
 ?>
 
 <html>
@@ -15,28 +20,17 @@
 <body>
   <?php
     // Assuming that login page is sucessfull:
-    $student = "ben.ng.2009";
 
-    $stuDetails = [];
-    $stuName = "";
+    $stuName = $student->getName();
+    $stuID = $student->getUserid();
     $stuBids = [];
     $stuSections = [];
-    $stuEdollar = 0;
+    $stuEdollar = $student->getEdollar();
 
-    // retrive the student's information.
-    $studentInfo = new StudentDAO();
-    $stuDetails = $studentInfo->retrieveStudent($student);
-    //var_dump($stuDetails);
 
     $studentBid = new BidDAO();
-    $stuBids = $studentBid->retrieveStudentBids($student);
-    //var_dump($stuBids);
-
-    // Calculate
-    foreach($stuBids as $value)
-    {
-      $stuEdollar += $value->getAmount();
-    }
+    $stuBids = $studentBid->retrieveStudentBids($stuID);
+    
    ?>
 
 <div class="container">
@@ -61,7 +55,7 @@
 
 
 <?php
-  echo "<h3> Hello!" . $stuDetails->getName() . "</h3>";
+  echo "<h3> Hello! $stuName</h3>";
   echo "<h3> e$: $stuEdollar </h3>";
   echo "<br/>";
  ?>
