@@ -6,7 +6,7 @@ $token = '';
 if (isset($_REQUEST['token'])) {
 	$token = $_REQUEST['token'];
 }
-elseif ( isset($_SESSION['token'])) {
+elseif (isset($_SESSION['token'])) {
 	$token = $_SESSION['token'];
 }
 
@@ -15,7 +15,9 @@ elseif ( isset($_SESSION['token'])) {
 
 # add your code here 
 if (!verify_token($token))
-	header('location: login.php');
+
+	header('location: login.php?error=Please login');
+
 
 
 # this bit below might be useful for the last part of the lab and your project 
