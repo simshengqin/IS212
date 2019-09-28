@@ -1,10 +1,20 @@
 <?php
 require_once 'common.php';
+require_once 'bootstrapValidate.php';
 
 function doBootstrap() {
 		
 
 	$errors = array();
+	$file_errors = [
+		"course" => [],
+		"section" => [],
+		"student" => [],
+		"courseCompleted" => [],
+		"prerequisite" => [],
+		"bid" => []
+		
+	];
 	# need tmp_name -a temporary name create for the file and stored inside apache temporary folder- for proper read address
 	$zip_file = $_FILES["bootstrap-file"]["tmp_name"];
 
@@ -123,17 +133,22 @@ function doBootstrap() {
 				# process each line and check for errors
 
 				$course_data = fgetcsv($course);
-				
+				$row = 1;
+
 				while (($course_data = fgetcsv($course))!== false){
-					$courseDAO->add($course_data[0], $course_data[1], $course_data[2], $course_data[3], 
-									$course_data[4], $course_data[5], $course_data[6]);
+					$file_errors['course'] = array_merge($file_errors['course'], validateCourse($course_data, $row));
+					if (sizeof(validateCourse($course_data, $row)) == 0){
+						$courseDAO->add($course_data[0], $course_data[1], $course_data[2], $course_data[3], 
+										$course_data[4], $course_data[5], $course_data[6]);
+					}
 					$lines_processed['course']++;
+					$row++;
 				}
 				fclose($course);
 				@unlink($course_path);
 
 				$section_data = fgetcsv($section);
-				
+				$row = 1;
 				while (($section_data = fgetcsv($section))!== false){
 					$sectionDAO->add($section_data[0], $section_data[1], $section_data[2], $section_data[3], 
 									$section_data[4], $section_data[5], $section_data[6], $section_data[7]);
@@ -143,7 +158,7 @@ function doBootstrap() {
 				@unlink($section_path);
 
 				$student_data = fgetcsv($student);
-				
+				$row = 1;
 				while (($student_data = fgetcsv($student))!== false){
 					$studentDAO->add($student_data[0],  password_hash($student_data[1],PASSWORD_DEFAULT), $student_data[2], $student_data[3], $student_data[4]);
 					$lines_processed['student']++;
@@ -154,7 +169,7 @@ function doBootstrap() {
 
 
 				$courseCompleted_data = fgetcsv($courseCompleted);
-				
+				$row = 1;
 				while (($courseCompleted_data = fgetcsv($courseCompleted))!== false){
 					$courseCompletedDAO->add($courseCompleted_data[0], $courseCompleted_data[1]);
 					$lines_processed['courseCompleted']++;
@@ -164,7 +179,7 @@ function doBootstrap() {
 
 
 				$prerequisite_data = fgetcsv($prerequisite);
-				
+				$row = 1;
 				while (($prerequisite_data = fgetcsv($prerequisite))!== false){
 					$prerequisiteDAO->add($prerequisite_data[0], $prerequisite_data[1]);
 					$lines_processed['prerequisite']++;
@@ -175,7 +190,7 @@ function doBootstrap() {
 
 
 				$bid_data = fgetcsv($bid);
-				
+				$row = 1;
 				while (($bid_data = fgetcsv($bid))!== false){
 					$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
 					$lines_processed['bid']++;
@@ -212,14 +227,27 @@ function doBootstrap() {
 				"courseCompleted.csv" => $lines_processed["courseCompleted"],
 				"bid.csv" => $lines_processed["bid"],
 				"prerequisite.csv" => $lines_processed["prerequisite"],
-				// "pokemon_type.csv" => $pokemon_type_processed,
-				// "User.csv" => $User_processed
+			],
+			"errors-found" => [
+				"course.csv" => $file_errors["course"],
+				"section.csv" => $file_errors["section"],
+				"student.csv" => $file_errors["student"],
+				"courseCompleted.csv" => $file_errors["courseCompleted"],
+				"bid.csv" => $file_errors["bid"],
+				"prerequisite.csv" => $file_errors["prerequisite"],	
 			]
 		];
 		
 		// $result = json_encode($result, JSON_PRETTY_PRINT);
 		foreach ($result["num-record-loaded"] as $file => $line){
 			echo " $file : $line <br>";
+		}
+		var_dump($result["errors-found"]);
+		foreach ($result["errors-found"] as $file => $line){
+			foreach ($line as $linerow){
+				echo " $file : $linerow <br>";
+			}
+			
 		}
 		echo "
 		<br>
