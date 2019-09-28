@@ -1,29 +1,33 @@
 <?php
-  require_once 'include/common.php';
-  require_once 'include/token.php';
 
-  $error = '';
+require_once 'include/common.php';
+require_once 'include/token.php';
 
-    if (isset($_GET['error']) ) {
-        $error = $_GET['error'];
-    } 
-    elseif (isset($_POST['userid']) && isset($_POST['password']) ) {
-        $userid = $_POST['userid'];
-        $password = $_POST['password'];
+if(isset($_SESSION['user']))
+  session_destroy();
 
-        $dao = new StudentDAO();
-        $student = $dao->retrieveStudent($userid);
+$error = '';
 
-        if ( $student != null && $student->authenticate($password) ) {
-            $_SESSION['token'] = generate_token($userid);
-            $_SESSION['user'] = $student;
-            header("Location: landingPage.php");
-            return;
+if (isset($_GET['error']) ) {
+    $error = $_GET['error'];
+}
+elseif (isset($_POST['userid']) && isset($_POST['password']) ) {
+    $userid = $_POST['userid'];
+    $password = $_POST['password'];
 
-        } else {
-            $error = 'Incorrect User ID or Password!';
-        }
+    $dao = new StudentDAO();
+    $student = $dao->retrieveStudent($userid);
+
+    if ( $student != null && $student->authenticate($password) ) {
+        $_SESSION['token'] = generate_token($userid);
+        $_SESSION['user'] = $student;
+        header("Location: landingPage.php");
+        return;
+
+    } else {
+        $error = 'Incorrect User ID or Password!';
     }
+}
 ?>
 
 
@@ -43,7 +47,7 @@
         <nav class="navbar navbar-expand-sm bg-light navbar-light">
         <!-- Brand/logo -->
         <a class="navbar-brand" href="#">BIOS</a>
-        <!-- Links 
+        <!-- Links
         <ul class="navbar-nav">
             <li class="nav-item">
             <a class="nav-link" href="landingPage.php">HOME</a>

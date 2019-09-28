@@ -1,9 +1,18 @@
 <?php
   require_once 'include/common.php';
-  require_once 'include/protect.php'; 
+  require_once 'include/protect.php';
 
-  if (isset($_SESSION["user"])){
+  if (isset($_SESSION["user"]))
+  {
     $student = $_SESSION["user"]; // retrive the student's information.
+    if (isset($_SESSION["initialize"]))
+    {
+        $initialize = false;
+    }
+    else
+    {
+        $initialize = true;
+    }
   }
 ?>
 
@@ -17,10 +26,17 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
-<body>
-  <?php
-    // Assuming that login page is sucessfull:
 
+<script type="text/javascript">
+    $(document).ready(function()
+    {
+        $("#initialize-User-Info").modal('show');
+    });
+</script>
+
+<body>
+
+  <?php
     $stuName = $student->getName();
     $stuID = $student->getUserid();
     $stuBids = [];
@@ -30,7 +46,45 @@
 
     $studentBid = new BidDAO();
     $stuBids = $studentBid->retrieveStudentBids($stuID);
-    
+
+    // calculate remaining amount
+    foreach($stuBids as $value)
+    {
+      $stuEdollar -= $value->getAmount();
+    }
+   ?>
+
+   <?php
+   var_dump($initialize);
+    if($initialize == true)
+    {
+      echo
+      "
+        <div class='modal fade' id='initialize-User-Info'>
+          <div class='modal-dialog modal-dialog-centered'>
+            <div class='modal-content'>
+
+              <div class='modal-header'>
+                <h4 class='modal-title'> Welcome $stuName </h4>
+                <button type='button' class='close' data-dismiss='modal'> &times; </button>
+              </div>
+
+              <div class='modal-body'>
+                you have $stuEdollar left
+              </div>
+
+              <div class='modal-footer'>
+                <button type='button' class='btn btn-danger' data-dismiss='modal'> Close </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      ";
+    }
+    $initialize = false;
+    $_SESSION['initialize'] = $initialize;
+
    ?>
 
 <div class="container">
@@ -42,10 +96,10 @@
     <!-- Links -->
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" href="landingPage.php">HOME</a>
+        <a class="nav-link" href="landingPage.php"> HOME </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">SECTIONS</a>
+        <a class="nav-link" href="addBidPage.php"> ADD BID(s)</a>
       </li>
     </ul>
   </nav>
@@ -64,7 +118,7 @@
  <div class = "row">
    <div class="col-sm-12" style='margin-top: 15vh'>
      <table class="table table-striped">
-       <h3> bid(s) </h3>
+       <h3> Bid(s) </h3>
        <thead>
          <tr>
            <th>Course Code</th>
@@ -105,7 +159,7 @@
   <div class = "row">
     <div class="col-sm-12" style='margin-top: 15vh'>
       <table class="table table-striped">
-        <h3> sections(s) </h3>
+        <h3> Sections(s) </h3>
         <thead>
           <tr>
             <th>Course Code</th>
@@ -119,7 +173,7 @@
             if(count($stuSections) == 0)
             {
               echo "<tr>";
-              echo"You currently not enrolled in any course";
+              echo"You are currently not enrolled in any course";
               echo "</tr>";
             }
             else

@@ -13,15 +13,15 @@ elseif (isset($_SESSION['token'])) {
 # check if token is not valid
 # send user back to the login page with the appropirate message
 
-# add your code here 
-if (!verify_token($token))
+# add your code here
+if (!verify_token($token) || !isset($_SESSION['user']))
 
 	header('location: login.php?error=Please login');
 
 
 
-# this bit below might be useful for the last part of the lab and your project 
-# it will help to check for more conditions such as 
+# this bit below might be useful for the last part of the lab and your project
+# it will help to check for more conditions such as
 
 # if the user is not an admin and trying to access admin pages
 
@@ -32,7 +32,7 @@ if (!verify_token($token))
 # $currentFolder = $pathSegments[$numSegment - 2]; # Current folder
 # $page = $pathSegments[$numSegment -1]; # Current page
 
-# you can do things like If ($page == "bootstrap-view.php) {   or 
-# if ($currentfolder == "json") {  
+# you can do things like If ($page == "bootstrap-view.php) {   or
+# if ($currentfolder == "json") {
 
 ?>
