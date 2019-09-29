@@ -1,6 +1,6 @@
 <?php
 
-class Course {
+class CourseComplete {
     private $userid;
     private $course;
 
