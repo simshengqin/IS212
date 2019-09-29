@@ -256,10 +256,17 @@ function doBootstrap() {
 		}
 		var_dump($result["errors-found"]);
 		foreach ($result["errors-found"] as $file => $line){
-			foreach ($line as $linerow){
-				echo " $file : $linerow <br>";
-			}
+			if (sizeof($line)>0){
+				echo "Errors for $file <br>";
+				echo "---------------------------- <br>";
 			
+				foreach ($line as $linerow => $rows){
+					echo "$linerow ";
+					echo implode(', ', $rows);
+					echo "<br>";
+				}
+				echo "---------------------------- <br>";
+			}	
 		}
 		echo "
 		<br>
