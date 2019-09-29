@@ -191,9 +191,14 @@ function doBootstrap() {
 
 				$prerequisite_data = fgetcsv($prerequisite);
 				$row = 1;
+				$allCourseInfo = $courseDAO->retrieveAll();
 				while (($prerequisite_data = fgetcsv($prerequisite))!== false){
-					$prerequisiteDAO->add($prerequisite_data[0], $prerequisite_data[1]);
-					$lines_processed['prerequisite']++;
+					$file_errors['prerequisite'] = array_merge($file_errors['prerequisite'], validatePrerequisite($prerequisite_data, $row, $allCourseInfo));
+					if(sizeof(validatePrerequisite($prerequisite_data, $row, $allCourseInfo))==0){
+						$prerequisiteDAO->add($prerequisite_data[0], $prerequisite_data[1]);
+						$lines_processed['prerequisite']++;
+					}
+					$row++;
 				}
 				fclose($prerequisite);
 				@unlink($prerequisite_path);
