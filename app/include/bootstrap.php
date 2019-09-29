@@ -140,8 +140,8 @@ function doBootstrap() {
 					if (sizeof(validateCourse($course_data, $row)) == 0){
 						$courseDAO->add($course_data[0], $course_data[1], $course_data[2], $course_data[3], 
 										$course_data[4], $course_data[5], $course_data[6]);
-					}
-					$lines_processed['course']++;
+						$lines_processed['course']++;
+					} 
 					$row++;
 				}
 				fclose($course);
@@ -149,10 +149,15 @@ function doBootstrap() {
 
 				$section_data = fgetcsv($section);
 				$row = 1;
+    			$allCoursesInfo = $courseDAO->retrieveAll();    // Get all course information (Course Class)
 				while (($section_data = fgetcsv($section))!== false){
-					$sectionDAO->add($section_data[0], $section_data[1], $section_data[2], $section_data[3], 
-									$section_data[4], $section_data[5], $section_data[6], $section_data[7]);
-					$lines_processed['section']++;
+					$file_errors['section'] = array_merge($file_errors['section'], validateSection($section_data, $row, $allCoursesInfo));
+					if (sizeof(validateSection($section_data, $row, $allCoursesInfo)) == 0){
+						$sectionDAO->add($section_data[0], $section_data[1], $section_data[2], $section_data[3], 
+										 $section_data[4], $section_data[5], $section_data[6], $section_data[7]);
+						$lines_processed['section']++;
+					}
+					$row++;
 				}
 				fclose($section);
 				@unlink($section_path);
@@ -239,6 +244,7 @@ function doBootstrap() {
 		];
 		
 		// $result = json_encode($result, JSON_PRETTY_PRINT);
+		echo "Number of Records loaded: <br>";
 		foreach ($result["num-record-loaded"] as $file => $line){
 			echo " $file : $line <br>";
 		}

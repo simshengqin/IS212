@@ -6,6 +6,8 @@ function commmonValidation($data, $row){
 }
 
 function validateCourse($course_data, $row){
+
+    // Retrieve necessary data for validation
     $errors = [];
     $title = $course_data[2];
     $description = $course_data[3];
@@ -57,11 +59,90 @@ function validateCourse($course_data, $row){
     if(strlen($description) > 1000){
         $errors[] = "row $row: invalid description";
     } 
-
-
-
-
     return $errors;
 }
+
+function validateSection($section_data, $row , $allCoursesInfo){
+
+    // Retrieve necessary data for validation
+    $errors = [];
+    $course = $section_data[0];
+    $section = $section_data[1];
+    $section_day = $section_data[2]; 
+    $section_start = $section_data[3];
+    $section_end = $section_data[4];
+    $instructor = $section_data[5];
+    $venue = $section_data[6];
+    $size = $section_data[7]; 
+
+    // Course Validation (Check if Course Exist)
+
+    $course_list = [];                              
+    foreach ($allCoursesInfo as $val){
+        $course_list[] = $val->getCourse();         // Store all course code into one array
+    }
+    if (!in_array($course, $course_list)){          // Check if inputted course exist in current course database
+        $errors[] = "row $row: invalid course";
+    }
+
+    // Section Validation (Only check if Course is valid)
+    if (in_array($course, $course_list)){
+        if (!preg_match("/^[S](\d?[1-9]|[1-9]0)$/", $section)){       // Check if first character have a 'S' followed by 1-99
+            $errors[] = "row $row: invalid section";
+        }
+    }
+
+    // Section Day Validation (check between 1 to 7)
+    if($section_day > 7 || $section_day < 1){
+        $errors[] = "row $row: invalid day";        // Check day value between 1 to 7  
+    }
+
+    // Section Start  Validation 
+    $section_start_timing = [
+        '8:30' => 0, 
+        '12:00' => 1, 
+        '15:30' => 2
+    ];
+    $section_end_timing = [
+        '11:45' => 0, 
+        '15:15' => 1, 
+        '18:45' => 2
+    ];
+
+    // Validation for Section Start
+    if (!array_key_exists($section_start,$section_start_timing)){  // Check if section start is 8:30, 12:00, or 15:30
+        $errors[] = "row $row: invalid start";                     // return error if not
+    }
+
+    // Validation for Section End
+    if (!array_key_exists($section_end, $section_end_timing)){     // Check if section end is 11:45, 15:15, or 18:45
+        $errors[] = "row $row: invalid end";                       // return error if not
+    }
+    elseif (array_key_exists($section_start,$section_start_timing)){     // To prevent section start 'key' not found where comparing timing
+        if ($section_start_timing[$section_start] > $section_end_timing[$section_end])
+            $errors[] = "row $row: invalid end";
+    }
+
+    // Section instructor Validation 
+    if(strlen($instructor) > 100){
+        $errors[] = "row $row: invalid instructor";
+    } 
+
+    // Section venue Validation 
+    if(strlen($venue) > 100){
+        $errors[] = "row $row: invalid venue";
+    } 
+
+    // Section size Validation 
+    if($size < 1){
+        $errors[] = "row $row: invalid size";
+    }
+    return $errors;
+}
+
+
+
+
+
 
 ?>

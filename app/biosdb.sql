@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 26, 2019 at 02:22 AM
+-- Generation Time: Sep 29, 2019 at 06:42 AM
 -- Server version: 5.7.23
 -- PHP Version: 7.2.10
 
@@ -21,6 +21,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `biosdb`
 --
+CREATE DATABASE IF NOT EXISTS `biosdb` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `biosdb`;
 
 -- --------------------------------------------------------
 
@@ -44,13 +46,13 @@ CREATE TABLE IF NOT EXISTS `bid` (
 
 DROP TABLE IF EXISTS `course`;
 CREATE TABLE IF NOT EXISTS `course` (
-  `Course` varchar(45) NOT NULL,
-  `School` varchar(45) DEFAULT NULL,
-  `Title` varchar(45) DEFAULT NULL,
-  `Description` mediumtext,
-  `ExamDate` date DEFAULT NULL,
-  `ExamStart` time DEFAULT NULL,
-  `ExamEnd` time DEFAULT NULL,
+  `course` varchar(45) NOT NULL,
+  `school` varchar(45) DEFAULT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `description` varchar(1000) DEFAULT NULL,
+  `examdate` date DEFAULT NULL,
+  `examstart` time DEFAULT NULL,
+  `examend` time DEFAULT NULL,
   PRIMARY KEY (`Course`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
