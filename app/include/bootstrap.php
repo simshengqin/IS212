@@ -177,18 +177,6 @@ function doBootstrap() {
 				fclose($student);
 				@unlink($student_path);
 
-
-
-				$courseCompleted_data = fgetcsv($courseCompleted);
-				$row = 1;
-				while (($courseCompleted_data = fgetcsv($courseCompleted))!== false){
-					$courseCompletedDAO->add($courseCompleted_data[0], $courseCompleted_data[1]);
-					$lines_processed['courseCompleted']++;
-				}
-				fclose($courseCompleted);
-				@unlink($courseCompleted_path);
-
-
 				$prerequisite_data = fgetcsv($prerequisite);
 				$row = 1;
 				$allCourseInfo = $courseDAO->retrieveAll();
@@ -203,6 +191,14 @@ function doBootstrap() {
 				fclose($prerequisite);
 				@unlink($prerequisite_path);
 
+				$courseCompleted_data = fgetcsv($courseCompleted);
+				$row = 1;
+				while (($courseCompleted_data = fgetcsv($courseCompleted))!== false){
+					$courseCompletedDAO->add($courseCompleted_data[0], $courseCompleted_data[1]);
+					$lines_processed['courseCompleted']++;
+				}
+				fclose($courseCompleted);
+				@unlink($courseCompleted_path);
 
 
 				$bid_data = fgetcsv($bid);
@@ -263,7 +259,6 @@ function doBootstrap() {
 		foreach ($result["errors-found"] as $file => $line){
 			if (sizeof($line)>0){
 				echo "Errors for $file <br>";
-				echo "---------------------------- <br>";
 			
 				foreach ($line as $linerow => $rows){
 					echo "$linerow ";

@@ -20,7 +20,7 @@ function validateCourse($course_data, $row){
     $exam_date_month = substr($exam_date, 4, 2);
     $exam_date_day = substr($exam_date, 6, 2);
     if (!checkdate($exam_date_month, $exam_date_day, $exam_date_year)){
-        $errors["row: $row"] = "invalid exam date";
+        $errors["row: $row"][] = "invalid exam date";
     }
 
 
@@ -38,26 +38,26 @@ function validateCourse($course_data, $row){
 
     // Validation for Exam Start
     if (!array_key_exists($exam_start,$exam_start_timing)){  // Check if exam start is 8:30, 12:00, or 15:30
-        $errors["row: $row"] = "invalid exam start";          // return error if not
+        $errors["row: $row"][] = "invalid exam start";          // return error if not
     }
 
     // Validation for Exam End
     if (!array_key_exists($exam_end, $exam_end_timing)){     // Check if exam end is 11:45, 15:15, or 18:45
-        $errors["row: $row"] = "invalid exam end";            // return error if not
+        $errors["row: $row"][] = "invalid exam end";            // return error if not
     }
     elseif (array_key_exists($exam_start,$exam_start_timing)){   // To prevent exam start 'key' not found where comparing timing
         if ($exam_start_timing[$exam_start] > $exam_end_timing[$exam_end])
-            $errors["row: $row"] = "invalid exam end";
+            $errors["row: $row"][] = "invalid exam end";
     }
 
     // Validation for Title
     if(strlen($title) > 100){
-        $errors["row: $row"] = "invalid title";
+        $errors["row: $row"][] = "invalid title";
     } 
 
     // Validation for Description
     if(strlen($description) > 1000){
-        $errors["row: $row"] = "invalid description";
+        $errors["row: $row"][] = "invalid description";
     } 
     return $errors;
 }
@@ -82,19 +82,19 @@ function validateSection($section_data, $row , $allCoursesInfo){
         $course_list[] = $val->getCourse();         // Store all course code into one array
     }
     if (!in_array($course, $course_list)){          // Check if inputted course exist in current course database
-        $errors["row: $row"] = "invalid course";
+        $errors["row: $row"][] = "invalid course";
     }
 
     // Section Validation (Only check if Course is valid)
     if (in_array($course, $course_list)){
         if (!preg_match("/^[S](\d?[1-9]|[1-9]0)$/", $section)){       // Check if first character have a 'S' followed by 1-99
-            $errors["row: $row"] = "invalid section";
+            $errors["row: $row"][] = "invalid section";
         }
     }
 
     // Section Day Validation (check between 1 to 7)
     if($section_day > 7 || $section_day < 1){
-        $errors["row: $row"] = "invalid day";        // Check day value between 1 to 7  
+        $errors["row: $row"][] = "invalid day";        // Check day value between 1 to 7  
     }
 
     // Section Start  Validation 
@@ -111,21 +111,21 @@ function validateSection($section_data, $row , $allCoursesInfo){
 
     // Validation for Section Start
     if (!array_key_exists($section_start,$section_start_timing)){  // Check if section start is 8:30, 12:00, or 15:30
-        $errors["row: $row"] = "invalid start";                     // return error if not
+        $errors["row: $row"][] = "invalid start";                     // return error if not
     }
 
     // Validation for Section End
     if (!array_key_exists($section_end, $section_end_timing)){     // Check if section end is 11:45, 15:15, or 18:45
-        $errors["row: $row"] = "invalid end";                       // return error if not
+        $errors["row: $row"][] = "invalid end";                       // return error if not
     }
     elseif (array_key_exists($section_start,$section_start_timing)){     // To prevent section start 'key' not found where comparing timing
         if ($section_start_timing[$section_start] > $section_end_timing[$section_end])
-            $errors["row: $row"] = "invalid end";
+            $errors["row: $row"][] = "invalid end";
     }
 
     // Section instructor Validation 
     if (strlen($instructor) > 100){
-        $errors["row: $row"] = "invalid instructor";
+        $errors["row: $row"][] = "invalid instructor";
     } 
 
     // Section venue Validation 
@@ -135,7 +135,7 @@ function validateSection($section_data, $row , $allCoursesInfo){
 
     // Section size Validation 
     if ($size < 1){
-        $errors["row: $row"] = "invalid size";
+        $errors["row: $row"][] = "invalid size";
     }
     return $errors;
 }
@@ -203,12 +203,12 @@ function validatePrerequisite($prerequisite_data, $row, $allCourseInfo){
 
     // Course code validation
     if (!in_array($course, $courseCodeList)){                 // Check if inputted course exist in current course database
-        $errors["row: $row"] = "invalid course";
+        $errors["row: $row"][] = "invalid course";
     }
 
     // Prerequisite code validation
     if (!in_array($prerequisite, $courseCodeList)){          // Check if inputted Prerequisite exist in current course database
-        $errors["row: $row"] = "invalid prerequisite";
+        $errors["row: $row"][] = "invalid prerequisite";
     }
 
     return $errors;
