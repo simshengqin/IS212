@@ -203,12 +203,12 @@ function validatePrerequisite($prerequisite_data, $row, $allCourseInfo){
 
     // Course code validation
     if (!in_array($course, $courseCodeList)){                 // Check if inputted course exist in current course database
-        $errors[] = "row $row: invalid course";
+        $errors["row: $row"] = "invalid course";
     }
 
     // Prerequisite code validation
     if (!in_array($prerequisite, $courseCodeList)){          // Check if inputted Prerequisite exist in current course database
-        $errors[] = "row $row: invalid prerequisite";
+        $errors["row: $row"] = "invalid prerequisite";
     }
 
     return $errors;
