@@ -165,8 +165,14 @@ function doBootstrap() {
 				$student_data = fgetcsv($student);
 				$row = 1;
 				while (($student_data = fgetcsv($student))!== false){
-					$studentDAO->add($student_data[0],  password_hash($student_data[1],PASSWORD_DEFAULT), $student_data[2], $student_data[3], $student_data[4]);
-					$lines_processed['student']++;
+					$allStudentInfo = $studentDAO->retrieveAll();
+					$file_errors['student'] = array_merge($file_errors['student'], validateStudent($student_data, $row, $allStudentInfo));
+					if (sizeof(validateStudent($student_data, $row, $allStudentInfo)) == 0){
+						$studentDAO->add($student_data[0],  password_hash($student_data[1],PASSWORD_DEFAULT), 
+						                 $student_data[2], $student_data[3], $student_data[4]);
+						$lines_processed['student']++;
+					}
+					$row++;
 				}
 				fclose($student);
 				@unlink($student_path);

@@ -124,19 +124,67 @@ function validateSection($section_data, $row , $allCoursesInfo){
     }
 
     // Section instructor Validation 
-    if(strlen($instructor) > 100){
+    if (strlen($instructor) > 100){
         $errors[] = "row $row: invalid instructor";
     } 
 
     // Section venue Validation 
-    if(strlen($venue) > 100){
+    if (strlen($venue) > 100){
         $errors[] = "row $row: invalid venue";
     } 
 
     // Section size Validation 
-    if($size < 1){
+    if ($size < 1){
         $errors[] = "row $row: invalid size";
     }
+    return $errors;
+}
+
+function validateStudent($student_data, $row, $allStudentInfo){
+
+    // Retrieve necessary data for validation
+    $errors = [];
+    $userid = $student_data[0];
+    $password = $student_data[1];
+    $name = $student_data[2]; 
+    $school = $student_data[3];
+    $edollar = $student_data[4];
+
+
+    // Student userid and duplicate userid Validation 
+    if (strlen($userid) > 128){
+        $errors[] = "row $row: invalid userid";
+    }
+    else{
+        $useridList = [];
+        foreach ($allStudentInfo as $val){      // retrieve all userid from student info 
+            $useridList[] = $val->getUserid(); 
+        }
+        if (in_array($userid, $useridList)){   // if userid within list, output error
+            $errors[] = "row $row: duplicate userid";
+        }
+    }
+
+    // E-dollar Validation
+    if($edollar < 0.0 || !is_numeric($edollar)){                // check if edollar is not negative or not numerical value
+        $errors[] = "row $row: invalid e-dollar";
+    }
+    else {
+        if (strlen($edollar) - strrpos($edollar, '.') - 1 > 2) {    // check that the edollar is not more than 2 decimal places
+            $errors[] = "row $row: invalid e-dollar";
+        }
+    }
+
+    // Password Validation
+    if (strlen($password) > 128){
+        $errors[] = "row $row: invalid password";
+    }
+
+    // Invalid Name
+    if (strlen($name) > 100){
+        $errors[] = "row $row: invalid name";
+    }
+
     return $errors;
 }
 
