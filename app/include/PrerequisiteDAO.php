@@ -37,10 +37,14 @@ class PrerequisiteDAO {
         $result = [];
 
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $result[] = new Section($row['course'], $row['prerequisite']);
+            $result[] = new Prerequisite($row['course'], $row['prerequisite']);
         }
         return $result;
     }
+
+    
+
+
 
     public function removeAll(){
         $sql = 'TRUNCATE TABLE prerequisite';

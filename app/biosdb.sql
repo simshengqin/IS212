@@ -32,10 +32,10 @@ USE `biosdb`;
 
 DROP TABLE IF EXISTS `bid`;
 CREATE TABLE IF NOT EXISTS `bid` (
-  `userid` varchar(15) DEFAULT NULL,
+  `userid` varchar(128) DEFAULT NULL,
   `amount` int(2) DEFAULT NULL,
   `code` varchar(5) DEFAULT NULL,
-  `section` varchar(2) DEFAULT NULL
+  `section` varchar(3) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `course` (
 
 DROP TABLE IF EXISTS `course_completed`;
 CREATE TABLE IF NOT EXISTS `course_completed` (
-  `userid` varchar(12) DEFAULT NULL,
+  `userid` varchar(128) DEFAULT NULL,
   `code` varchar(5) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -93,8 +93,8 @@ CREATE TABLE IF NOT EXISTS `section` (
   `day` int(11) DEFAULT NULL,
   `start` time DEFAULT NULL,
   `end` time DEFAULT NULL,
-  `instructor` varchar(45) DEFAULT NULL,
-  `venue` varchar(45) DEFAULT NULL,
+  `instructor` varchar(100) DEFAULT NULL,
+  `venue` varchar(100) DEFAULT NULL,
   `size` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`section`,`course`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -107,9 +107,9 @@ CREATE TABLE IF NOT EXISTS `section` (
 
 DROP TABLE IF EXISTS `student`;
 CREATE TABLE IF NOT EXISTS `student` (
-  `userid` varchar(45) NOT NULL,
+  `userid` varchar(128) NOT NULL,
   `password` text NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(100) NOT NULL,
   `school` varchar(255) NOT NULL,
   `edollar` float NOT NULL,
   PRIMARY KEY (`userid`)

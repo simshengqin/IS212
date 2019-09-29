@@ -37,8 +37,30 @@ class CourseCompletedDAO {
         $result = [];
 
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $result[] = new Section($row['userid'], $row['code']);
+            $result[] = new CourseCompleted($row['userid'], $row['code']);
         }
+        return $result;
+    }
+
+    public function retrieveCourseCompletedByUserId($userid)
+    {
+        $sql = 'select userid, code from course_completed where userid=:userid';
+
+        $connMgr = new ConnectionManager();
+        $conn = $connMgr->getConnection();
+
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $result = array();
+
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+            $result[] = $row['code'];
+        }
+
         return $result;
     }
 

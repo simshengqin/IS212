@@ -62,7 +62,7 @@ function validateCourse($course_data, $row){
     return $errors;
 }
 
-function validateSection($section_data, $row , $allCoursesInfo){
+function validateSection($section_data, $row , $allCourseInfo){
 
     // Retrieve necessary data for validation
     $errors = [];
@@ -78,7 +78,7 @@ function validateSection($section_data, $row , $allCoursesInfo){
     // Course Validation (Check if Course Exist)
 
     $course_list = [];                              
-    foreach ($allCoursesInfo as $val){
+    foreach ($allCourseInfo as $val){
         $course_list[] = $val->getCourse();         // Store all course code into one array
     }
     if (!in_array($course, $course_list)){          // Check if inputted course exist in current course database
@@ -212,6 +212,62 @@ function validatePrerequisite($prerequisite_data, $row, $allCourseInfo){
     }
 
     return $errors;
+}
+
+function validateCourseCompleted($courseCompletedData, $row, $allCourseInfo, $allStudentInfo, $allPrerequisiteInfo){
+    
+    // Retrieve necessary data for validation
+    $errors = [];
+    $userid = $courseCompletedData[0];
+    $code = $courseCompletedData[1];
+
+    // User Id Validation
+    $useridList = [];
+    foreach($allStudentInfo as $val){
+        $useridList[] = $val->getUserid();
+    }
+
+    if (!in_array($userid, $useridList)){                 // Check if inputted user id exist in current student database
+        $errors["row: $row"][] = "invalid userid";
+    }
+
+    // Course Validation
+    $courseList = [];
+    foreach($allCourseInfo as $val){
+        $courseList[] = $val->getCourse();
+    }
+
+    if (!in_array($code, $courseList)){                 // Check if inputted course exist in current course database
+        $errors["row: $row"][] = "invalid course";
+    }
+
+    // Logic Validation
+    $prerequisiteCourse = [];
+    foreach ($allPrerequisiteInfo as $val){             
+        if ($code == $val->getCourse()){                // Check if there's any prerequisite for the course
+            $prerequisiteCourse[] = $val->getPrerequisite();          // Store prerequisites in $prerequisiteCourse
+        }
+    }
+
+    if (!empty($prerequisiteCourse)){                                                           // Do this if prerequisite is not empty 
+        $courseCompletedDAO = new CourseCompletedDAO();       
+        $courseCompletedList = $courseCompletedDAO->retrieveCourseCompletedByUserId($userid);   // Get list of course completed by user
+        $check = 0;
+        foreach ($prerequisiteCourse as $precourse){
+            if (!in_array($precourse, $courseCompletedList) && $check == 0){            // if prerequisite not found in course completed, output error
+                $errors["row: $row"][] = "invalid course completed";
+                $check = 1;
+            }
+        }
+
+    }
+    return $errors;
+}
+
+function validateBid($bid_data, $row){
+    
+
+
 }
 
 

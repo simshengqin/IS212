@@ -149,10 +149,10 @@ function doBootstrap() {
 
 				$section_data = fgetcsv($section);
 				$row = 1;
-    			$allCoursesInfo = $courseDAO->retrieveAll();    // Get all course information (Course Class)
+    			$allCourseInfo = $courseDAO->retrieveAll();    // Get all course information (Course Class)
 				while (($section_data = fgetcsv($section))!== false){
-					$file_errors['section'] = array_merge($file_errors['section'], validateSection($section_data, $row, $allCoursesInfo));
-					if (sizeof(validateSection($section_data, $row, $allCoursesInfo)) == 0){
+					$file_errors['section'] = array_merge($file_errors['section'], validateSection($section_data, $row, $allCourseInfo));
+					if (sizeof(validateSection($section_data, $row, $allCourseInfo)) == 0){
 						$sectionDAO->add($section_data[0], $section_data[1], $section_data[2], $section_data[3], 
 										 $section_data[4], $section_data[5], $section_data[6], $section_data[7]);
 						$lines_processed['section']++;
@@ -179,7 +179,7 @@ function doBootstrap() {
 
 				$prerequisite_data = fgetcsv($prerequisite);
 				$row = 1;
-				$allCourseInfo = $courseDAO->retrieveAll();
+				$allCourseInfo = $courseDAO->retrieveAll();			// Retrieve all course info to check prerequisite
 				while (($prerequisite_data = fgetcsv($prerequisite))!== false){
 					$file_errors['prerequisite'] = array_merge($file_errors['prerequisite'], validatePrerequisite($prerequisite_data, $row, $allCourseInfo));
 					if(sizeof(validatePrerequisite($prerequisite_data, $row, $allCourseInfo))==0){
@@ -193,9 +193,16 @@ function doBootstrap() {
 
 				$courseCompleted_data = fgetcsv($courseCompleted);
 				$row = 1;
+				$allStudentInfo = $studentDAO->retrieveAll();			// Retrieve all student info to check if user id exist
+				$allPrerequisiteInfo = $prerequisiteDAO->retrieveAll();
 				while (($courseCompleted_data = fgetcsv($courseCompleted))!== false){
-					$courseCompletedDAO->add($courseCompleted_data[0], $courseCompleted_data[1]);
-					$lines_processed['courseCompleted']++;
+					$file_errors['courseCompleted'] = array_merge($file_errors['courseCompleted'], 
+														validateCourseCompleted($courseCompleted_data, $row, $allCourseInfo, $allStudentInfo, $allPrerequisiteInfo));
+					if (sizeof(validateCourseCompleted($courseCompleted_data, $row, $allCourseInfo, $allStudentInfo, $allPrerequisiteInfo))==0){
+						$courseCompletedDAO->add($courseCompleted_data[0], $courseCompleted_data[1]);
+						$lines_processed['courseCompleted']++;
+					}
+					$row++;
 				}
 				fclose($courseCompleted);
 				@unlink($courseCompleted_path);
