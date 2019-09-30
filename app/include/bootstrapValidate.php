@@ -170,7 +170,7 @@ function validateStudent($student_data, $row, $allStudentInfo){
         $errors["row: $row"][] = "invalid e-dollar";
     }
     else {
-        if (strlen($edollar) - strrpos($edollar, '.') - 1 > 2) {    // check that the edollar is not more than 2 decimal places
+        if ((intval($edollar) != $edollar) && (strlen($edollar) - strrpos($edollar, '.') - 1 > 2)) {    // check that the edollar is not more than 2 decimal places
             $errors["row: $row"][] = "invalid e-dollar";
         }
     }
