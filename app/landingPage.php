@@ -65,12 +65,12 @@
             <div class='modal-content'>
 
               <div class='modal-header'>
-                <h4 class='modal-title'> Welcome $stuName </h4>
+                <h4 class='modal-title'> Welcome $stuName! </h4>
                 <button type='button' class='close' data-dismiss='modal'> &times; </button>
               </div>
 
               <div class='modal-body'>
-                you have $stuEdollar left
+                You currently have e$$stuEdollar in your account.
               </div>
 
               <div class='modal-footer'>
