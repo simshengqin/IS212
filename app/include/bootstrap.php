@@ -165,7 +165,7 @@ function doBootstrap() {
 				$student_data = fgetcsv($student);
 				$row = 1;
 				while (($student_data = fgetcsv($student))!== false){
-					$allStudentInfo = $studentDAO->retrieveAll();
+					$allStudentInfo = $studentDAO->retrieveAll();     // Need put within while loop because we need to prevent duplicate student userid
 					$file_errors['student'] = array_merge($file_errors['student'], validateStudent($student_data, $row, $allStudentInfo));
 					if (sizeof(validateStudent($student_data, $row, $allStudentInfo)) == 0){
 						$studentDAO->add($student_data[0],  password_hash($student_data[1],PASSWORD_DEFAULT), 
@@ -194,7 +194,7 @@ function doBootstrap() {
 				$courseCompleted_data = fgetcsv($courseCompleted);
 				$row = 1;
 				$allStudentInfo = $studentDAO->retrieveAll();			// Retrieve all student info to check if user id exist
-				$allPrerequisiteInfo = $prerequisiteDAO->retrieveAll();
+				$allPrerequisiteInfo = $prerequisiteDAO->retrieveAll(); // Retrieve all prerequisite info to check prerequisite courses
 				while (($courseCompleted_data = fgetcsv($courseCompleted))!== false){
 					$file_errors['courseCompleted'] = array_merge($file_errors['courseCompleted'], 
 														validateCourseCompleted($courseCompleted_data, $row, $allCourseInfo, $allStudentInfo, $allPrerequisiteInfo));
@@ -210,9 +210,15 @@ function doBootstrap() {
 
 				$bid_data = fgetcsv($bid);
 				$row = 1;
-				while (($bid_data = fgetcsv($bid))!== false){
-					$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
-					$lines_processed['bid']++;
+				while (($bid_data = fgetcsv($bid))!== false){	
+					$studentBidInfo = $bidDAO->retrieveStudentBidsWithSectionInfo($bid_data[0]); // Get student bid info
+					$sectionsInfo = $sectionDAO->retrieveSectionByFilter($bid_data[2]); 	 // Get section list by the course 
+					$file_errors['bid'] = array_merge($file_errors['bid'], validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo, $studentBidInfo));			
+					if (sizeof(validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo, $studentBidInfo))==0){
+						$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
+						$lines_processed['bid']++;
+					}
+					$row++;
 				}
 				fclose($bid);
 				@unlink($bid_path);
