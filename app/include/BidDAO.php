@@ -38,13 +38,12 @@ class BidDAO {
         $result = [];
 
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $result[] = new Section($row['userid'], $row['amount'],$row['code'], $row['section']);
+            $result[] = new Bid($row['userid'], $row['amount'],$row['code'], $row['section']);
         }
         return $result;
     }
 
-    public function retrieveStudentBids($userid)
-{
+    public function retrieveStudentBids($userid){
     $sql = 'select userid, amount, code, section from bid where userid=:userid';
 
     $connMgr = new ConnectionManager();
@@ -63,7 +62,38 @@ class BidDAO {
     }
 
     return $result;
-}
+    }
+
+    public function retrieveStudentBidsWithSectionInfo($userid){
+        $sql = 'SELECT b.userid, b.amount, b.code, b.section, s.day, s.start, s.end FROM bid b INNER JOIN section s 
+                            WHERE b.section = s.section AND b.code = s.course AND b.userid=:userid';
+
+        $connMgr = new ConnectionManager();
+        $conn = $connMgr->getConnection();
+    
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
+        $stmt->execute();
+    
+        $result = array();
+    
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+            $result[] = [
+                "userid" => $row['userid'], 
+                "amount" => $row['amount'],
+                "code" => $row['code'],
+                "section" => $row['section'],
+                "day" => $row['day'],
+                "start" => $row['start'],
+                "end" => $row['end']
+            ];
+        }
+    
+        return $result;
+    }
+    
 
     public function removeAll(){
         $sql = 'TRUNCATE TABLE bid';
