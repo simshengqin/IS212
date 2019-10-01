@@ -132,12 +132,11 @@ function doBootstrap() {
 				# $data[0] is the first element in the csv row, $data[1] is the 2nd, ....
 				# process each line and check for errors
 
-				$course_data = fgetcsv($course);
+				$header = fgetcsv($course); //The first line is always the header
 				$row = 1;
-				
 				while (($course_data = fgetcsv($course))!== false){
-					$commonValidation = commmonValidation($course_data, $row); 
-					if (!empty($commmonValidation)) { //if input field is blank
+					$commonValidation = commmonValidation($course_data, $row, $header); 
+					if (!empty($commonValidation)) { //if input field is blank
 						$file_errors['course'] = array_merge($file_errors['course'], $commonValidation); //stores error 
 					}
 					else {
@@ -154,60 +153,88 @@ function doBootstrap() {
 				fclose($course);
 				@unlink($course_path);
 
-				$section_data = fgetcsv($section);
+				$header = fgetcsv($section);
 				$row = 1;
     			$allCourseInfo = $courseDAO->retrieveAll();    // Get all course information (Course Class)
 				while (($section_data = fgetcsv($section))!== false){
-					$file_errors['section'] = array_merge($file_errors['section'], validateSection($section_data, $row, $allCourseInfo));
-					if (sizeof(validateSection($section_data, $row, $allCourseInfo)) == 0){
-						$sectionDAO->add($section_data[0], $section_data[1], $section_data[2], $section_data[3], 
-										 $section_data[4], $section_data[5], $section_data[6], $section_data[7]);
-						$lines_processed['section']++;
+					$commonValidation = commmonValidation($section_data, $row, $header); 
+					if (!empty($commonValidation)) { //if input field is blank
+						$file_errors['section'] = array_merge($file_errors['section'], $commonValidation); //stores error 
+					}
+					else {
+						$sectionValidation = validateSection($section_data, $row, $allCourseInfo);
+						$file_errors['section'] = array_merge($file_errors['section'], $sectionValidation);
+						if (sizeof($sectionValidation) == 0){
+							$sectionDAO->add($section_data[0], $section_data[1], $section_data[2], $section_data[3], 
+											$section_data[4], $section_data[5], $section_data[6], $section_data[7]);
+							$lines_processed['section']++;
+						}
 					}
 					$row++;
 				}
 				fclose($section);
 				@unlink($section_path);
 
-				$student_data = fgetcsv($student);
+				$header = fgetcsv($student);
 				$row = 1;
 				while (($student_data = fgetcsv($student))!== false){
-					$allStudentInfo = $studentDAO->retrieveAll();     // Need put within while loop because we need to prevent duplicate student userid
-					$file_errors['student'] = array_merge($file_errors['student'], validateStudent($student_data, $row, $allStudentInfo));
-					if (sizeof(validateStudent($student_data, $row, $allStudentInfo)) == 0){
-						$studentDAO->add($student_data[0],  password_hash($student_data[1],PASSWORD_DEFAULT), 
-						                 $student_data[2], $student_data[3], $student_data[4]);
-						$lines_processed['student']++;
+					$commonValidation = commmonValidation($student_data, $row, $header); 
+					if (!empty($commonValidation)) { //if input field is blank
+						$file_errors['student'] = array_merge($file_errors['student'], $commonValidation); //stores error 
+					}
+					else {
+						$allStudentInfo = $studentDAO->retrieveAll();     // Need put within while loop because we need to prevent duplicate student userid
+						$studentValidation = validateStudent($student_data, $row, $allStudentInfo);
+						$file_errors['student'] = array_merge($file_errors['student'], $studentValidation);
+						if (sizeof($studentValidation) == 0){
+							$studentDAO->add($student_data[0],  password_hash($student_data[1],PASSWORD_DEFAULT), 
+											$student_data[2], $student_data[3], $student_data[4]);
+							$lines_processed['student']++;
+						}
 					}
 					$row++;
 				}
 				fclose($student);
 				@unlink($student_path);
 
-				$prerequisite_data = fgetcsv($prerequisite);
+				$header = fgetcsv($prerequisite);
 				$row = 1;
 				$allCourseInfo = $courseDAO->retrieveAll();			// Retrieve all course info to check prerequisite
 				while (($prerequisite_data = fgetcsv($prerequisite))!== false){
-					$file_errors['prerequisite'] = array_merge($file_errors['prerequisite'], validatePrerequisite($prerequisite_data, $row, $allCourseInfo));
-					if(sizeof(validatePrerequisite($prerequisite_data, $row, $allCourseInfo))==0){
-						$prerequisiteDAO->add($prerequisite_data[0], $prerequisite_data[1]);
-						$lines_processed['prerequisite']++;
+					$commonValidation = commmonValidation($prerequisite_data, $row, $header); 
+					if (!empty($commonValidation)) { //if input field is blank
+						$file_errors['prerequisite'] = array_merge($file_errors['prerequisite'], $commonValidation); //stores error 
+					}
+					else {
+						$prerequisiteValidation = validatePrerequisite($prerequisite_data, $row, $allCourseInfo);
+						$file_errors['prerequisite'] = array_merge($file_errors['prerequisite'], $prerequisiteValidation);
+						if(sizeof($prerequisiteValidation)==0){
+							$prerequisiteDAO->add($prerequisite_data[0], $prerequisite_data[1]);
+							$lines_processed['prerequisite']++;
+						}
 					}
 					$row++;
 				}
 				fclose($prerequisite);
 				@unlink($prerequisite_path);
 
-				$courseCompleted_data = fgetcsv($courseCompleted);
+				$header = fgetcsv($courseCompleted);
 				$row = 1;
 				$allStudentInfo = $studentDAO->retrieveAll();			// Retrieve all student info to check if user id exist
 				$allPrerequisiteInfo = $prerequisiteDAO->retrieveAll(); // Retrieve all prerequisite info to check prerequisite courses
 				while (($courseCompleted_data = fgetcsv($courseCompleted))!== false){
-					$file_errors['courseCompleted'] = array_merge($file_errors['courseCompleted'], 
-														validateCourseCompleted($courseCompleted_data, $row, $allCourseInfo, $allStudentInfo, $allPrerequisiteInfo));
-					if (sizeof(validateCourseCompleted($courseCompleted_data, $row, $allCourseInfo, $allStudentInfo, $allPrerequisiteInfo))==0){
-						$courseCompletedDAO->add($courseCompleted_data[0], $courseCompleted_data[1]);
-						$lines_processed['courseCompleted']++;
+					$commonValidation = commmonValidation($courseCompleted_data, $row, $header); 
+					if (!empty($commonValidation)) { //if input field is blank
+						$file_errors['courseCompleted'] = array_merge($file_errors['courseCompleted'], $commonValidation); //stores error 
+					}
+					else {
+						$courseCompletedValidation = validateCourseCompleted($courseCompleted_data, $row, $allCourseInfo, $allStudentInfo, $allPrerequisiteInfo);
+						$file_errors['courseCompleted'] = array_merge($file_errors['courseCompleted'], 
+															$courseCompletedValidation);
+						if (sizeof($courseCompletedValidation)==0){
+							$courseCompletedDAO->add($courseCompleted_data[0], $courseCompleted_data[1]);
+							$lines_processed['courseCompleted']++;
+						}
 					}
 					$row++;
 				}
@@ -215,15 +242,22 @@ function doBootstrap() {
 				@unlink($courseCompleted_path);
 
 
-				$bid_data = fgetcsv($bid);
+				$header = fgetcsv($bid);
 				$row = 1;
 				while (($bid_data = fgetcsv($bid))!== false){	
-					$studentBidInfo = $bidDAO->retrieveStudentBidsWithSectionInfo($bid_data[0]); // Get student bid info
-					$sectionsInfo = $sectionDAO->retrieveSectionByFilter($bid_data[2]); 	 // Get section list by the course 
-					$file_errors['bid'] = array_merge($file_errors['bid'], validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo, $studentBidInfo));			
-					if (sizeof(validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo, $studentBidInfo))==0){
-						$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
-						$lines_processed['bid']++;
+					$commonValidation = commmonValidation($bid_data, $row, $header); 
+					if (!empty($commonValidation)) { //if input field is blank
+						$file_errors['bid'] = array_merge($file_errors['bid'], $commonValidation); //stores error 
+					}
+					else {
+						$studentBidInfo = $bidDAO->retrieveStudentBidsWithSectionInfo($bid_data[0]); // Get student bid info
+						$sectionsInfo = $sectionDAO->retrieveSectionByFilter($bid_data[2]); 	 // Get section list by the course 						
+						$bidValidation = validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo, $studentBidInfo);
+						$file_errors['bid'] = array_merge($file_errors['bid'], $bidValidation);			
+						if (sizeof($bidValidation)==0){
+							$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
+							$lines_processed['bid']++;
+						}
 					}
 					$row++;
 				}
