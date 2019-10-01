@@ -136,11 +136,11 @@ function doBootstrap() {
 				$row = 1;
 				
 				while (($course_data = fgetcsv($course))!== false){
-					$commonValidation = commmonValidation($course_data, $row); 
-					if (!empty($commmonValidation)) { //if input field is blank
-						$file_errors['course'] = array_merge($file_errors['course'], $commonValidation); //stores error 
-					}
-					else {
+					// $commonValidation = commmonValidation($course_data, $row); 
+					// if (!empty($commmonValidation)) { 												     //if input field is blank
+					// 	$file_errors['course'] = array_merge($file_errors['course'], $commonValidation); //stores error 
+					// }
+					// else {
 						$courseValidation = validateCourse($course_data, $row);
 						$file_errors['course'] = array_merge($file_errors['course'], $courseValidation);
 						if (empty($courseValidation)){
@@ -148,7 +148,7 @@ function doBootstrap() {
 											$course_data[4], $course_data[5], $course_data[6]);
 							$lines_processed['course']++;
 						}
-					} 
+					// } 
 					$row++;
 				}
 				fclose($course);
@@ -218,10 +218,9 @@ function doBootstrap() {
 				$bid_data = fgetcsv($bid);
 				$row = 1;
 				while (($bid_data = fgetcsv($bid))!== false){	
-					$studentBidInfo = $bidDAO->retrieveStudentBidsWithSectionInfo($bid_data[0]); // Get student bid info
 					$sectionsInfo = $sectionDAO->retrieveSectionByFilter($bid_data[2]); 	 // Get section list by the course 
-					$file_errors['bid'] = array_merge($file_errors['bid'], validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo, $studentBidInfo));			
-					if (sizeof(validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo, $studentBidInfo))==0){
+					$file_errors['bid'] = array_merge($file_errors['bid'], validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo));			
+					if (sizeof(validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo))==0){
 						$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
 						$lines_processed['bid']++;
 					}
