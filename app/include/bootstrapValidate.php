@@ -170,7 +170,7 @@ function validateStudent($student_data, $row, $allStudentInfo){
         $errors["row: $row"][] = "invalid e-dollar";
     }
     else {
-        if (strlen($edollar) - strrpos($edollar, '.') - 1 > 2) {    // check that the edollar is not more than 2 decimal places
+        if ((intval($edollar) != $edollar) && (strlen($edollar) - strrpos($edollar, '.') - 1 > 2)) {    // check that the edollar is not more than 2 decimal places
             $errors["row: $row"][] = "invalid e-dollar";
         }
     }
@@ -264,11 +264,90 @@ function validateCourseCompleted($courseCompletedData, $row, $allCourseInfo, $al
     return $errors;
 }
 
-function validateBid($bid_data, $row){
+function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo, $studentBidInfo){
     
+    // Retrieve necessary data for validation
+    $errors = [];
+    $userid = $bid_data[0];
+    $bidAmount = $bid_data[1];
+    $bidCode = $bid_data[2];
+    $bidSection = $bid_data[3];
+    $studentList = [];
 
 
+    // UserID Validation 
+    $useridList = [];
+    foreach($allStudentInfo as $val){
+        if ($userid == $val->getUserid())           
+            $student = $val;                        // Retrieve 'student' class for logic validation 
+        $useridList[] = $val->getUserid();          // store all userid in $useridList
+    }
+    if (!in_array($userid, $useridList)){                 // Check if inputted user id exist in current student database
+        $errors["row: $row"][] = "invalid userid";
+    }
+
+    // Bid Amount Validation
+    if(!is_numeric($bidAmount) || $bidAmount < 10.0){                // check if edollar is not numerical value or less than e$10
+        $errors["row: $row"][] = "invalid amount";
+    }
+    else {
+        if ((intval($bidAmount) != $bidAmount) && (strlen($bidAmount) - strrpos($bidAmount, '.') - 1 > 2)) {    // check that the edollar is not more than 2 decimal places
+            $errors["row: $row"][] = "invalid amount";
+        }
+    }
+
+    // Course Validation
+    $courseList = [];
+    foreach($allCourseInfo as $val){
+        if ($bidCode == $val->getCourse())
+            $course = $val;                         // Retrieve 'course' class for logic validation 
+        $courseList[] = $val->getCourse();          // Store all course in $courseList
+    }
+    if (!in_array($bidCode, $courseList)){                 // Check if inputted course exist in current course database
+        $errors["row: $row"][] = "invalid course";                           
+    }
+    else {                                                
+        // Section Validation                              // Check ONLY if course validation is valid
+        $sectionList = [];
+        foreach($sectionsInfo as $val){
+            if ($bidSection == $val->getSection())
+                $section = $val;                         // Retrieve 'section' class for logic validation 
+            $sectionList[] = $val->getSection();        // Store all section filtered by course in $sectionList
+        }
+        if (!in_array($bidSection, $sectionList)){         // Check if bidSection is in section list (after filtered with course)
+            $errors["row: $row"][] = "invalid section";  
+        }
+    }
+
+
+    // Logic Validation
+                                                                ### Not yet implemented bid round checking ###
+    if ($student->getSchool() != $course->getSchool()){         // if student bid is not from their own school
+        $errors["row: $row"][] = "not own school course";  
+    }
+
+    $start_timing = [                           // Changed to 08:30:00 instead of 8:30 because it's converted to DATETIME format
+        '08:30:00' => 0,                        // when it's uploaded to the database (PHPmyAdmin)
+        '12:00:00' => 1, 
+        '15:30:00' => 2
+    ];
+    $end_timing = [
+        '11:45:00' => 0, 
+        '15:15:00' => 1, 
+        '18:45:00' => 2
+    ];
+
+    foreach ($studentBidInfo as $bid) {
+        if (($bid['day'] == $section->getDay())  && ($start_timing[$bid['start']] == $start_timing[$section->getStart()] || $end_timing[$bid['end']] == $end_timing[$section->getEnd()])){
+            $errors["row: $row"][] = "class timetable clash";
+        }
+    }
+
+    
+    return $errors;
+    
 }
+
 
 
 
