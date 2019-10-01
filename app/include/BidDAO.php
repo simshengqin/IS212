@@ -64,9 +64,10 @@ class BidDAO {
     return $result;
     }
 
-    public function retrieveStudentBidsWithSectionInfo($userid){
-        $sql = 'SELECT b.userid, b.amount, b.code, b.section, s.day, s.start, s.end FROM bid b INNER JOIN section s 
-                            WHERE b.section = s.section AND b.code = s.course AND b.userid=:userid';
+    public function retrieveStudentBidsWithInfo($userid){
+        $sql = 'SELECT b.userid, b.amount, b.code, b.section, s.day, s.start, s.end, c.examdate, c.examstart, c.examend 
+                    FROM bid b INNER JOIN section s INNER JOIN course c
+                        WHERE b.section = s.section AND b.code = s.course AND s.course = c.course AND b.userid=:userid';
 
         $connMgr = new ConnectionManager();
         $conn = $connMgr->getConnection();
@@ -87,12 +88,16 @@ class BidDAO {
                 "section" => $row['section'],
                 "day" => $row['day'],
                 "start" => $row['start'],
-                "end" => $row['end']
+                "end" => $row['end'],
+                "examdate" => $row['examdate'],
+                "examstart" => $row['examstart'],
+                "examend" => $row['examend']
             ];
         }
     
         return $result;
     }
+
     
 
     public function removeAll(){

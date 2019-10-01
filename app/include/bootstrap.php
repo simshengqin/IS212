@@ -250,9 +250,8 @@ function doBootstrap() {
 						$file_errors['bid'] = array_merge($file_errors['bid'], $commonValidation); //stores error 
 					}
 					else {
-						$studentBidInfo = $bidDAO->retrieveStudentBidsWithSectionInfo($bid_data[0]); // Get student bid info
-						$sectionsInfo = $sectionDAO->retrieveSectionByFilter($bid_data[2]); 	 // Get section list by the course 						
-						$bidValidation = validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo, $studentBidInfo);
+						$sectionsInfo = $sectionDAO->retrieveSectionByFilter($bid_data[2]); 	 // Get section list by the course 
+						$bidValidation = validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo);
 						$file_errors['bid'] = array_merge($file_errors['bid'], $bidValidation);			
 						if (sizeof($bidValidation)==0){
 							$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
@@ -329,9 +328,7 @@ function doBootstrap() {
 		</form>";
 		// header('location: admin.php');
 	}
-	
-	 
-
 }
+
 
 ?>
