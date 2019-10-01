@@ -264,7 +264,7 @@ function validateCourseCompleted($courseCompletedData, $row, $allCourseInfo, $al
     return $errors;
 }
 
-function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo, $studentBidInfo){
+function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo){
     
     // Retrieve necessary data for validation
     $errors = [];
@@ -273,6 +273,8 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     $bidCode = $bid_data[2];
     $bidSection = $bid_data[3];
     $studentList = [];
+    $bidDAO = new BidDAO();
+    $bidInfo = $bidDAO->retrieveStudentBidsWithInfo($userid);         // Retrieve INNER JOIN table of bid and section and course
 
 
     // UserID Validation 
@@ -337,13 +339,38 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
         '18:45:00' => 2
     ];
 
-    foreach ($studentBidInfo as $bid) {
+    // Check for class timetable clash 
+    foreach ($bidInfo as $bid) {
         if (($bid['day'] == $section->getDay())  && ($start_timing[$bid['start']] == $start_timing[$section->getStart()] || $end_timing[$bid['end']] == $end_timing[$section->getEnd()])){
             $errors["row: $row"][] = "class timetable clash";
         }
     }
 
+    // Check for exam timetable clash
+    foreach ($bidInfo as $bid) {
+        if (($bid['examdate'] == $course->getExamdate())  && ($start_timing[$bid['examstart']] == $start_timing[$course->getExamstart()] || $end_timing[$bid['examend']] == $end_timing[$course->getExamend()])){
+            $errors["row: $row"][] = "exam timetable clash";
+        }
+    }
+
+    // Check for incomplete prerequisites 
     
+    
+
+
+    // Check for course completed 
+
+
+
+
+    // Check for Section limit (Student can only bid for 5 sections)
+
+
+
+    // Check if student has enough e-dollars 
+
+    
+
     return $errors;
     
 }
