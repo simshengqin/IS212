@@ -136,18 +136,18 @@ function doBootstrap() {
 				$row = 1;
 				
 				while (($course_data = fgetcsv($course))!== false){
-					$commonValidation = commmonValidation($course_data, $row); 
-					if (!empty($commmonValidation)) { //if input field is blank
-						$file_errors['course'] = array_merge($file_errors['course'], $commonValidation); //stores error 
-					}
-					else {
+					// $commonValidation = commmonValidation($course_data, $row); 
+					// if (!empty($commmonValidation)) { //if input field is blank
+					// 	$file_errors['course'] = array_merge($file_errors['course'], $commonValidation); //stores error 
+					// }
+					// else {
 						$courseValidation = validateCourse($course_data, $row);
 						$file_errors['course'] = array_merge($file_errors['course'], $courseValidation);
 						if (empty($courseValidation)){
 							$courseDAO->add($course_data[0], $course_data[1], $course_data[2], $course_data[3], 
 											$course_data[4], $course_data[5], $course_data[6]);
 							$lines_processed['course']++;
-						}
+						// }
 					} 
 					$row++;
 				}
