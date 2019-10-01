@@ -1,8 +1,14 @@
 <?php 
 
-function commmonValidation($data, $row){
-
-
+function commmonValidation($data, $row, $header){
+    $errors = [];
+    for ($i=0; $i<count($data); $i++) {     //loop through all the columns and add it to the error message if any of the column is empty.
+        if ($data[$i] == "") 
+        {
+            $errors["row: $row"][]="blank {$header[$i]}";
+        }
+    }
+    return $errors;
 }
 
 function validateCourse($course_data, $row){
@@ -324,7 +330,7 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
 
     // Logic Validation
                                                                 ### Not yet implemented bid round checking ###
-    if ($student->getSchool() != $course->getSchool()){         // if student bid is not from their own school
+    if (isset($student) && isset($course) && $student->getSchool() != $course->getSchool()){         // if student bid is not from their own school
         $errors["row: $row"][] = "not own school course";  
     }
 
