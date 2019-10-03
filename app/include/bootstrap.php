@@ -135,6 +135,7 @@ function doBootstrap() {
 				$header = fgetcsv($course); //The first line is always the header
 				$row = 1;
 				while (($course_data = fgetcsv($course))!== false){
+					$course_data = str_replace(chr(160), "", $course_data); 
 					$commonValidation = commmonValidation($course_data, $row, $header); 
 					if (!empty($commonValidation)) { //if input field is blank
 						$file_errors['course'] = array_merge($file_errors['course'], $commonValidation); //stores error 
@@ -308,10 +309,9 @@ function doBootstrap() {
 		foreach ($result["num-record-loaded"] as $file => $line){
 			echo " $file : $line <br>";
 		}
-		var_dump($result["errors-found"]);
 		foreach ($result["errors-found"] as $file => $line){
 			if (sizeof($line)>0){
-				echo "Errors for $file <br>";
+				echo "<br>Errors for $file <br>";
 			
 				foreach ($line as $linerow => $rows){
 					echo "$linerow ";
