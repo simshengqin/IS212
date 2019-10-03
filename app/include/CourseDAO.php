@@ -8,9 +8,8 @@ class CourseDAO {
         
         $connMgr = new ConnectionManager();       
         $conn = $connMgr->getConnection();
-         
-        $stmt = $conn->prepare($sql); 
 
+        $stmt = $conn->prepare($sql);
         $stmt->bindParam(':course', $course, PDO::PARAM_STR);
         $stmt->bindParam(':school', $school, PDO::PARAM_STR);
         $stmt->bindParam(':title', $title, PDO::PARAM_STR);
@@ -18,6 +17,7 @@ class CourseDAO {
         $stmt->bindParam(':examdate', $examdate, PDO::PARAM_STR);
         $stmt->bindParam(':examstart', $examstart, PDO::PARAM_STR);
         $stmt->bindParam(':examend', $examend, PDO::PARAM_STR);
+        
         
         $isAddOK = False;
         if ($stmt->execute()) {
