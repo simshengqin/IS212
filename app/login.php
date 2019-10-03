@@ -15,18 +15,27 @@ elseif (isset($_POST['userid']) && isset($_POST['password']) ) {
     $userid = $_POST['userid'];
     $password = $_POST['password'];
 
-    $dao = new StudentDAO();
-    $student = $dao->retrieveStudent($userid);
-
-    if ( $student != null && $student->authenticate($password) ) {
-        $_SESSION['token'] = generate_token($userid);
-        $_SESSION['user'] = $student;
-        header("Location: landingPage.php");
-        return;
-
-    } else {
-        $error = 'Incorrect User ID or Password!';
+    if ($userid == "admin" 
+          && password_verify($password,'$2y$10$Y64OGHH.HcW17UTrWuxon.nvT6v0viYnQZEurtVN3jurVdT1YgCDW')){
+        header("Location: admin.php");
+    } 
+    else {
+        $dao = new StudentDAO();
+        $student = $dao->retrieveStudent($userid);
+    
+        if ( $student != null && $student->authenticate($password) ) {
+            $_SESSION['token'] = generate_token($userid);
+            $_SESSION['user'] = $student;
+            header("Location: landingPage.php");
+            return;
+    
+        } else {
+            $error = 'Incorrect User ID or Password!';
+        }
     }
+
+
+
 }
 ?>
 
