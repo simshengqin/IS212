@@ -42,7 +42,26 @@ class PrerequisiteDAO {
         return $result;
     }
 
+    public function retrievePrerequisiteByCourse($course){
+        $sql = 'select course, prerequisite from prerequisite where course=:course';
     
+        $connMgr = new ConnectionManager();
+        $conn = $connMgr->getConnection();
+    
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->bindParam(':course', $course, PDO::PARAM_STR);
+        $stmt->execute();
+    
+        $result = array();
+    
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+            $result[] = $row['prerequisite'];
+        }
+    
+        return $result;
+        }
 
 
 

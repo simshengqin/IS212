@@ -280,8 +280,8 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     $bidSection = $bid_data[3];
     $studentList = [];
     $bidDAO = new BidDAO();
-    $bidInfo = $bidDAO->retrieveStudentBidsWithInfo($userid);         // Retrieve INNER JOIN table of bid and section and course
-
+    $bidInfo = $bidDAO->retrieveStudentBidsWithInfo($userid);  // Retrieve INNER JOIN table of bid and section and course
+    $courseCompletedDAO = new CourseCompletedDAO();
 
     // UserID Validation 
     $useridList = [];
@@ -347,7 +347,7 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
 
     // Check for class timetable clash 
     foreach ($bidInfo as $bid) {
-        if (($bid['day'] == $section->getDay())  && ($start_timing[$bid['start']] == $start_timing[$section->getStart()] || $end_timing[$bid['end']] == $end_timing[$section->getEnd()])){
+        if (isset($section) && ($bid['day'] == $section->getDay())  && ($start_timing[$bid['start']] == $start_timing[$section->getStart()] || $end_timing[$bid['end']] == $end_timing[$section->getEnd()])){
             $errors["row: $row"][] = "class timetable clash";
         }
     }
@@ -360,23 +360,44 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     }
 
     // Check for incomplete prerequisites 
-    
-    
-
+    $coursesCompleted = $courseCompletedDAO->retrieveCourseCompletedByUserId($userid);
+    $prerequisiteDAO = new PrerequisiteDAO();
+    $prerequisites = $prerequisiteDAO -> retrievePrerequisiteByCourse($bidCode);
+    if (!empty($prerequisites)){                    // If there is prerequisites
+        if (array_diff($prerequisites, $coursesCompleted)) {
+            $errors["row: $row"][] = "incomplete prerequisites";
+        }
+    }
 
     // Check for course completed 
-
-
-
+    if (in_array($bidCode,$coursesCompleted)) {
+        $errors["row: $row"][] = "course completed";
+    }
 
     // Check for Section limit (Student can only bid for 5 sections)
-
+    $num = 0;
+    foreach($bidInfo as $bid) {
+        if ($bid['userid'] == $userid) {
+            $num++;
+        }
+    }
+    if ($num >= 5) {
+        $errors["row: $row"][] = "section limit reached";
+    }
 
 
     // Check if student has enough e-dollars 
-
-    
-
+    $studentDAO = new StudentDAO();
+    $student = $studentDAO->retrieveStudent($userid);
+    $eDollar = $student->getEdollar();
+    if ($bidAmount > $eDollar) {
+        $errors["row: $row"][] = "not enough e-dollar";   
+        foreach($bidInfo as $bid) {
+            if ($bid['userid'] == $userid && $bid['code'] == $bidcode && $bid['section'] == $bidSection) {
+                
+            }
+        }
+    }
     return $errors;
     
 }
