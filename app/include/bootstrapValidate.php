@@ -326,7 +326,6 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     $bidDAO = new BidDAO();
     $bidInfo = $bidDAO->retrieveStudentBidsWithInfo($userid);  // Retrieve INNER JOIN table of bid and section and course
     $courseCompletedDAO = new CourseCompletedDAO();
-
     // UserID Validation 
     $useridList = [];
     foreach($allStudentInfo as $val){
