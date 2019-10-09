@@ -7,7 +7,15 @@ class Sort {
 
 	function line($a, $b)
 	{
-	    return $b['line'] - $a['line'];
+	    return $a['line'] - $b['line'];
+	}
+
+	function comp($a, $b)
+	{
+		if ($a['file'] == $b['file']) {
+			return $a['line'] - $b['line'];
+		}
+		return strcmp($a['file'], $b['file']);
 	}
 
 	function bootstrap($a, $b)

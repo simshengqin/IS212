@@ -14,13 +14,13 @@ function doBootstrap() {
 	$temp_dir = sys_get_temp_dir();
 
 	# keep track of number of lines successfully processed for each file
-	$lines_processed = [
-		"course" => 0,
-		"section" => 0,
-		"student" => 0,
-		"courseCompleted" => 0,
-		"prerequisite" => 0,
-		"bid" =>0 
+	$record['num-record-loaded'] = [
+		"bid.csv" => 0,
+		"course.csv" => 0,
+		"courseCompleted.csv" => 0,
+		"prerequisite.csv" => 0,
+		"section.csv" => 0,
+		"student.csv" => 0	
 	];
 
 	# check file size
@@ -139,7 +139,7 @@ function doBootstrap() {
 						if (empty($courseValidation)){
 							$courseDAO->add($course_data[0], $course_data[1], $course_data[2], $course_data[3], 
 											$course_data[4], $course_data[5], $course_data[6]);
-							$lines_processed['course']++;
+							$record['num-record-loaded']['course.csv']++;
 						}
 						else
 							$errors[] = $courseValidation;
@@ -163,7 +163,7 @@ function doBootstrap() {
 						if (sizeof($sectionValidation) == 0){
 							$sectionDAO->add($section_data[0], $section_data[1], $section_data[2], $section_data[3], 
 											$section_data[4], $section_data[5], $section_data[6], $section_data[7]);
-							$lines_processed['section']++;
+							$record['num-record-loaded']['section.csv']++;
 						}
 						else
 							$errors[] = $sectionValidation;
@@ -187,7 +187,7 @@ function doBootstrap() {
 						if (sizeof($studentValidation) == 0){
 							$studentDAO->add($student_data[0],  password_hash($student_data[1],PASSWORD_DEFAULT), 
 											$student_data[2], $student_data[3], $student_data[4]);
-							$lines_processed['student']++;
+						$record['num-record-loaded']['student.csv']++;
 						}
 						else 
 							$errors[] = $studentValidation;
@@ -210,7 +210,7 @@ function doBootstrap() {
 						$prerequisiteValidation = validatePrerequisite($prerequisite_data, $row, $allCourseInfo);
 						if(sizeof($prerequisiteValidation)==0){
 							$prerequisiteDAO->add($prerequisite_data[0], $prerequisite_data[1]);
-							$lines_processed['prerequisite']++;
+							$record['num-record-loaded']['prerequisite.csv']++;
 						}
 						else 
 							$errors[] = $prerequisiteValidation;
@@ -234,7 +234,7 @@ function doBootstrap() {
 						$courseCompletedValidation = validateCourseCompleted($courseCompleted_data, $row, $allCourseInfo, $allStudentInfo, $allPrerequisiteInfo);
 						if (sizeof($courseCompletedValidation)==0){
 							$courseCompletedDAO->add($courseCompleted_data[0], $courseCompleted_data[1]);
-							$lines_processed['courseCompleted']++;
+							$record['num-record-loaded']['courseCompleted.csv']++;
 						}
 						else 
 							$errors[] = $courseCompletedValidation;
@@ -258,7 +258,7 @@ function doBootstrap() {
 						$bidValidation = validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo);		
 						if (sizeof($bidValidation)==0){
 							$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
-							$lines_processed['bid']++;
+							$record['num-record-loaded']['bid.csv']++;
 						}
 						else {
 							$errors[] = $bidValidation;
@@ -280,27 +280,23 @@ function doBootstrap() {
 	if (!isEmpty($errors))
 	{	
 		$sortclass = new Sort();
-		$errors = $sortclass->sort_it($errors,"line");				//sort by line then sort by title
-		$errors = $sortclass->sort_it($errors,"file");
-		
-		
-		var_dump($errors);
+		$errors = $sortclass->sort_it($errors,"comp");				//sort by line then sort by title
+		$temp = [];
+		foreach ($record['num-record-loaded'] as $key => $value){
+			$temp[] = [$key => $value];
+		}
 		$result = [ 
 			"status" => "error",
-			"num-record-loaded" => [
-				"course.csv" => $lines_processed["course"],
-				"section.csv" => $lines_processed["section"],
-				"student.csv" => $lines_processed["student"],
-				"courseCompleted.csv" => $lines_processed["courseCompleted"],
-				"bid.csv" => $lines_processed["bid"],
-				"prerequisite.csv" => $lines_processed["prerequisite"],
-			],
-			"message" => $errors
+			"num-record-loaded" => $temp,
+			"error" => $errors
 		];
-		// var_dump($result);
+
+		$result['status'] = 'error';
+		$result['error'] = $errors;
+
+		
 		return $result;
 	}
-
 	else
 	{	
 		$result = [  
@@ -314,30 +310,29 @@ function doBootstrap() {
 				"prerequisite.csv" => $lines_processed["prerequisite"],
 			]
 		];
-		
-		// $result = json_encode($result, JSON_PRETTY_PRINT);
-		echo "Number of Records loaded: <br>";
-		foreach ($result["num-record-loaded"] as $file => $line){
-			echo " $file : $line <br>";
-		}
-		foreach ($result["errors-found"] as $file => $line){
-			if (sizeof($line)>0){
-				echo "<br>Errors for $file <br>";
+		return $result;
+
+		// echo "Number of Records loaded: <br>";
+		// foreach ($result["num-record-loaded"] as $file => $line){
+		// 	echo " $file : $line <br>";
+		// }
+		// foreach ($result["errors-found"] as $file => $line){
+		// 	if (sizeof($line)>0){
+		// 		echo "<br>Errors for $file <br>";
 			
-				foreach ($line as $linerow => $rows){
-					echo "$linerow ";
-					echo implode(', ', $rows);
-					echo "<br>";
-				}
-				echo "---------------------------- <br>";
-			}	
-		}
-		echo "
-		<br>
-		<form method='get' action='include/admin.php'>
-		<button type='submit'>Click me for next page</button>
-		</form>";
-		
+		// 		foreach ($line as $linerow => $rows){
+		// 			echo "$linerow ";
+		// 			echo implode(', ', $rows);
+		// 			echo "<br>";
+		// 		}
+		// 		echo "---------------------------- <br>";
+		// 	}	
+		// }
+		// echo "
+		// <br>
+		// <form method='get' action='include/admin.php'>
+		// <button type='submit'>Click me for next page</button>
+		// </form>";
 
 	}
 	return $result;
