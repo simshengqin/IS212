@@ -255,13 +255,16 @@ function doBootstrap() {
 					}
 					else {
 						$sectionsInfo = $sectionDAO->retrieveSectionByFilter($bid_data[2]); 	 // Get section list by the course 
+						$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
 						$bidValidation = validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo);		
 						if (sizeof($bidValidation)==0){
-							$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
+							
 							$lines_processed['bid']++;
 						}
-						else 
+						else {
 							$errors[] = $bidValidation;
+							$bidDAO->removeBid($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
+						}
 					}
 					$row++;
 				}

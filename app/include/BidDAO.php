@@ -109,7 +109,7 @@ class BidDAO {
         $count = $stmt->rowCount();
     }
 
-    public function removeBid($userid, $code){
+    public function removeBidByUseridAndCode($userid, $code){
         $sql = 'DELETE FROM bid WHERE userid =:userid AND code =:code';
 
         $connMgr = new ConnectionManager();
@@ -122,7 +122,24 @@ class BidDAO {
         $stmt->bindParam(':code', $code,PDO::PARAM_STR);
         $stmt->execute();
     }
+    public function removeBid($userid, $amount, $code, $section){
+        $sql = 'DELETE FROM bid WHERE userid =:userid AND amount =:amount AND code =:code AND section =:section';
 
+        $connMgr = new ConnectionManager();
+        $conn = $connMgr->getConnection();
+
+        $stmt = $conn->prepare($sql);
+
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
+        $stmt-> bindParam(':amount', $amount,PDO::PARAM_STR);
+        $stmt-> bindParam(':code', $code,PDO::PARAM_STR);
+        $stmt-> bindParam(':section', $section,PDO::PARAM_STR);
+        $stmt->execute();
+    }
+
+
+}
 
 
 }

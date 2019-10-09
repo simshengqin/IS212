@@ -101,6 +101,9 @@
       <li class="nav-item">
         <a class="nav-link" href="addBidPage.php"> ADD BID(s)</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="dropBid.php"> DROP BID(s)</a>
+      </li>
     </ul>
   </nav>
 

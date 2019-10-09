@@ -326,7 +326,6 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     $bidDAO = new BidDAO();
     $bidInfo = $bidDAO->retrieveStudentBidsWithInfo($userid);  // Retrieve INNER JOIN table of bid and section and course
     $courseCompletedDAO = new CourseCompletedDAO();
-
     // UserID Validation 
     $useridList = [];
     foreach($allStudentInfo as $val){
@@ -436,9 +435,9 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     if($bidAmount <= $student->getEdollar()){                           
         $eDollar = $student->getEdollar()-$bidAmount;   
         foreach($bidInfo as $bid) {    
-            if ($bid['code'] == $bidCode) {
-                $bidDAO->removeBid($userid,$code);
-                $eDollar+=float($bid['amount']);
+            if ($bid['userid'] == $userid && $bid['code'] == $bidCode && $bid['section'] != $bidSection) {
+                $bidDAO->removeBidByUseridAndCode($userid,$bidCode);
+                $eDollar+=$bid['amount'];
             }
         }
         $studentDAO-> updateEDollar($userid,$eDollar);
