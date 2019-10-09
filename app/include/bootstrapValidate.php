@@ -178,7 +178,7 @@ function validateStudent($student_data, $row, $allStudentInfo){
     $password = $student_data[1];
     $name = $student_data[2]; 
     $school = $student_data[3];
-    $edollar = $student_data[4];
+    $eDollar = $student_data[4];
 
 
     // Student userid and duplicate userid Validation 
@@ -433,14 +433,17 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     // Check if student has enough e-dollars 
     $studentDAO = new StudentDAO();
     $student = $studentDAO->retrieveStudent($userid);
-    $eDollar = $student->getEdollar();
-    if ($bidAmount > $eDollar) {
-        $message[] = "not enough e-dollar";   
-        foreach($bidInfo as $bid) {
-            if ($bid['userid'] == $userid && $bid['code'] == $bidcode && $bid['section'] == $bidSection) {
-                
+    if($bidAmount <= $student->geteDollar()){                           
+        $eDollar = $student->geteDollar()-$bidAmount;   
+        foreach($bidInfo as $bid) {    
+            if ($bid['code'] == $bidcode) {
+                $bidDAO->removeBid($userid,$code);
+                $eDollar+=float($bid['amount']);
             }
         }
+        $studentDAO-> updateEDollar($userid,$eDollar);
+    } else{
+        $errors["row: $row"][] = "not enough e-dollar";     
     }
     if (sizeof($message)!=0) {  // if there is/are error(s) in $message, add filename and row
         $error['file'] = 'bid.csv';
