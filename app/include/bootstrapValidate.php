@@ -443,8 +443,9 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
         }
         $studentDAO-> updateEDollar($userid,$eDollar);
     } else{
-        $errors["row: $row"][] = "not enough e-dollar";     
+        $message[] = "not enough e-dollar";     
     }
+    
     if (sizeof($message)!=0) {  // if there is/are error(s) in $message, add filename and row
         $error['file'] = 'bid.csv';
         $error['line'] = $row;
