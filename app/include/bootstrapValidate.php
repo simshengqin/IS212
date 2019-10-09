@@ -154,7 +154,7 @@ function validateStudent($student_data, $row, $allStudentInfo){
     $password = $student_data[1];
     $name = $student_data[2]; 
     $school = $student_data[3];
-    $edollar = $student_data[4];
+    $eDollar = $student_data[4];
 
 
     // Student userid and duplicate userid Validation 
@@ -172,11 +172,11 @@ function validateStudent($student_data, $row, $allStudentInfo){
     }
 
     // E-dollar Validation
-    if($edollar < 0.0 || !is_numeric($edollar)){                // check if edollar is not negative or not numerical value
+    if($eDollar < 0.0 || !is_numeric($eDollar)){                // check if eDollar is not negative or not numerical value
         $errors["row: $row"][] = "invalid e-dollar";
     }
     else {
-        if ((intval($edollar) != $edollar) && (strlen($edollar) - strrpos($edollar, '.') - 1 > 2)) {    // check that the edollar is not more than 2 decimal places
+        if ((intval($eDollar) != $eDollar) && (strlen($eDollar) - strrpos($eDollar, '.') - 1 > 2)) {    // check that the eDollar is not more than 2 decimal places
             $errors["row: $row"][] = "invalid e-dollar";
         }
     }
@@ -295,11 +295,11 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     }
 
     // Bid Amount Validation
-    if(!is_numeric($bidAmount) || $bidAmount < 10.0){                // check if edollar is not numerical value or less than e$10
+    if(!is_numeric($bidAmount) || $bidAmount < 10.0){                // check if eDollar is not numerical value or less than e$10
         $errors["row: $row"][] = "invalid amount";
     }
     else {
-        if ((intval($bidAmount) != $bidAmount) && (strlen($bidAmount) - strrpos($bidAmount, '.') - 1 > 2)) {    // check that the edollar is not more than 2 decimal places
+        if ((intval($bidAmount) != $bidAmount) && (strlen($bidAmount) - strrpos($bidAmount, '.') - 1 > 2)) {    // check that the eDollar is not more than 2 decimal places
             $errors["row: $row"][] = "invalid amount";
         }
     }
@@ -389,14 +389,19 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     // Check if student has enough e-dollars 
     $studentDAO = new StudentDAO();
     $student = $studentDAO->retrieveStudent($userid);
-    $eDollar = $student->getEdollar();
-    if ($bidAmount > $eDollar) {
-        $errors["row: $row"][] = "not enough e-dollar";   
+    if($bidAmount <= $student->geteDollar()){                           
+        $eDollar = $student->geteDollar()-$bidAmount;   
         foreach($bidInfo as $bid) {
-            if ($bid['userid'] == $userid && $bid['code'] == $bidcode && $bid['section'] == $bidSection) {
-                
+           // print("ABCD");
+            if ($bid['code'] == $bidcode) {
+                $bidDAO->removeBid($userid,$code);
+                $eDollar+=float($bid['amount']);
             }
+            print($userid." ".$bid['userid']." ".$bid['code'] ." ".$bidcode);
         }
+        $studentDAO-> updateEDollar($userid,$eDollar);
+    } else{
+        $errors["row: $row"][] = "not enough e-dollar";     
     }
     return $errors;
     
