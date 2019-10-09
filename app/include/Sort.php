@@ -1,8 +1,13 @@
 <?php
 class Sort {
-	function title($a, $b)
+	function file($a, $b)
 	{
-	    return strcmp($a->title,$b->title);
+	    return strcmp($a['file'],$b['file']);
+	}
+
+	function line($a, $b)
+	{
+	    return strcmp($a['line'],$b['line']);
 	}
 
 

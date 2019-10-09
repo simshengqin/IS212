@@ -178,7 +178,7 @@ function validateStudent($student_data, $row, $allStudentInfo){
     $password = $student_data[1];
     $name = $student_data[2]; 
     $school = $student_data[3];
-    $eDollar = $student_data[4];
+    $edollar = $student_data[4];
 
 
     // Student userid and duplicate userid Validation 

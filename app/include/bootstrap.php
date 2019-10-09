@@ -275,11 +275,12 @@ function doBootstrap() {
 	}
 
 	# Sample code for returning JSON format errors. remember this is only for the JSON API. Humans should not get JSON errors.
-
+	
 	if (!isEmpty($errors))
 	{	
-		// $sortclass = new Sort();
-		// $errors = $sortclass->sort_it($errors,"title");
+		$sortclass = new Sort();
+		$errors = $sortclass->sort_it($errors,"file");
+		var_dump($errors);
 		$result = [ 
 			"status" => "error",
 			"num-record-loaded" => [
@@ -290,7 +291,7 @@ function doBootstrap() {
 				"bid.csv" => $lines_processed["bid"],
 				"prerequisite.csv" => $lines_processed["prerequisite"],
 			],
-			"error" => $errors
+			"message" => $errors
 		];
 		// var_dump($result);
 		return $result;
