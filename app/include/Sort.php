@@ -7,21 +7,20 @@ class Sort {
 
 	function line($a, $b)
 	{
-	    return strcmp($a['line'],$b['line']);
+	    return $b['line'] - $a['line'];
 	}
-
 
 	function bootstrap($a, $b)
 	{
 		return strcmp(end($a),end($b));
 	}
 	
-
 	function sort_it($list,$sorttype)
 	{
 		usort($list,array($this,$sorttype));
 		return $list;
 	}
+
 }
 
 ?>

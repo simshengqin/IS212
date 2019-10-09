@@ -254,16 +254,14 @@ function doBootstrap() {
 						$errors[] =  $commonValidation; //stores error 
 					}
 					else {
-						$sectionsInfo = $sectionDAO->retrieveSectionByFilter($bid_data[2]); 	 // Get section list by the course 
-						$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
+						$sectionsInfo = $sectionDAO->retrieveSectionByFilter($bid_data[2]); 	 // Get section list by the course 		
 						$bidValidation = validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo);		
 						if (sizeof($bidValidation)==0){
-							
+							$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
 							$lines_processed['bid']++;
 						}
 						else {
 							$errors[] = $bidValidation;
-							$bidDAO->removeBid($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
 						}
 					}
 					$row++;
@@ -282,7 +280,10 @@ function doBootstrap() {
 	if (!isEmpty($errors))
 	{	
 		$sortclass = new Sort();
+		$errors = $sortclass->sort_it($errors,"line");				//sort by line then sort by title
 		$errors = $sortclass->sort_it($errors,"file");
+		
+		
 		var_dump($errors);
 		$result = [ 
 			"status" => "error",
