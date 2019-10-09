@@ -122,6 +122,7 @@ class BidDAO {
         $stmt->bindParam(':code', $code,PDO::PARAM_STR);
         $stmt->execute();
     }
+
     public function removeBid($userid, $amount, $code, $section){
         $sql = 'DELETE FROM bid WHERE userid =:userid AND amount =:amount AND code =:code AND section =:section';
 
@@ -142,7 +143,7 @@ class BidDAO {
 }
 
 
-}
+
 
 
 

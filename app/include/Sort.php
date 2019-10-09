@@ -7,7 +7,7 @@ class Sort {
 
 	function line($a, $b)
 	{
-	    return $a['line'] - $b['line'];
+	    return $b['line'] - $a['line'];
 	}
 
 	function bootstrap($a, $b)
