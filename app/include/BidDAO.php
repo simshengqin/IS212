@@ -15,7 +15,7 @@ class BidDAO {
         $stmt->bindParam(':amount', $amount, PDO::PARAM_STR);
         $stmt->bindParam(':code', $code, PDO::PARAM_STR);
         $stmt->bindParam(':section', $section, PDO::PARAM_STR);
-
+        
         $isAddOK = False;
         if ($stmt->execute()) {
             $isAddOK = True;
@@ -34,7 +34,7 @@ class BidDAO {
         $stmt = $conn->prepare($sql);
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->execute();
-
+        
         $result = [];
 
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -65,21 +65,19 @@ class BidDAO {
     }
 
     public function retrieveStudentBidsWithInfo($userid){
-        $sql = 'SELECT b.userid, b.amount, b.code, b.section, s.day, s.start, s.end, c.examdate, c.examstart, c.examend 
-                    FROM bid b INNER JOIN section s INNER JOIN course c
-                        WHERE b.section = s.section AND b.code = s.course AND s.course = c.course AND b.userid=:userid';
-
+        $sql = "SELECT b.userid, b.amount, b.code, b.section, s.day, s.start, s.end, c.examdate, c.examstart, c.examend 
+                    FROM bid b INNER JOIN section s INNER JOIN course c 
+                        WHERE b.section = s.section AND b.code = s.course AND s.course = c.course AND b.userid = :userid";
         $connMgr = new ConnectionManager();
         $conn = $connMgr->getConnection();
-    
         $stmt = $conn->prepare($sql);
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
         $stmt->execute();
-    
-        $result = array();
-    
-        while($row = $stmt->fetch(PDO::FETCH_ASSOC))
+
+        $result = [];   
+
+        while($row = $stmt->fetch())
         {
             $result[] = [
                 "userid" => $row['userid'], 
@@ -94,7 +92,6 @@ class BidDAO {
                 "examend" => $row['examend']
             ];
         }
-    
         return $result;
     }
 
@@ -122,7 +119,7 @@ class BidDAO {
 
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
-        $stmt-> bindParam(':code', $code,PDO::PARAM_STR);
+        $stmt->bindParam(':code', $code,PDO::PARAM_STR);
         $stmt->execute();
     }
 

@@ -433,10 +433,10 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     // Check if student has enough e-dollars 
     $studentDAO = new StudentDAO();
     $student = $studentDAO->retrieveStudent($userid);
-    if($bidAmount <= $student->geteDollar()){                           
-        $eDollar = $student->geteDollar()-$bidAmount;   
+    if($bidAmount <= $student->getEdollar()){                           
+        $eDollar = $student->getEdollar()-$bidAmount;   
         foreach($bidInfo as $bid) {    
-            if ($bid['code'] == $bidcode) {
+            if ($bid['code'] == $bidCode) {
                 $bidDAO->removeBid($userid,$code);
                 $eDollar+=float($bid['amount']);
             }

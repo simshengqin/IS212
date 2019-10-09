@@ -279,8 +279,11 @@ function doBootstrap() {
 	if (!isEmpty($errors))
 	{	
 		$sortclass = new Sort();
+		$errors = $sortclass->sort_it($errors,"line");				//sort by line then sort by title
 		$errors = $sortclass->sort_it($errors,"file");
-		var_dump($errors);
+		
+		
+		// var_dump($errors);
 		$result = [ 
 			"status" => "error",
 			"num-record-loaded" => [
