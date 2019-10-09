@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 29, 2019 at 06:42 AM
+-- Generation Time: Oct 09, 2019 at 06:44 AM
 -- Server version: 5.7.23
 -- PHP Version: 7.2.10
 
@@ -21,8 +21,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `biosdb`
 --
-CREATE DATABASE IF NOT EXISTS `biosdb` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `biosdb`;
 
 -- --------------------------------------------------------
 
@@ -41,6 +39,27 @@ CREATE TABLE IF NOT EXISTS `bid` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `bid_status`
+--
+
+DROP TABLE IF EXISTS `bid_status`;
+CREATE TABLE IF NOT EXISTS `bid_status` (
+  `id` int(1) NOT NULL,
+  `round` int(1) NOT NULL,
+  `status` varchar(10) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `bid_status`
+--
+
+INSERT INTO `bid_status` (`id`, `round`, `status`) VALUES
+(1, 0, 'closed');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `course`
 --
 
@@ -53,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `course` (
   `examdate` date DEFAULT NULL,
   `examstart` time DEFAULT NULL,
   `examend` time DEFAULT NULL,
-  PRIMARY KEY (`Course`)
+  PRIMARY KEY (`course`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------

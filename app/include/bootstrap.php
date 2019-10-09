@@ -6,15 +6,7 @@ function doBootstrap() {
 		
 
 	$errors = array();
-	$file_errors = [
-		"course" => [],
-		"section" => [],
-		"student" => [],
-		"courseCompleted" => [],
-		"prerequisite" => [],
-		"bid" => []
-		
-	];
+
 	# need tmp_name -a temporary name create for the file and stored inside apache temporary folder- for proper read address
 	$zip_file = $_FILES["bootstrap-file"]["tmp_name"];
 
@@ -32,8 +24,10 @@ function doBootstrap() {
 	];
 
 	# check file size
-	if ($_FILES["bootstrap-file"]["size"] <= 0)
+	if ($_FILES["bootstrap-file"]["size"] <= 0) {
 		$errors[] = "input files not found";
+		return $errors; 						// stop bootstrap process if there's no input files found
+	}
 
 	else {
 		
@@ -131,132 +125,145 @@ function doBootstrap() {
 				# in the array $data
 				# $data[0] is the first element in the csv row, $data[1] is the 2nd, ....
 				# process each line and check for errors
-
+	## Course ##
 				$header = fgetcsv($course); //The first line is always the header
 				$row = 1;
 				while (($course_data = fgetcsv($course))!== false){
-					$course_data = str_replace(chr(160), "", $course_data); 
-					$commonValidation = commmonValidation($course_data, $row, $header); 
+					$course_data = str_replace(chr(160), "", $course_data);  // To remove 'invisible space' (\xA0) in course desc
+					$commonValidation = commmonValidation($course_data, $row, $header, 'course.csv'); 
 					if (!empty($commonValidation)) { //if input field is blank
-						$file_errors['course'] = array_merge($file_errors['course'], $commonValidation); //stores error 
+						$errors[] =  $commonValidation; //stores error 
 					}
 					else {
-						$courseValidation = validateCourse($course_data, $row);
-						$file_errors['course'] = array_merge($file_errors['course'], $courseValidation);
+						$courseValidation = validateCourse($course_data, $row);					
 						if (empty($courseValidation)){
 							$courseDAO->add($course_data[0], $course_data[1], $course_data[2], $course_data[3], 
 											$course_data[4], $course_data[5], $course_data[6]);
 							$lines_processed['course']++;
 						}
+						else
+							$errors[] = $courseValidation;
 					} 
 					$row++;
 				}
 				fclose($course);
 				@unlink($course_path);
 
+	## Section ##
 				$header = fgetcsv($section);
 				$row = 1;
     			$allCourseInfo = $courseDAO->retrieveAll();    // Get all course information (Course Class)
 				while (($section_data = fgetcsv($section))!== false){
-					$commonValidation = commmonValidation($section_data, $row, $header); 
+					$commonValidation = commmonValidation($section_data, $row, $header, 'section.csv'); 
 					if (!empty($commonValidation)) { //if input field is blank
-						$file_errors['section'] = array_merge($file_errors['section'], $commonValidation); //stores error 
+						$errors[] =  $commonValidation; //stores error 
 					}
 					else {
 						$sectionValidation = validateSection($section_data, $row, $allCourseInfo);
-						$file_errors['section'] = array_merge($file_errors['section'], $sectionValidation);
 						if (sizeof($sectionValidation) == 0){
 							$sectionDAO->add($section_data[0], $section_data[1], $section_data[2], $section_data[3], 
 											$section_data[4], $section_data[5], $section_data[6], $section_data[7]);
 							$lines_processed['section']++;
 						}
+						else
+							$errors[] = $sectionValidation;
 					}
 					$row++;
 				}
 				fclose($section);
 				@unlink($section_path);
 
+	## Student ##
 				$header = fgetcsv($student);
 				$row = 1;
 				while (($student_data = fgetcsv($student))!== false){
-					$commonValidation = commmonValidation($student_data, $row, $header); 
+					$commonValidation = commmonValidation($student_data, $row, $header, 'student.csv'); 
 					if (!empty($commonValidation)) { //if input field is blank
-						$file_errors['student'] = array_merge($file_errors['student'], $commonValidation); //stores error 
+						$errors[] =  $commonValidation; //stores error 
 					}
 					else {
 						$allStudentInfo = $studentDAO->retrieveAll();     // Need put within while loop because we need to prevent duplicate student userid
 						$studentValidation = validateStudent($student_data, $row, $allStudentInfo);
-						$file_errors['student'] = array_merge($file_errors['student'], $studentValidation);
 						if (sizeof($studentValidation) == 0){
 							$studentDAO->add($student_data[0],  password_hash($student_data[1],PASSWORD_DEFAULT), 
 											$student_data[2], $student_data[3], $student_data[4]);
 							$lines_processed['student']++;
 						}
+						else 
+							$errors[] = $studentValidation;
 					}
 					$row++;
 				}
 				fclose($student);
 				@unlink($student_path);
 
+	## Prerequisite ##
 				$header = fgetcsv($prerequisite);
 				$row = 1;
 				$allCourseInfo = $courseDAO->retrieveAll();			// Retrieve all course info to check prerequisite
 				while (($prerequisite_data = fgetcsv($prerequisite))!== false){
-					$commonValidation = commmonValidation($prerequisite_data, $row, $header); 
+					$commonValidation = commmonValidation($prerequisite_data, $row, $header,'prerequisite.csv'); 
 					if (!empty($commonValidation)) { //if input field is blank
-						$file_errors['prerequisite'] = array_merge($file_errors['prerequisite'], $commonValidation); //stores error 
+						$errors[] =  $commonValidation;  //stores error 
 					}
 					else {
 						$prerequisiteValidation = validatePrerequisite($prerequisite_data, $row, $allCourseInfo);
-						$file_errors['prerequisite'] = array_merge($file_errors['prerequisite'], $prerequisiteValidation);
 						if(sizeof($prerequisiteValidation)==0){
 							$prerequisiteDAO->add($prerequisite_data[0], $prerequisite_data[1]);
 							$lines_processed['prerequisite']++;
 						}
+						else 
+							$errors[] = $prerequisiteValidation;
 					}
 					$row++;
 				}
 				fclose($prerequisite);
 				@unlink($prerequisite_path);
 
+	## Course Completed ##
 				$header = fgetcsv($courseCompleted);
 				$row = 1;
 				$allStudentInfo = $studentDAO->retrieveAll();			// Retrieve all student info to check if user id exist
 				$allPrerequisiteInfo = $prerequisiteDAO->retrieveAll(); // Retrieve all prerequisite info to check prerequisite courses
 				while (($courseCompleted_data = fgetcsv($courseCompleted))!== false){
-					$commonValidation = commmonValidation($courseCompleted_data, $row, $header); 
+					$commonValidation = commmonValidation($courseCompleted_data, $row, $header, 'course_completed.csv'); 
 					if (!empty($commonValidation)) { //if input field is blank
-						$file_errors['courseCompleted'] = array_merge($file_errors['courseCompleted'], $commonValidation); //stores error 
+						$errors[] =  $commonValidation;  //stores error 
 					}
 					else {
 						$courseCompletedValidation = validateCourseCompleted($courseCompleted_data, $row, $allCourseInfo, $allStudentInfo, $allPrerequisiteInfo);
-						$file_errors['courseCompleted'] = array_merge($file_errors['courseCompleted'], 
-															$courseCompletedValidation);
 						if (sizeof($courseCompletedValidation)==0){
 							$courseCompletedDAO->add($courseCompleted_data[0], $courseCompleted_data[1]);
 							$lines_processed['courseCompleted']++;
 						}
+						else 
+							$errors[] = $courseCompletedValidation;
 					}
 					$row++;
 				}
 				fclose($courseCompleted);
 				@unlink($courseCompleted_path);
 
-
+	
+	## Bid ##
 				$header = fgetcsv($bid);
 				$row = 1;
 				while (($bid_data = fgetcsv($bid))!== false){	
-					$commonValidation = commmonValidation($bid_data, $row, $header); 
+					$commonValidation = commmonValidation($bid_data, $row, $header, 'bid.csv'); 
 					if (!empty($commonValidation)) { //if input field is blank
-						$file_errors['bid'] = array_merge($file_errors['bid'], $commonValidation); //stores error 
+						$errors[] =  $commonValidation; //stores error 
 					}
 					else {
 						$sectionsInfo = $sectionDAO->retrieveSectionByFilter($bid_data[2]); 	 // Get section list by the course 
-						$bidValidation = validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo);
-						$file_errors['bid'] = array_merge($file_errors['bid'], $bidValidation);			
+						$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
+						$bidValidation = validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo);		
 						if (sizeof($bidValidation)==0){
-							$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
+							
 							$lines_processed['bid']++;
+						}
+						else {
+							$errors[] = $bidValidation;
+							$bidDAO->removeBid($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
 						}
 					}
 					$row++;
@@ -271,15 +278,26 @@ function doBootstrap() {
 	}
 
 	# Sample code for returning JSON format errors. remember this is only for the JSON API. Humans should not get JSON errors.
-
+	
 	if (!isEmpty($errors))
 	{	
 		$sortclass = new Sort();
-		$errors = $sortclass->sort_it($errors,"bootstrap");
+		$errors = $sortclass->sort_it($errors,"file");
+		var_dump($errors);
 		$result = [ 
 			"status" => "error",
-			"messages" => $errors
+			"num-record-loaded" => [
+				"course.csv" => $lines_processed["course"],
+				"section.csv" => $lines_processed["section"],
+				"student.csv" => $lines_processed["student"],
+				"courseCompleted.csv" => $lines_processed["courseCompleted"],
+				"bid.csv" => $lines_processed["bid"],
+				"prerequisite.csv" => $lines_processed["prerequisite"],
+			],
+			"message" => $errors
 		];
+		// var_dump($result);
+		return $result;
 	}
 
 	else
@@ -293,14 +311,6 @@ function doBootstrap() {
 				"courseCompleted.csv" => $lines_processed["courseCompleted"],
 				"bid.csv" => $lines_processed["bid"],
 				"prerequisite.csv" => $lines_processed["prerequisite"],
-			],
-			"errors-found" => [
-				"course.csv" => $file_errors["course"],
-				"section.csv" => $file_errors["section"],
-				"student.csv" => $file_errors["student"],
-				"courseCompleted.csv" => $file_errors["courseCompleted"],
-				"bid.csv" => $file_errors["bid"],
-				"prerequisite.csv" => $file_errors["prerequisite"],	
 			]
 		];
 		
@@ -326,8 +336,10 @@ function doBootstrap() {
 		<form method='get' action='include/admin.php'>
 		<button type='submit'>Click me for next page</button>
 		</form>";
-		// header('location: admin.php');
+		
+
 	}
+	return $result;
 }
 
 
