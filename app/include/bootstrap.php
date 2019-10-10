@@ -1,7 +1,12 @@
 <?php
 require_once 'common.php';
 require_once 'bootstrapValidate.php';
-
+function trimWhitespace($data) {
+	for($i = 0; $i < count($data); $i++) {
+		$data[$i] = trim($data[$i], " ");
+	}
+	return $data;
+}
 function doBootstrap() {
 		
 
@@ -129,6 +134,7 @@ function doBootstrap() {
 				$header = fgetcsv($course); //The first line is always the header
 				$row = 1;
 				while (($course_data = fgetcsv($course))!== false){
+					$course_data = trimWhitespace($course_data);
 					$course_data = str_replace(chr(160), "", $course_data);  // To remove 'invisible space' (\xA0) in course desc
 					$commonValidation = commmonValidation($course_data, $row, $header, 'course.csv'); 
 					if (!empty($commonValidation)) { //if input field is blank
@@ -154,6 +160,7 @@ function doBootstrap() {
 				$row = 1;
     			$allCourseInfo = $courseDAO->retrieveAll();    // Get all course information (Course Class)
 				while (($section_data = fgetcsv($section))!== false){
+					$section_data = trimWhitespace($section_data);
 					$commonValidation = commmonValidation($section_data, $row, $header, 'section.csv'); 
 					if (!empty($commonValidation)) { //if input field is blank
 						$errors[] =  $commonValidation; //stores error 
@@ -177,6 +184,7 @@ function doBootstrap() {
 				$header = fgetcsv($student);
 				$row = 1;
 				while (($student_data = fgetcsv($student))!== false){
+					$student_data = trimWhitespace($student_data);
 					$commonValidation = commmonValidation($student_data, $row, $header, 'student.csv'); 
 					if (!empty($commonValidation)) { //if input field is blank
 						$errors[] =  $commonValidation; //stores error 
@@ -202,6 +210,7 @@ function doBootstrap() {
 				$row = 1;
 				$allCourseInfo = $courseDAO->retrieveAll();			// Retrieve all course info to check prerequisite
 				while (($prerequisite_data = fgetcsv($prerequisite))!== false){
+					$prerequisite_data = trimWhitespace($prerequisite_data);
 					$commonValidation = commmonValidation($prerequisite_data, $row, $header,'prerequisite.csv'); 
 					if (!empty($commonValidation)) { //if input field is blank
 						$errors[] =  $commonValidation;  //stores error 
@@ -226,6 +235,7 @@ function doBootstrap() {
 				$allStudentInfo = $studentDAO->retrieveAll();			// Retrieve all student info to check if user id exist
 				$allPrerequisiteInfo = $prerequisiteDAO->retrieveAll(); // Retrieve all prerequisite info to check prerequisite courses
 				while (($courseCompleted_data = fgetcsv($courseCompleted))!== false){
+					$courseCompleted_data = trimWhitespace($courseCompleted_data);
 					$commonValidation = commmonValidation($courseCompleted_data, $row, $header, 'course_completed.csv'); 
 					if (!empty($commonValidation)) { //if input field is blank
 						$errors[] =  $commonValidation;  //stores error 
@@ -249,6 +259,7 @@ function doBootstrap() {
 				$header = fgetcsv($bid);
 				$row = 1;
 				while (($bid_data = fgetcsv($bid))!== false){	
+					$bid_data = trimWhitespace($bid_data);
 					$commonValidation = commmonValidation($bid_data, $row, $header, 'bid.csv'); 
 					if (!empty($commonValidation)) { //if input field is blank
 						$errors[] =  $commonValidation; //stores error 

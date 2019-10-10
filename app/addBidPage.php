@@ -1,12 +1,19 @@
+
 <?php
+
   require_once 'include/common.php';
   require_once 'include/protect.php';
+  $studentDAO = new StudentDAO();
+  $student = $_SESSION["user"];
+  $edollar = $student -> getEdollar();
+  $name= $student -> getName();
+  $userid = $student-> getUserid();
   
 ?>
 
 <html>
 <head>
-  <title> Welcome </title>
+  <title> Welcome <?=$name?> </title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -18,8 +25,7 @@
   <?php
 
     // hardcoded data sure be retrive from login page
-    $userid = "ben.ng.2009";
-
+    
     //Get all Sections  
     $sectionDAO = new SectionDAO();
     $allSections = $sectionDAO ->retrieveAll();
@@ -59,10 +65,7 @@
     $venues = [];
     $sizes = [];
 
-    // retrieve user info
-    //$userName = $_SESSION['user']->getName();
-    //$edollar = $_SESSION['user']->getEdollar();
-
+    
     $day_of_week = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
     foreach ($allSections as $section) {
       if (!in_array($section->getCourse(),$courses)) {
@@ -129,10 +132,10 @@
     </nav>
   </div>
   <div class="col-sm-6" style='padding-left: 0px; padding-right:0px'>
-    Welcome <?php //echo " $userName"; ?>
+    Welcome <?php echo " $name"; ?>
   </div>
   <div class="col-sm-6" style='padding-left: 0px; padding-right:0px'>
-   Current e$: <?php //echo " $edollar"; ?>
+   Current e$: <?php echo " $edollar"; ?>
   </div>
   
   <br>
