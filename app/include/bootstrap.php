@@ -258,6 +258,7 @@ function doBootstrap() {
 	## Bid ##
 				$header = fgetcsv($bid);
 				$row = 1;
+				$edollarList = [];
 				while (($bid_data = fgetcsv($bid))!== false){	
 					$bid_data = trimWhitespace($bid_data);
 					$commonValidation = commmonValidation($bid_data, $row, $header, 'bid.csv'); 
@@ -265,11 +266,21 @@ function doBootstrap() {
 						$errors[] =  $commonValidation; //stores error 
 					}
 					else {
-						$sectionsInfo = $sectionDAO->retrieveSectionByFilter($bid_data[2]); 	 // Get section list by the course 		
+						$sectionsInfo = $sectionDAO->retrieveSectionByFilter($bid_data[2]);  // Get section list by the course 		
 						$bidValidation = validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo);		
 						if (sizeof($bidValidation)==0){
-							$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
-							$record['num-record-loaded']['bid.csv']++;
+							if (array_key_exists($bid_data[0], $edollarList))
+								$edollarList[$bid_data[0]] += $bid_data[1];
+							else
+								$edollarList[$bid_data[0]] = $bid_data[1];
+							$student = $studentDAO->retrieveStudent($bid_data[0]); // get student info
+							if ($edollarList[$bid_data[0]] < $student->getEdollar()){   // compare total bid amount against student's edollar
+								$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
+								$record['num-record-loaded']['bid.csv']++;
+							}
+							else{
+								$bidValidation[] = "not enough e-dollar";
+							}
 						}
 						else {
 							$errors[] = $bidValidation;

@@ -43,11 +43,15 @@
     $stuSections = [];
     $stuEdollar = $student->getEdollar();
 
+    $bidDAO = new BidDAO();
+    $stuBids = $bidDAO->retrieveStudentBids($stuID);
 
-    $studentBid = new BidDAO();
-    $stuBids = $studentBid->retrieveStudentBids($stuID);
-
-  
+    // calculate remaining amount
+    foreach($stuBids as $value)
+    {
+      
+      $stuEdollar -= $value->getAmount();
+    }
    ?>
 
    <?php
@@ -111,7 +115,7 @@
   echo "<h3> Hello! $stuName</h3>";
   echo "<h3> e$: $stuEdollar </h3>";
   echo "<br/>";
- ?>
+ ?> 
 
 
  <div class = "row">

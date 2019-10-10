@@ -4,10 +4,21 @@
   require_once 'include/common.php';
   require_once 'include/protect.php';
   $studentDAO = new StudentDAO();
-  $student = $_SESSION["user"];
-  $edollar = $student -> getEdollar();
-  $name= $student -> getName();
+  $student = $_SESSION["user"];     //Student class
   $userid = $student-> getUserid();
+
+  $bidDAO = new BidDAO();
+  $stuBids = $bidDAO->retrieveStudentBids($userid);
+  $stuEdollar = $student -> getEdollar();
+
+  foreach($stuBids as $value)
+    {
+      $stuEdollar -= $value->getAmount();
+    }
+  
+  $name= $student -> getName();
+  
+  
   
 ?>
 
@@ -135,7 +146,7 @@
     Welcome <?php echo " $name"; ?>
   </div>
   <div class="col-sm-6" style='padding-left: 0px; padding-right:0px'>
-   Current e$: <?php echo " $edollar"; ?>
+   Current e$: <?php echo " $stuEdollar"; ?>
   </div>
   
   <br>
