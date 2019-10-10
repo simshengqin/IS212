@@ -1,39 +1,61 @@
 <?php
   require_once 'include/common.php';
   require_once 'include/protect.php';
-  
+  require_once 'include/bootstrapValidate.php';
 ?>
 
 <?php
 
 $bidDAO = new BidDAO();
-
-$userid = "ben.ng.2009";
-
-foreach($_POST as $key => $value)
-{
-    $codeSectionList = [];
-    $code ="";
-    $section ="";
-    $amount = "";
-
-    if($key!= "Add_Bid") 
+$student = $_SESSION["user"];
+$userid = $student-> getUserid();
+$edollar = $student -> getEdollar();
+if (isset($_POST)) {
+    //var_dump($_POST); 
+    //print(array_sum($_POST));
+    $errors = [];
+    foreach($_POST as $key => $value)
     {
-        if ($value != "")
+        $codeSectionList = [];
+        $code ="";
+        $section ="";
+        $amount = "";
+        if (array_sum($_POST) > $edollar) { //Does not allow user to bid if his total bid amount exceeds his current edollar amount
+            $errors[] = "insufficent edollars!";
+            break;
+        }
+        elseif($key!= "Add_Bid") 
         {
-            //echo "Key: $key Value: $value <br>";
-            //echo($key);
-            //list($code, $section) = explode(" ", $key);
-            $codeSectionList = explode("_", $key);
-            $code = $codeSectionList[0];
-            $section = $codeSectionList[1];
-            $amount = intval($value);
-            echo "$code $section $amount <br>";
-            $bidDAO->add($userid, $amount, $code, $section);
+            if ($value != "")
+            {
+                $codeSectionList = explode("_", $key);
+                $code = $codeSectionList[0];
+                $section = $codeSectionList[1];
+                $amount = intval($value);
+                echo "$code $section $amount <br>"; 
+                //$bidDAO->add($userid, $amount, $code, $section);
+                $bid_data = [$userid, $amount, $code, $section];
+
+                $studentDAO = new StudentDAO();
+                $courseDAO = new CourseDAO();
+                $sectionDAO = new SectionDAO();
+
+                $allStudentInfo = $studentDAO->retrieveAll();
+                $allCourseInfo = $courseDAO->retrieveAll();    // Get all course information (Course Class)
+                $sectionsInfo = $sectionDAO->retrieveSectionByFilter($bid_data[2]); 	 // Get section list by the course 		
+
+                $bidValidation = validateBid($bid_data, "NIL", $allStudentInfo, $allCourseInfo, $sectionsInfo);		
+                if (sizeof($bidValidation)==0){
+                    $bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
+                }
+                else {
+                    $errors[] = $bidValidation;
+                }
+            }
         }
     }
+var_dump($errors);
 }
-
 /*
 $sectionDAO = new SectionDAO();
 $allSections = $sectionDAO -> retrieveAll();

@@ -391,6 +391,7 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     // Check for class timetable clash 
     foreach ($bidInfo as $bid) {
         if (isset($section) && ($bid['day'] == $section->getDay())  && ($start_timing[$bid['start']] == $start_timing[$section->getStart()] || $end_timing[$bid['end']] == $end_timing[$section->getEnd()])){
+            echo $bid['day'];
             $message[] = "class timetable clash";
         }
     }

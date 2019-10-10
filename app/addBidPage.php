@@ -3,6 +3,7 @@
 
   require_once 'include/common.php';
   require_once 'include/protect.php';
+  require_once 'addBidPage-process.php';
   $studentDAO = new StudentDAO();
   $student = $_SESSION["user"];
   $edollar = $student -> getEdollar();
@@ -230,7 +231,7 @@
         </tr>    
         </thead>
         <tbody>
-          <form action="addBidPage-process.php" method="post">
+          <form action="addBidPage.php" method="post">
             <?php
               foreach ($sections as $section) 
               {
