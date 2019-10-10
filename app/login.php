@@ -16,7 +16,7 @@ elseif (isset($_POST['userid']) && isset($_POST['password']) ) {
     $password = $_POST['password'];
 
     if ($userid == "admin" 
-          && password_verify($password,'$2y$10$Y64OGHH.HcW17UTrWuxon.nvT6v0viYnQZEurtVN3jurVdT1YgCDW')){ //password is SPMisgreat!
+          && password_verify($password,'$2y$10$Y64OGHH.HcW17UTrWuxon.nvT6v0viYnQZEurtVN3jurVdT1YgCDW')){ //password is 'SPMisgreat!'
         header("Location: admin.php");
     } 
     else {

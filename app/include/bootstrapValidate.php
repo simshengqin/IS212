@@ -429,26 +429,26 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
         $message[] = "section limit reached";
     }
 
-    if (sizeof($message) == 0) {
-        $bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
+    // if (sizeof($message) == 0) {
+    //     $bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
     
-        // Check if student has enough e-dollars 
-        $studentDAO = new StudentDAO();
-        $student = $studentDAO->retrieveStudent($userid);
-        if($bidAmount <= $student->getEdollar()){                           
-            $eDollar = $student->getEdollar()-$bidAmount;   
-            foreach($bidInfo as $bid) {    
-                if ($bid['userid'] == $userid && $bid['code'] == $bidCode && $bid['section'] != $bidSection) {
-                    $bidDAO->removeBidByUseridAndCode($userid,$bidCode);
-                    $eDollar+=$bid['amount'];
-                }
-            }
-            $studentDAO-> updateEDollar($userid,$eDollar);
-        } else{
-            $message[] = "not enough e-dollar";     
-        }
-        $bidDAO->removeBid($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
-    }
+    //     // Check if student has enough e-dollars 
+    //     $studentDAO = new StudentDAO();
+    //     $student = $studentDAO->retrieveStudent($userid);
+    //     if($bidAmount <= $student->getEdollar()){                           
+    //         $eDollar = $student->getEdollar()-$bidAmount;   
+    //         foreach($bidInfo as $bid) {    
+    //             if ($bid['userid'] == $userid && $bid['code'] == $bidCode && $bid['section'] != $bidSection) {
+    //                 $bidDAO->removeBidByUseridAndCode($userid,$bidCode);
+    //                 $eDollar+=$bid['amount'];
+    //             }
+    //         }
+    //         $studentDAO-> updateEDollar($userid,$eDollar);
+    //     } else{
+    //         $message[] = "not enough e-dollar";     
+    //     }
+    //     $bidDAO->removeBid($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
+    // }
     
     if (sizeof($message)!=0) {  // if there is/are error(s) in $message, add filename and row
         $error['file'] = 'bid.csv';
