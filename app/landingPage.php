@@ -47,11 +47,7 @@
     $studentBid = new BidDAO();
     $stuBids = $studentBid->retrieveStudentBids($stuID);
 
-    // calculate remaining amount
-    foreach($stuBids as $value)
-    {
-      $stuEdollar -= $value->getAmount();
-    }
+  
    ?>
 
    <?php
