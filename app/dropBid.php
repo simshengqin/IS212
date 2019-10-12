@@ -14,17 +14,25 @@
   $bidDAO = new BidDAO();
   $bids = $bidDAO->retrieveStudentBids($userid);
 //   var_dump($bids);
+  $initialize = false; # To determine whether to show confirm dopped bids dialogue box
+
+  var_dump($_POST);
 
   #Remove checkboxed value from database if submitted 
-  if (isset($_POST)){
-    //   var_dump($_POST);
-      $userid = $student->getUserid();
-      foreach($_POST as $code){
-        $bidDAO = new BidDAO();
-        $bidDAO->removeBidByUseridAndCode($userid, $code);
-          
-      }
+  if(!empty($_POST)){
+    if (isset($_POST)){
+        //var_dump($_POST);
+        $userid = $student->getUserid();
+        $codeList = [];
+        foreach($_POST as $code){
+          $bidDAO = new BidDAO();
+          $bidDAO->removeBidByUseridAndCode($userid, $code);
+          $codeList[] = $code; # capture the list of bid(s) 
+        }
+      informStudentOfConfirmation();
+    }
   }
+
 ?>
 
   
@@ -40,6 +48,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   </head>
+
+  <?php
+    function informStudentOfConfirmation(){
+      ?>
+        <script type="text/javascript">
+            $(document).ready(function()
+            {
+                $("#initialize-User-Info2").modal('show');
+            });
+        </script>
+      <?php
+  }
+  ?>
+  
 
   <div class="container">
     <!-- Navigation Bar -->
@@ -91,7 +113,7 @@
                     <td> $code  </td>
                     <td> $section_number </td>
                     <td> $bid_amount </td>
-                    <td> <input type='checkbox' name = '$code' value = '$code'></td>
+                    <td> <input type='checkbox' class='form-check-input' name = '$code' value = '$code'></td>
                   </tr> ";
                 }
               }
@@ -102,8 +124,31 @@
     </form>
    </div>
   </div>
+  <!-- -->
 
+
+        <div class='modal fade' id='initialize-User-Info2'>
+          <div class='modal-dialog modal-dialog-centered'>
+            <div class='modal-content'>
+
+              <div class='modal-header'>
+                <h4 class='modal-title'> Welcome  </h4>
+                <button type='button' class='close' data-dismiss='modal'> &times; </button>
+              </div>
+
+              <div class='modal-body'>
+                You currently have e$ in your account.
+              </div>
+
+              <div class='modal-footer'>
+                <button type='button' class='btn btn-danger' data-dismiss='modal'> Close </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
   </div>
+  </html>
 
  
 
