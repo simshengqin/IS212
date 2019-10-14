@@ -90,22 +90,32 @@
 <div class="container">
 
 
-  <nav class="navbar navbar-expand-sm bg-light navbar-light">
-    <!-- Brand/logo -->
-    <a class="navbar-brand" href="#">BIOS</a>
-    <!-- Links -->
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" href="landingPage.php"> HOME </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="addBidPage.php"> ADD BID(s)</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="dropBid.php"> DROP BID(s)</a>
-      </li>
-    </ul>
-  </nav>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-sm bg-light navbar-light">
+      <!-- Brand/logo -->
+      <a class="navbar-brand" href="#">BIOS</a>
+      <!-- Links -->
+      <ul class="navbar-nav mr-auto"> <!-- left align-->
+        <li class="nav-item active">
+          <a class="nav-link" href="landingPage.php"> HOME </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="addBidPage.php"> ADD BID(s)</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="dropBid.php"> DROP BID(s)</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="dropSection.php"> DROP SECTION(s)</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav"> <!-- right align-->
+        <li class="nav-item">
+          <a class="nav-link" href="login.php"> LOGOUT </a>
+        </li>
+        </ul>
+    </nav>
+    <!-- End of Navigation Bar -->
 
 
  <br/>
@@ -134,7 +144,7 @@
            <?php
              if(count($stuBids) == 0)
              {
-               echo"You currently have no bids";
+               echo "<tr> <td colspan='4'> <h4 style='text-align: center;'> You currently have no bids </h4> </td> </tr>";
              }
              else
              {
@@ -175,9 +185,7 @@
             <?php
             if(count($stuSections) == 0)
             {
-              echo "<tr>";
-              echo"You are currently not enrolled in any course";
-              echo "</tr>";
+              echo "<tr> <td colspan='4'> <h4 style='text-align: center;'> You are currently not enrolled in any course </h4> </td> </tr>";
             }
             else
             {

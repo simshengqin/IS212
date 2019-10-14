@@ -129,19 +129,39 @@
   <div class="col-sm-12" style='padding-left: 0px; padding-right:0px'>
   </div>
   <div class="col-sm-12" style='padding-left: 0px; padding-right:0px'>
-    <nav class="navbar navbar-expand-sm bg-light navbar-light">
+    
+    
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-sm bg-light navbar-light">
       <!-- Brand/logo -->
       <a class="navbar-brand" href="#">BIOS</a>
       <!-- Links -->
-      <ul class="navbar-nav">
+      <ul class="navbar-nav mr-auto"> <!-- left align-->
         <li class="nav-item">
-          <a class="nav-link" href="landingPage.php">HOME</a>
+          <a class="nav-link" href="landingPage.php"> HOME </a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="addBidPage.php"> ADD BID(s)</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">SECTIONS</a>
+          <a class="nav-link" href="dropBid.php"> DROP BID(s)</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="dropSection.php"> DROP SECTION(s)</a>
         </li>
       </ul>
+      <ul class="navbar-nav"> <!-- right align-->
+        <li class="nav-item">
+          <a class="nav-link" href="login.php"> LOGOUT </a>
+        </li>
+        </ul>
     </nav>
+    <!-- End of Navigation Bar -->
+
+
+
+
+
   </div>
   <div class="col-sm-6" style='padding-left: 0px; padding-right:0px'>
     Welcome <?php echo " $name"; ?>
