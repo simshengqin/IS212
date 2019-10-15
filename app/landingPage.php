@@ -114,7 +114,7 @@
         <li class="nav-item">
           <a class="nav-link" href="login.php"> LOGOUT </a>
         </li>
-        </ul>
+      </ul>
   </nav>
 <!-- End of Navigation Bar -->
 

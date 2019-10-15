@@ -25,17 +25,16 @@ require_once 'include/common.php';
     <a class="navbar-brand" style= "padding: 1.5rem 0 0 0;">
       <img src="images/merlion.png" alt="Logo" style="width:200px; height:60px">
     </a>
-    <a class="navbar-brand"><h4>BIOS</h4></a>
+    <a class="navbar-brand">BIOS</a>
     <!-- Links -->
-    <ul class="navbar-nav">
+    <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link" href="landingPage.php"> HOME </a>
+        <a class="nav-link active" href="landingPage.php"> HOME </a>
       </li>
+    </ul>
+    <ul class="navbar-nav"> <!-- right align-->
       <li class="nav-item">
-        <a class="nav-link" href="addBidPage.php"> ADD BID(s)</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="dropBid.php"> DROP BID(s)</a>
+        <a class="nav-link" href="login.php"> LOGOUT </a>
       </li>
     </ul>
   </nav>
@@ -86,6 +85,29 @@ require_once 'include/common.php';
     }
   }
    
+
+  if (isset($_SESSION['bootstrap_error']['error']) && sizeof($_SESSION['bootstrap_error']['error']) != 0 
+              && ($bidStatus->getRound() == '1' && $bidStatus->getStatus() == 'open')) {    // To prevent it from constantly appearing
+    echo
+      "<div class = 'row'>
+        <div class='col-sm-12' style='margin-top: 7.5vh'>
+          <table class='table table-striped'>
+            <h3> Error(s) in Bootstrap </h3>
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>Line</th>
+                <th>Message</th>
+              </tr>
+              </thead>
+              <tbody>";
+    foreach ($_SESSION['bootstrap_error']['error'] as $error){
+      echo '<tr><td>'.$error['file'].'</td>
+                <td>'.$error['line'].'</td>
+                <td>'.implode(', ', $error['message']).'</td></tr>';
+    }
+  
+  }
 ?>
 
 </div>

@@ -25,7 +25,7 @@
 
 <html>
 <head>
-  <title> Welcome <?=$name?> </title>
+  <title> Add Bids </title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -292,7 +292,12 @@
         </tbody>
     </table>
     <?php
-    echo"<input type='submit' value='Add Bid' class='btn btn-primary' style='margin-top: 15px, margin-bottom: 15px'></input>";
+    $bidStatusDAO = new BidStatusDAO();
+    $bidStatus = $bidStatusDAO->getBidStatus();
+    if ($bidStatus->getStatus() == 'open')
+      echo"<input type='submit' value='Add Bid' class='btn btn-primary' style='margin: 0 0 15px 0'>";
+    elseif ($bidStatus->getStatus() == 'closed')
+      echo"<button class='btn btn-primary' disabled data-toggle='modal' data-target='#round_closed' style='margin: 0 0 15px 0'>Add Bid</button> Bidding Round has not started yet.";
     ?>
     </form>
   </div>
@@ -300,6 +305,26 @@
 </div>
 </div>
 
+<div class='modal fade' id='round_closed' tabindex="-1" role="dialog">
+  <div class='modal-dialog modal-dialog-centered'>
+    <div class='modal-content'>
+
+      <div class='modal-header'>
+        <h4 class='modal-title'> Welcome  </h4>
+        <button type='button' class='close' data-dismiss='modal'> &times; </button>
+      </div>
+
+      <div class='modal-body'>
+        Bidding Round has not started yet.
+      </div>
+
+      <div class='modal-footer'>
+        <button type='button' class='btn btn-danger' data-dismiss='modal'> Close </button>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
