@@ -113,13 +113,13 @@
 
 
 <?php
-  echo "<h3> Hello! $stuName</h3>";
-  echo "<h3> e$: $stuEdollar </h3>";
+  echo "<h3> Welcome $stuName</h3>";
+  echo "<h3> Current e$: $stuEdollar </h3>";
  ?> 
 
 
  <div class = "row">
-   <div class="col-sm-12" style='margin-top: 15vh'>
+   <div class="col-sm-12" style='margin-top: 7.5vh'>
      <table class="table table-striped">
        <h3> Bid(s) </h3>
        <thead>
@@ -160,7 +160,7 @@
 
 
   <div class = "row">
-    <div class="col-sm-12" style='margin-top: 15vh'>
+    <div class="col-sm-12" style='margin-top: 7.5vh'>
       <table class="table table-striped">
         <h3> Sections(s) </h3>
         <thead>

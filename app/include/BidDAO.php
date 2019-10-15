@@ -87,9 +87,9 @@ class BidDAO {
                 "day" => $row['day'],
                 "start" => $row['start'],
                 "end" => $row['end'],
-                "examdate" => $row['examdate'],
-                "examstart" => $row['examstart'],
-                "examend" => $row['examend']
+                "exam date" => $row['exam date'],
+                "exam start" => $row['exam start'],
+                "exam end" => $row['exam end']
             ];
         }
         return $result;

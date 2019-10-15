@@ -145,7 +145,7 @@
       </li>
     </ul>
   </nav>
-  
+  <br>
   <div class="col-sm-6" style='padding-left: 0px; padding-right:0px'>
     <?php echo "<h3>Welcome $name</h3>"; ?>
   </div>
@@ -157,7 +157,7 @@
 
   
   <div class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-6" >
       <form>
         <select name="course" class="custom-select">
           <option value='' selected>Select Course</option>
@@ -223,9 +223,14 @@
     </form>
   
 <?php
+  if(sizeof($errors) != 0){
+    foreach ($errors as $error)
+      echo "<a style = 'color:red'>$error</a><br>";
+  }
+
  ?>
 <div class = "row">
-  <div class="col-sm-12" style='margin-top: 15vh'>           
+  <div class="col-sm-12" style='margin-top: 7.5vh'>           
     <table class="table table-striped">
       <h3>Add bid(s)</h3>
       <thead>
@@ -275,7 +280,7 @@
         </tbody>
     </table>
     <?php
-    echo"<input type='submit' name='Add Bid' class='btn btn-primary' style='margin-top: 15px, margin-bottom: 15px'> Add bid</input>";
+    echo"<input type='submit' value='Add Bid' class='btn btn-primary' style='margin-top: 15px, margin-bottom: 15px'></input>";
     ?>
     </form>
   </div>
