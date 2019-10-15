@@ -65,7 +65,7 @@ class BidDAO {
     }
 
     public function retrieveStudentBidsWithInfo($userid){
-        $sql = "SELECT b.userid, b.amount, b.code, b.section, s.day, s.start, s.end, c.examdate, c.examstart, c.examend 
+        $sql = "SELECT b.userid, b.amount, b.code, b.section, s.day, s.start, s.end, `exam date`, `exam start`, `exam end`
                     FROM bid b INNER JOIN section s INNER JOIN course c 
                         WHERE b.section = s.section AND b.code = s.course AND s.course = c.course AND b.userid = :userid";
         $connMgr = new ConnectionManager();
@@ -87,9 +87,9 @@ class BidDAO {
                 "day" => $row['day'],
                 "start" => $row['start'],
                 "end" => $row['end'],
-                "examdate" => $row['examdate'],
-                "examstart" => $row['examstart'],
-                "examend" => $row['examend']
+                "exam date" => $row['exam date'],
+                "exam start" => $row['exam start'],
+                "exam end" => $row['exam end']
             ];
         }
         return $result;

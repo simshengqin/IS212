@@ -25,7 +25,7 @@
 
 <html>
 <head>
-  <title> Welcome <?=$name?> </title>
+  <title> Add Bids </title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -60,13 +60,12 @@
 
     $stuCurrentBids = [];
 
+     // contains all of current student bids
     foreach($stuBids as $item)
     {
       $stuCurrentBids[] = $item->getCode().$item->getSection();
     }
-    // contains all of current student bids
-    var_dump($stuCurrentBids);
-
+   
     // Initialize arrays for 'section' table
     $courses = [];
     $sectionids = [];
@@ -126,15 +125,14 @@
     }
   ?>
 <div class="container" >
-  <div class="col-sm-12" style='padding-left: 0px; padding-right:0px'>
-  </div>
-  <div class="col-sm-12" style='padding-left: 0px; padding-right:0px'>
-    
-    
+
 <!-- Navigation Bar -->
 <nav class="navbar navbar-expand-sm bg-light navbar-light">
       <!-- Brand/logo -->
-      <a class="navbar-brand" href="#">BIOS</a>
+      <a class="navbar-brand" style= "padding: 1.5rem 0 0 0;">
+        <img src="images/merlion.png" alt="Logo" style="width:200px; height:60px">
+      </a>
+      <a class="navbar-brand">BIOS</a>
       <!-- Links -->
       <ul class="navbar-nav mr-auto"> <!-- left align-->
         <li class="nav-item">
@@ -155,33 +153,30 @@
           <a class="nav-link" href="login.php"> LOGOUT </a>
         </li>
         </ul>
-    </nav>
-    <!-- End of Navigation Bar -->
+  </nav>
+<!-- End of Navigation Bar -->
 
 
-
-
-
+  <br>
+  <div class="col-sm-6" style='padding-left: 0px; padding-right:0px'>
+    <?php echo "<h3>Welcome $name</h3>"; ?>
   </div>
   <div class="col-sm-6" style='padding-left: 0px; padding-right:0px'>
-    Welcome <?php echo " $name"; ?>
-  </div>
-  <div class="col-sm-6" style='padding-left: 0px; padding-right:0px'>
-   Current e$: <?php echo " $stuEdollar"; ?>
+    <?php echo "<h3>Current e$: $stuEdollar</h3>"; ?>
   </div>
   
   <br>
 
   
   <div class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-6" >
       <form>
         <select name="course" class="custom-select">
           <option value='' selected>Select Course</option>
           <?php
             foreach ($courses as $course) {
               $selected = "";
-              if (isset($_GET["course"]) and $course == $_GET["course"])
+              if (isset($_GET["course"]) && $course == $_GET["course"])
                 $selected = "selected";
               echo "<option value='$course' $selected>$course</option>";
             }
@@ -240,14 +235,16 @@
     </form>
   
 <?php
-  #echo "<h3> Hello! $stuDetails[2] </h3>";
-  #echo "<h3> e$: $stuEdollar </h3>";
-  #echo "<br/>";
+  if(sizeof($errors) != 0){
+    foreach ($errors as $error)
+      echo "<a style = 'color:red'>$error</a><br>";
+  }
+
  ?>
 <div class = "row">
-  <div class="col-sm-12" style='margin-top: 15vh'>           
+  <div class="col-sm-12" style='margin-top: 7.5vh'>           
     <table class="table table-striped">
-      <h3>Add bid(s)</h3>
+      <h3>Add Bid(s)</h3>
       <thead>
         <tr>
           <th>Course</th>
@@ -295,7 +292,12 @@
         </tbody>
     </table>
     <?php
-    echo"<input type='submit' name='Add Bid' class='btn btn-primary' style='margin-top: 15px, margin-bottom: 15px'> Add bid</input>";
+    $bidStatusDAO = new BidStatusDAO();
+    $bidStatus = $bidStatusDAO->getBidStatus();
+    if ($bidStatus->getStatus() == 'open')
+      echo"<input type='submit' value='Add Bid' class='btn btn-primary' style='margin: 0 0 15px 0'>";
+    elseif ($bidStatus->getStatus() == 'closed')
+      echo"<button class='btn btn-primary' disabled data-toggle='modal' data-target='#round_closed' style='margin: 0 0 15px 0'>Add Bid</button> Bidding Round has not started yet.";
     ?>
     </form>
   </div>
@@ -303,6 +305,26 @@
 </div>
 </div>
 
+<div class='modal fade' id='round_closed' tabindex="-1" role="dialog">
+  <div class='modal-dialog modal-dialog-centered'>
+    <div class='modal-content'>
+
+      <div class='modal-header'>
+        <h4 class='modal-title'> Welcome  </h4>
+        <button type='button' class='close' data-dismiss='modal'> &times; </button>
+      </div>
+
+      <div class='modal-body'>
+        Bidding Round has not started yet.
+      </div>
+
+      <div class='modal-footer'>
+        <button type='button' class='btn btn-danger' data-dismiss='modal'> Close </button>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 </body>
 </html>

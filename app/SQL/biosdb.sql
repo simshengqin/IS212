@@ -32,7 +32,7 @@ DROP TABLE IF EXISTS `bid`;
 CREATE TABLE IF NOT EXISTS `bid` (
   `userid` varchar(128) DEFAULT NULL,
   `amount` int(2) DEFAULT NULL,
-  `code` varchar(5) DEFAULT NULL,
+  `code` varchar(10) DEFAULT NULL,
   `section` varchar(3) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -65,13 +65,13 @@ INSERT INTO `bid_status` (`id`, `round`, `status`) VALUES
 
 DROP TABLE IF EXISTS `course`;
 CREATE TABLE IF NOT EXISTS `course` (
-  `course` varchar(45) NOT NULL,
+  `course` varchar(10) NOT NULL,
   `school` varchar(45) DEFAULT NULL,
   `title` varchar(100) DEFAULT NULL,
   `description` varchar(1000) DEFAULT NULL,
-  `examdate` date DEFAULT NULL,
-  `examstart` time DEFAULT NULL,
-  `examend` time DEFAULT NULL,
+  `exam date` date DEFAULT NULL,
+  `exam start` time DEFAULT NULL,
+  `exam end` time DEFAULT NULL,
   PRIMARY KEY (`course`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -95,8 +95,8 @@ CREATE TABLE IF NOT EXISTS `course_completed` (
 
 DROP TABLE IF EXISTS `prerequisite`;
 CREATE TABLE IF NOT EXISTS `prerequisite` (
-  `course` varchar(5) DEFAULT NULL,
-  `prerequisite` varchar(5) DEFAULT NULL
+  `course` varchar(10) DEFAULT NULL,
+  `prerequisite` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS `prerequisite` (
 
 DROP TABLE IF EXISTS `section`;
 CREATE TABLE IF NOT EXISTS `section` (
-  `course` varchar(45) NOT NULL,
+  `course` varchar(10) NOT NULL,
   `section` varchar(45) NOT NULL,
   `day` int(11) DEFAULT NULL,
   `start` time DEFAULT NULL,

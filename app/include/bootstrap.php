@@ -321,16 +321,13 @@ function doBootstrap() {
 	}
 	else
 	{	
+		$temp = [];
+		foreach ($record['num-record-loaded'] as $key => $value){
+			$temp[] = [$key => $value];
+		}
 		$result = [  
 			"status" => "success",
-			"num-record-loaded" => [
-				"course.csv" => $lines_processed["course"],
-				"section.csv" => $lines_processed["section"],
-				"student.csv" => $lines_processed["student"],
-				"courseCompleted.csv" => $lines_processed["courseCompleted"],
-				"bid.csv" => $lines_processed["bid"],
-				"prerequisite.csv" => $lines_processed["prerequisite"],
-			]
+			"num-record-loaded" => $temp
 		];
 		return $result;
 

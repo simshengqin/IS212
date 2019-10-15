@@ -1,7 +1,7 @@
 <?php
   require_once 'include/common.php';
   require_once 'include/protect.php';
-  require_once 'include/bootstrapValidate.php';
+  require_once 'include/webValidation.php';
 ?>
 
 <?php
@@ -21,7 +21,7 @@ if (isset($_POST)) {
         $section ="";
         $amount = "";
         if (array_sum($_POST) > $edollar) { //Does not allow user to bid if his total bid amount exceeds his current edollar amount
-            $errors[] = "insufficent edollars!";
+            $errors[] = "Insufficient edollars!";
             break;
         }
         elseif($key!= "Add_Bid") 
@@ -49,12 +49,11 @@ if (isset($_POST)) {
                     $bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
                 }
                 else {
-                    $errors[] = $bidValidation;
+                    $errors = array_merge($errors, $bidValidation);
                 }
             }
         }
     }
-var_dump($errors);
 }
 /*
 $sectionDAO = new SectionDAO();

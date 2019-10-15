@@ -55,7 +55,6 @@
    ?>
 
    <?php
-   var_dump($initialize);
     if($initialize == true)
     {
       echo
@@ -89,15 +88,17 @@
 
 <div class="container">
 
-
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-sm bg-light navbar-light">
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-sm bg-light navbar-light">
       <!-- Brand/logo -->
-      <a class="navbar-brand" href="#">BIOS</a>
+      <a class="navbar-brand" style= "padding: 1.5rem 0 0 0;">
+        <img src="images/merlion.png" alt="Logo" style="width:200px; height:60px">
+      </a>
+      <a class="navbar-brand">BIOS</a>
       <!-- Links -->
       <ul class="navbar-nav mr-auto"> <!-- left align-->
-        <li class="nav-item active">
-          <a class="nav-link" href="landingPage.php"> HOME </a>
+        <li class="nav-item">
+          <a class="nav-link active" href="landingPage.php"> HOME </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="addBidPage.php"> ADD BID(s)</a>
@@ -113,23 +114,21 @@
         <li class="nav-item">
           <a class="nav-link" href="login.php"> LOGOUT </a>
         </li>
-        </ul>
-    </nav>
-    <!-- End of Navigation Bar -->
-
+      </ul>
+  </nav>
+<!-- End of Navigation Bar -->
 
  <br/>
 
 
 <?php
-  echo "<h3> Hello! $stuName</h3>";
-  echo "<h3> e$: $stuEdollar </h3>";
-  echo "<br/>";
+  echo "<h3> Welcome $stuName</h3>";
+  echo "<h3> Current e$: $stuEdollar </h3>";
  ?> 
 
 
  <div class = "row">
-   <div class="col-sm-12" style='margin-top: 15vh'>
+   <div class="col-sm-12" style='margin-top: 7.5vh'>
      <table class="table table-striped">
        <h3> Bid(s) </h3>
        <thead>
@@ -170,7 +169,7 @@
 
 
   <div class = "row">
-    <div class="col-sm-12" style='margin-top: 15vh'>
+    <div class="col-sm-12" style='margin-top: 7.5vh'>
       <table class="table table-striped">
         <h3> Sections(s) </h3>
         <thead>

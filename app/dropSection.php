@@ -70,7 +70,10 @@
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-sm bg-light navbar-light">
       <!-- Brand/logo -->
-      <a class="navbar-brand" href="#">BIOS</a>
+      <a class="navbar-brand" style= "padding: 1.5rem 0 0 0;">
+        <img src="images/merlion.png" alt="Logo" style="width:200px; height:60px">
+      </a>
+      <a class="navbar-brand">BIOS</a>
       <!-- Links -->
       <ul class="navbar-nav mr-auto"> <!-- left align-->
         <li class="nav-item">
@@ -91,12 +94,12 @@
           <a class="nav-link" href="login.php"> LOGOUT </a>
         </li>
         </ul>
-    </nav>
-    <!-- End of Navigation Bar -->
+  </nav>
+<!-- End of Navigation Bar -->
 
   <!-- Display all of student's bids-->
   <div class = "row">
-   <div class="col-sm-12" style='margin-top: 15vh'>
+   <div class="col-sm-12" style='margin-top: 7.5vh'>
     <form action = 'dropSection.php' method = 'POST'>
       <table class="table table-striped">
         <h3> Your Section(s) </h3>
