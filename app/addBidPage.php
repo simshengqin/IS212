@@ -126,25 +126,37 @@
   ?>
 <div class="container" >
 
-  <nav class="navbar navbar-expand-sm bg-light navbar-light">
-    <!-- Brand/logo -->
-    <a class="navbar-brand" style= "padding: 1.5rem 0 0 0;">
-      <img src="images/merlion.png" alt="Logo" style="width:200px; height:60px">
-    </a>
-    <a class="navbar-brand">BIOS</a>
-    <!-- Links -->
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" href="landingPage.php"> HOME </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="addBidPage.php"> ADD BID(s)</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="dropBid.php"> DROP BID(s)</a>
-      </li>
-    </ul>
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-sm bg-light navbar-light">
+      <!-- Brand/logo -->
+      <a class="navbar-brand" style= "padding: 1.5rem 0 0 0;">
+        <img src="images/merlion.png" alt="Logo" style="width:200px; height:60px">
+      </a>
+      <a class="navbar-brand">BIOS</a>
+      <!-- Links -->
+      <ul class="navbar-nav mr-auto"> <!-- left align-->
+        <li class="nav-item">
+          <a class="nav-link" href="landingPage.php"> HOME </a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="addBidPage.php"> ADD BID(s)</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="dropBid.php"> DROP BID(s)</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="dropSection.php"> DROP SECTION(s)</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav"> <!-- right align-->
+        <li class="nav-item">
+          <a class="nav-link" href="login.php"> LOGOUT </a>
+        </li>
+        </ul>
   </nav>
+<!-- End of Navigation Bar -->
+
+
   <br>
   <div class="col-sm-6" style='padding-left: 0px; padding-right:0px'>
     <?php echo "<h3>Welcome $name</h3>"; ?>
@@ -232,7 +244,7 @@
 <div class = "row">
   <div class="col-sm-12" style='margin-top: 7.5vh'>           
     <table class="table table-striped">
-      <h3>Add bid(s)</h3>
+      <h3>Add Bid(s)</h3>
       <thead>
         <tr>
           <th>Course</th>
