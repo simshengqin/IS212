@@ -398,7 +398,7 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
 
     // Check for exam timetable clash
     foreach ($bidInfo as $bid) {
-        if (($bid['examdate'] == $course->getExamdate())  && ($start_timing[$bid['examstart']] == $start_timing[$course->getExamstart()] || $end_timing[$bid['examend']] == $end_timing[$course->getExamend()])){
+        if (($bid['exam date'] == $course->getExamdate())  && ($start_timing[$bid['exam start']] == $start_timing[$course->getExamstart()] || $end_timing[$bid['exam end']] == $end_timing[$course->getExamend()])){
             $message[] = "exam timetable clash";
         }
     }

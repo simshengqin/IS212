@@ -1,5 +1,5 @@
 <?php
-include_once "ConnectionManager.php";
+include_once "common.php";
 var_dump($_POST);
 
 if (!isset($_POST["round1"]))
@@ -40,7 +40,8 @@ if (isset($_POST["round2"])){
         <input type='hidden' id='round1' name='round1' value='Close'>
         <br>
         <button type='submit' value='submit'>Close round </button>
-        </form>";}
+        </form>";
+    }
 
     else if ($_POST["round2"]=="Close"){
         #Changing data on the database 

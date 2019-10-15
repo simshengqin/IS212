@@ -60,13 +60,12 @@
 
     $stuCurrentBids = [];
 
+     // contains all of current student bids
     foreach($stuBids as $item)
     {
       $stuCurrentBids[] = $item->getCode().$item->getSection();
     }
-    // contains all of current student bids
-    var_dump($stuCurrentBids);
-
+   
     // Initialize arrays for 'section' table
     $courses = [];
     $sectionids = [];
@@ -127,7 +126,6 @@
   ?>
 <div class="container" >
 
-
   <nav class="navbar navbar-expand-sm bg-light navbar-light">
     <!-- Brand/logo -->
     <a class="navbar-brand" style= "padding: 1.5rem 0 0 0;">
@@ -149,10 +147,10 @@
   </nav>
   
   <div class="col-sm-6" style='padding-left: 0px; padding-right:0px'>
-    Welcome <?php echo " $name"; ?>
+    <?php echo "<h3>Welcome $name</h3>"; ?>
   </div>
   <div class="col-sm-6" style='padding-left: 0px; padding-right:0px'>
-   Current e$: <?php echo " $stuEdollar"; ?>
+    <?php echo "<h3>Current e$: $stuEdollar</h3>"; ?>
   </div>
   
   <br>
@@ -166,7 +164,7 @@
           <?php
             foreach ($courses as $course) {
               $selected = "";
-              if (isset($_GET["course"]) and $course == $_GET["course"])
+              if (isset($_GET["course"]) && $course == $_GET["course"])
                 $selected = "selected";
               echo "<option value='$course' $selected>$course</option>";
             }
@@ -225,9 +223,6 @@
     </form>
   
 <?php
-  #echo "<h3> Hello! $stuDetails[2] </h3>";
-  #echo "<h3> e$: $stuEdollar </h3>";
-  #echo "<br/>";
  ?>
 <div class = "row">
   <div class="col-sm-12" style='margin-top: 15vh'>           

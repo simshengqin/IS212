@@ -3,7 +3,7 @@
 class CourseDAO {
 
     public function add($course, $school, $title, $description, $examdate, $examstart, $examend) {
-        $sql = 'INSERT INTO course (course, school, title, description, examdate, examstart, examend) 
+        $sql = 'INSERT INTO course (course, school, title, description, `exam date`, `exam start`, `exam end`) 
                     VALUES (:course, :school, :title, :description, :examdate, :examstart, :examend)';
         
         $connMgr = new ConnectionManager();       
@@ -42,7 +42,7 @@ class CourseDAO {
 
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $result[] = new Course($row['course'], $row['school'],$row['title'], $row['description'], 
-                            $row['examdate'], $row['examstart'], $row['examend']);
+                            $row['exam date'], $row['exam start'], $row['exam end']);
         }
         return $result;
     }
