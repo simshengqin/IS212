@@ -55,7 +55,6 @@
    ?>
 
    <?php
-   var_dump($initialize);
     if($initialize == true)
     {
       echo
@@ -90,9 +89,12 @@
 <div class="container">
 
 
-  <nav class="navbar navbar-expand-sm bg-light navbar-light">
+<nav class="navbar navbar-expand-sm bg-light navbar-light">
     <!-- Brand/logo -->
-    <a class="navbar-brand" href="#">BIOS</a>
+    <a class="navbar-brand" style= "padding: 1.5rem 0 0 0;">
+      <img src="images/merlion.png" alt="Logo" style="width:200px; height:60px">
+    </a>
+    <a class="navbar-brand" >BIOS</a>
     <!-- Links -->
     <ul class="navbar-nav">
       <li class="nav-item">
@@ -107,14 +109,12 @@
     </ul>
   </nav>
 
-
  <br/>
 
 
 <?php
   echo "<h3> Hello! $stuName</h3>";
   echo "<h3> e$: $stuEdollar </h3>";
-  echo "<br/>";
  ?> 
 
 

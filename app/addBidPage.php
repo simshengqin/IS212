@@ -126,23 +126,28 @@
     }
   ?>
 <div class="container" >
-  <div class="col-sm-12" style='padding-left: 0px; padding-right:0px'>
-  </div>
-  <div class="col-sm-12" style='padding-left: 0px; padding-right:0px'>
-    <nav class="navbar navbar-expand-sm bg-light navbar-light">
-      <!-- Brand/logo -->
-      <a class="navbar-brand" href="#">BIOS</a>
-      <!-- Links -->
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" href="landingPage.php">HOME</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">SECTIONS</a>
-        </li>
-      </ul>
-    </nav>
-  </div>
+
+
+  <nav class="navbar navbar-expand-sm bg-light navbar-light">
+    <!-- Brand/logo -->
+    <a class="navbar-brand" style= "padding: 1.5rem 0 0 0;">
+      <img src="images/merlion.png" alt="Logo" style="width:200px; height:60px">
+    </a>
+    <a class="navbar-brand">BIOS</a>
+    <!-- Links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="landingPage.php"> HOME </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="addBidPage.php"> ADD BID(s)</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="dropBid.php"> DROP BID(s)</a>
+      </li>
+    </ul>
+  </nav>
+  
   <div class="col-sm-6" style='padding-left: 0px; padding-right:0px'>
     Welcome <?php echo " $name"; ?>
   </div>
