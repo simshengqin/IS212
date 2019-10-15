@@ -69,9 +69,9 @@ CREATE TABLE IF NOT EXISTS `course` (
   `school` varchar(45) DEFAULT NULL,
   `title` varchar(100) DEFAULT NULL,
   `description` varchar(1000) DEFAULT NULL,
-  `examdate` date DEFAULT NULL,
-  `examstart` time DEFAULT NULL,
-  `examend` time DEFAULT NULL,
+  `exam date` date DEFAULT NULL,
+  `exam start` time DEFAULT NULL,
+  `exam end` time DEFAULT NULL,
   PRIMARY KEY (`course`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

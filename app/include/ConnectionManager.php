@@ -6,7 +6,10 @@ class ConnectionManager {
         
         $host = "localhost";
         $username = "root";
-        $password = "";  
+        if (PHP_OS == 'Linux')
+            $password = '6LNDUXQRTKCb';
+        else
+            $password = "";  
         $dbname = "biosdb";
         $port = 3306;    
 
