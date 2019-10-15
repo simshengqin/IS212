@@ -10,13 +10,15 @@
   }
 //   var_dump($student);
   $userid = $student->getUserid();
+ 
 //   var_dump($userid);
-  $bidDAO = new BidDAO();
-  $bids = $bidDAO->retrieveStudentBids($userid);
+
+//  $bidDAO = new BidDAO(); // Need to retrieve data from confirm bids tables, however table has yet to be implemented, confirm bids can only happen in round 2  
+//  $bids = $bidDAO->retrieveStudentBids($userid);
+  $tempList = []; // Representation of an array, retrieve from confirm bids, thus array is static 
+
 //   var_dump($bids);
   $initialize = false; # To determine whether to show confirm dopped bids dialogue box
-
-  var_dump($_POST);
 
   #Remove checkboxed value from database if submitted 
   if(!empty($_POST)){
@@ -64,7 +66,7 @@
   
 
   <div class="container">
-
+  
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-sm bg-light navbar-light">
       <!-- Brand/logo -->
@@ -77,10 +79,10 @@
         <li class="nav-item">
           <a class="nav-link" href="addBidPage.php"> ADD BID(s)</a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="dropBid.php"> DROP BID(s)</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="dropSection.php"> DROP SECTION(s)</a>
         </li>
       </ul>
@@ -95,26 +97,26 @@
   <!-- Display all of student's bids-->
   <div class = "row">
    <div class="col-sm-12" style='margin-top: 15vh'>
-    <form action = 'dropBid.php' method = 'POST'>
+    <form action = 'dropSection.php' method = 'POST'>
       <table class="table table-striped">
-        <h3> Your Bid(s) </h3>
+        <h3> Your Section(s) </h3>
         <thead>
           <tr>
             <th> Course ID </th>
             <th> Section Number </th>
             <th> Bid amount </th>
-            <th> Drop bid? </th>
+            <th> Drop Section? </th>
           </tr>
           </thead>
           <tbody>
             <?php
-              if(count($bids) == 0)
+              if(count($tempList) == 0)
               {
-                echo"<tr> <td colspan='4'> <h4 style='text-align: center;'> You currently have no bids </h4> </td> </tr>";
+                echo"<tr> <td colspan='4'> <h4 style='text-align: center;'> You are currently not enrolled in any course </h4> </td> </tr>";
               }
               else
               {
-                foreach ($bids as $bid){
+                foreach ($tempList as $bid){
                   $code = $bid->getCode();
                   $section_number = $bid->getSection();
                   $bid_amount = $bid->getAmount();
@@ -129,7 +131,7 @@
             ?>
           </tbody>
       </table>
-      <input type='submit' class="btn btn-primary" value='Drop Bid(s)'>
+      <input type='submit' class="btn btn-primary" value='Drop Section(s)'>
     </form>
    </div>
   </div>

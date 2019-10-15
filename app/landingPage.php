@@ -134,7 +134,7 @@
            <?php
              if(count($stuBids) == 0)
              {
-               echo"You currently have no bids";
+               echo "<tr> <td colspan='4'> <h4 style='text-align: center;'> You currently have no bids </h4> </td> </tr>";
              }
              else
              {
@@ -175,9 +175,7 @@
             <?php
             if(count($stuSections) == 0)
             {
-              echo "<tr>";
-              echo"You are currently not enrolled in any course";
-              echo "</tr>";
+              echo "<tr> <td colspan='4'> <h4 style='text-align: center;'> You are currently not enrolled in any course </h4> </td> </tr>";
             }
             else
             {
