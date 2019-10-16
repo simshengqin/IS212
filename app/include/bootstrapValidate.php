@@ -30,12 +30,14 @@ function validateCourse($course_data, $row){
     $exam_end = $course_data[6];
 
     // Validation for Exam Date 
+
     $exam_date_year = substr($exam_date, 0, 4);      // seperate exam_date into substrings to validate the date
     $exam_date_month = substr($exam_date, 4, 2);
     $exam_date_day = substr($exam_date, 6, 2);
-    if (!checkdate($exam_date_month, $exam_date_day, $exam_date_year)){
+    if (!is_numeric($exam_date) || strlen($exam_date)!= 8 || !checkdate($exam_date_month, $exam_date_day, $exam_date_year)){
         $message[] = "invalid exam date";
     }
+
 
 
     // Validation for Exam Time (exam start and end)
@@ -112,6 +114,7 @@ function validateSection($section_data, $row, $allCourseInfo){
         if (!preg_match("/^[S](\d?[1-9]|[1-9]0)$/", $section)){       // Check if first character have a 'S' followed by 1-99
             $message[] = "invalid section";
         }
+        elseif 
     }
 
     // Section Day Validation (check between 1 to 7)
