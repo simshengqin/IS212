@@ -114,7 +114,6 @@ function validateSection($section_data, $row, $allCourseInfo){
         if (!preg_match("/^[S](\d?[1-9]|[1-9]0)$/", $section)){       // Check if first character have a 'S' followed by 1-99
             $message[] = "invalid section";
         }
-        elseif 
     }
 
     // Section Day Validation (check between 1 to 7)
