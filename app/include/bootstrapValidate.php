@@ -98,13 +98,18 @@ function validateSection($section_data, $row, $allCourseInfo){
     $instructor = $section_data[5];
     $venue = $section_data[6];
     $size = $section_data[7]; 
+    $sectionDAO = new SectionDAO();
+    $courseSectionList = $sectionDAO->retrieveSectionByFilter($course);
 
     // Course Validation (Check if Course Exist)
+
 
     $course_list = [];                              
     foreach ($allCourseInfo as $val){
         $course_list[] = $val->getCourse();         // Store all course code into one array
     }
+    
+
     if (!in_array($course, $course_list)){          // Check if inputted course exist in current course database
         $message[] = "invalid course";
     }
@@ -114,7 +119,12 @@ function validateSection($section_data, $row, $allCourseInfo){
         if (!preg_match("/^[S](\d?[1-9]|[1-9]0)$/", $section)){       // Check if first character have a 'S' followed by 1-99
             $message[] = "invalid section";
         }
-        elseif 
+        else {
+            foreach ($courseSectionList as $courseSection){
+                if ($course == $courseSection->getCourse() && $section == $courseSection->getSection())
+                    $message[] = "invalid section";
+            }
+        }
     }
 
     // Section Day Validation (check between 1 to 7)

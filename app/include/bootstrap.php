@@ -132,7 +132,7 @@ function doBootstrap() {
 				# process each line and check for errors
 	## Course ##
 				$header = fgetcsv($course); //The first line is always the header
-				$row = 1;
+				$row = 2;
 				while (($course_data = fgetcsv($course))!== false){
 					$course_data = trimWhitespace($course_data);
 					$course_data = str_replace(chr(160), "", $course_data);  // To remove 'invisible space' (\xA0) in course desc
@@ -157,7 +157,7 @@ function doBootstrap() {
 
 	## Section ##
 				$header = fgetcsv($section);
-				$row = 1;
+				$row = 2;
     			$allCourseInfo = $courseDAO->retrieveAll();    // Get all course information (Course Class)
 				while (($section_data = fgetcsv($section))!== false){
 					$section_data = trimWhitespace($section_data);
@@ -182,7 +182,7 @@ function doBootstrap() {
 
 	## Student ##
 				$header = fgetcsv($student);
-				$row = 1;
+				$row = 2;
 				while (($student_data = fgetcsv($student))!== false){
 					$student_data = trimWhitespace($student_data);
 					$commonValidation = commmonValidation($student_data, $row, $header, 'student.csv'); 
@@ -207,7 +207,7 @@ function doBootstrap() {
 
 	## Prerequisite ##
 				$header = fgetcsv($prerequisite);
-				$row = 1;
+				$row = 2;
 				$allCourseInfo = $courseDAO->retrieveAll();			// Retrieve all course info to check prerequisite
 				while (($prerequisite_data = fgetcsv($prerequisite))!== false){
 					$prerequisite_data = trimWhitespace($prerequisite_data);
@@ -231,7 +231,7 @@ function doBootstrap() {
 
 	## Course Completed ##
 				$header = fgetcsv($courseCompleted);
-				$row = 1;
+				$row = 2;
 				$allStudentInfo = $studentDAO->retrieveAll();			// Retrieve all student info to check if user id exist
 				$allPrerequisiteInfo = $prerequisiteDAO->retrieveAll(); // Retrieve all prerequisite info to check prerequisite courses
 				while (($courseCompleted_data = fgetcsv($courseCompleted))!== false){
@@ -257,7 +257,7 @@ function doBootstrap() {
 	
 	## Bid ##
 				$header = fgetcsv($bid);
-				$row = 1;
+				$row = 2;
 				$edollarList = [];
 				while (($bid_data = fgetcsv($bid))!== false){	
 					$bid_data = trimWhitespace($bid_data);

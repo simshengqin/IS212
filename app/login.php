@@ -17,7 +17,9 @@ elseif (isset($_POST['userid']) && isset($_POST['password']) ) {
 
     if ($userid == "admin" 
           && password_verify($password,'$2y$10$Y64OGHH.HcW17UTrWuxon.nvT6v0viYnQZEurtVN3jurVdT1YgCDW')){ //password is 'SPMisgreat!'
-        header("Location: admin.php");
+            $_SESSION['token'] = generate_token($userid);
+            $_SESSION['user'] = $userid; 
+            header("Location: admin.php");
     } 
     else {
         $dao = new StudentDAO();

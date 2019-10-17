@@ -1,6 +1,6 @@
 <?php
 require_once 'include/common.php';
-// require_once 'include/protect.php';
+require_once 'include/protect.php';
 
 
 
@@ -29,7 +29,7 @@ require_once 'include/common.php';
     <!-- Links -->
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link active" href="landingPage.php"> HOME </a>
+        <a class="nav-link active" href="admin.php"> HOME </a>
       </li>
     </ul>
     <ul class="navbar-nav"> <!-- right align-->
