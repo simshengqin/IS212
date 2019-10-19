@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Oct 09, 2019 at 06:44 AM
+-- Generation Time: Oct 19, 2019 at 01:54 PM
 -- Server version: 5.7.23
 -- PHP Version: 7.2.10
 
@@ -21,6 +21,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `biosdb`
 --
+CREATE DATABASE IF NOT EXISTS `biosdb` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `biosdb`;
 
 -- --------------------------------------------------------
 
@@ -49,13 +51,6 @@ CREATE TABLE IF NOT EXISTS `bid_status` (
   `status` varchar(10) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `bid_status`
---
-
-INSERT INTO `bid_status` (`id`, `round`, `status`) VALUES
-(1, 0, 'closed');
 
 -- --------------------------------------------------------
 
@@ -117,6 +112,21 @@ CREATE TABLE IF NOT EXISTS `section` (
   `size` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`section`,`course`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `section_student`
+--
+
+DROP TABLE IF EXISTS `section_student`;
+CREATE TABLE IF NOT EXISTS `section_student` (
+  `userid` varchar(128) NOT NULL,
+  `course` varchar(10) NOT NULL,
+  `section` varchar(45) NOT NULL,
+  `amount` float NOT NULL,
+  PRIMARY KEY (`userid`,`course`,`section`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 

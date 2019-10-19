@@ -46,14 +46,16 @@ require_once 'include/protect.php';
 <br>
 <?php 
   $bidStatusDAO = new BidStatusDAO();
+  $bidStatus = $bidStatusDAO->getBidStatus();
   if (isset($_POST['round']) && (isset($_POST['status']))){
-    $bidStatusDAO->updateBidStatus($_POST['round'], $_POST['status']);
+    if (!($bidStatus->getRound() == '2' && $bidStatus->getStatus() == 'cleared'))
+      $bidStatusDAO->updateBidStatus($_POST['round'], $_POST['status']);
   }
   
-  $bidStatus = $bidStatusDAO->getBidStatus();
+  
   
   // if the round 1 is not started yet
-  if (($bidStatus->getRound() == '0' && $bidStatus->getStatus() == 'closed') || ($bidStatus->getRound() == '2' && $bidStatus->getStatus() == 'closed')){ 
+  if (($bidStatus->getRound() == '0' && $bidStatus->getStatus() == 'closed') || ($bidStatus->getRound() == '2' && ($bidStatus->getStatus() == 'closed' || $bidStatus->getStatus() == 'cleared'))){ 
     echo '
       <form id="bootstrap-form" action="bootstrap-process.php" method="post" enctype="multipart/form-data">
         Bootstrap file:  
@@ -61,6 +63,11 @@ require_once 'include/protect.php';
         <input type="submit" name="submit" value="Import">
       </form>
       ';
+    //Round 2 clearing takes place here. Only takes place once, will convert status from closed to cleared
+    if ($bidStatus->getRound() == '2' && $bidStatus->getStatus() == 'closed') {
+      $bidStatusDAO->updateBidStatus('2', 'cleared');
+      
+    }
   }
   // After round 1 starts
   else {
