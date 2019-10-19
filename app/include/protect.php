@@ -14,9 +14,8 @@ elseif (isset($_SESSION['token'])) {
 # send user back to the login page with the appropirate message
 
 # add your code here
-if (!verify_token($token) || !isset($_SESSION['user']))
-
-	header('location: login.php?error=Please login');
+#if (!verify_token($token) || !isset($_SESSION['user']))
+#	header('location: login.php?error=Please login');
 
 
 

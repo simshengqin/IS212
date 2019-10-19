@@ -64,6 +64,27 @@ class BidDAO {
     return $result;
     }
 
+    public function retrieveStudentBidsByCourseAndSectionOrderDesc($code,$section){
+        $sql = "SELECT userid, amount, code, section FROM bid WHERE code=:code AND section=:section ORDER BY amount DESC";
+    
+        $connMgr = new ConnectionManager();
+        $conn = $connMgr->getConnection();
+    
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->bindParam(':code', $code, PDO::PARAM_STR);
+        $stmt->bindParam(':section', $section, PDO::PARAM_STR);
+        $stmt->execute();
+    
+        $result = array();
+    
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+            $result[] = new Bid($row['userid'], $row['amount'],$row['code'], $row['section']);
+        }
+    
+        return $result;
+        }
     public function retrieveStudentBidsWithInfo($userid){
         $sql = "SELECT b.userid, b.amount, b.code, b.section, s.day, s.start, s.end, `exam date`, `exam start`, `exam end`
                     FROM bid b INNER JOIN section s INNER JOIN course c 
