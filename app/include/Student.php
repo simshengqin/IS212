@@ -33,10 +33,6 @@ class Student {
     public function getEdollar(){
         return $this->edollar;
     }
-    
-    public function authenticate($enteredPwd) {
-        return password_verify ($enteredPwd, $this->password);
-    }
 }
 
 ?>

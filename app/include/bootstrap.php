@@ -193,7 +193,7 @@ function doBootstrap() {
 						$allStudentInfo = $studentDAO->retrieveAll();     // Need put within while loop because we need to prevent duplicate student userid
 						$studentValidation = validateStudent($student_data, $row, $allStudentInfo);
 						if (sizeof($studentValidation) == 0){
-							$studentDAO->add($student_data[0],  password_hash($student_data[1],PASSWORD_DEFAULT), 
+							$studentDAO->add($student_data[0], $student_data[1], 
 											$student_data[2], $student_data[3], $student_data[4]);
 						$record['num-record-loaded']['student.csv']++;
 						}

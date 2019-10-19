@@ -25,7 +25,7 @@ elseif (isset($_POST['userid']) && isset($_POST['password']) ) {
         $dao = new StudentDAO();
         $student = $dao->retrieveStudent($userid);
     
-        if ( $student != null && $student->authenticate($password) ) {
+        if ( $student != null && $student->getPassword() == $password) {
             $_SESSION['user'] = $student;
             header("Location: landingPage.php");
             return;
