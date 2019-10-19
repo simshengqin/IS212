@@ -147,9 +147,29 @@
              }
              else
              {
+               $sectionDAO = new SectionDAO();
+               $bidDAO = new BidDAO();
+
                echo "<tbody>";
                foreach($stuBids as $value)
                {
+                 $course = $value->getCode();
+                 $section = $value->getSection();
+                 //Round 2 clearing logic. Real-time check of the min bid value. If the bid is unsuccessful, reflect it.
+                 //Get the total number of seats available for this specific course-section pair
+                 $sectionObj = $sectionDAO->retrieveSectionByCourse($course,$section);
+                 $seatsAvailable = $sectionObj->getSize();
+                 //Get the total number of bids for the same specific course-section pair, which is also sorted in descending order
+                 $biddedCourses = $bidDAO->retrieveStudentBidsByCourseAndSectionOrderDesc($course,$section);
+                 $bidCount = sizeof($biddedCourses);
+                 var_dump($biddedCourses);
+                 if ($seatsAvailable >= $bidCount) {
+                   $minBidAmount = 10;
+                 }
+                 else {
+                   
+                 }
+                 echo $sectionObj->getCourse() . " " . $sectionObj->getSection() . $sectionObj->getSize();
                  echo "<tr>";
                    echo"<td>" . $value->getCode() . "</td>";
                    echo"<td>". $value->getSection() . "</td>";
