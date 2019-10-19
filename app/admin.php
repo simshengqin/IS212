@@ -64,7 +64,7 @@ require_once 'include/protect.php';
   }
   // After round 1 starts
   else {
-    $status = ucfirst($bidStatus->getStatus());
+    $status = ucfirst($bidStatus->getStatus());     // capitalize the first letter of status 
     $round = $bidStatus->getRound();
     echo "<h3>Current Round: {$bidStatus->getRound()} <br>
           Status: $status</h3><br>

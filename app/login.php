@@ -26,7 +26,6 @@ elseif (isset($_POST['userid']) && isset($_POST['password']) ) {
         $student = $dao->retrieveStudent($userid);
     
         if ( $student != null && $student->authenticate($password) ) {
-            $_SESSION['token'] = generate_token($userid);
             $_SESSION['user'] = $student;
             header("Location: landingPage.php");
             return;

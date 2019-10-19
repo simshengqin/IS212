@@ -48,8 +48,7 @@ else{
         }
         elseif ($student->authenticate($password) ) {       // check password
             $result = [
-                'status' => 'success',
-                'token' => generate_token($userid)
+                'status' => 'success'
             ];
         } 
         else {                                              // if wrong password
