@@ -1,7 +1,7 @@
 <?php
 require_once 'include/common.php';
 require_once 'include/protect.php';
-// require_once 'clearBidOne-process.php';
+require_once 'clearBidOne-process.php';
 
 
 
@@ -52,13 +52,13 @@ require_once 'include/protect.php';
     # upon clearing round 1
     if (!($bidStatus->getRound() == '2' && $bidStatus->getStatus() == 'cleared'))
       $bidStatusDAO->updateBidStatus($_POST['round'], $_POST['status']);
-    // if ($bidStatus->getRound() == '1' && $bidStatus->getStatus() == 'closed')
-    // {
-    //   doRoundOne();
-    // }
+    if ($bidStatus->getRound() == '1' && $bidStatus->getStatus() == 'closed')
+    {
+      doRoundOne();
+    }
 
   }
-  
+  $bidStatus = $bidStatusDAO->getBidStatus();
   
   
   // if the round 1 is not started yet
@@ -79,6 +79,12 @@ require_once 'include/protect.php';
   else {
     $status = ucfirst($bidStatus->getStatus());     // capitalize the first letter of status 
     $round = $bidStatus->getRound();
+
+    var_dump($status);
+    var_dump($round);
+    var_dump($_POST['round']);
+    var_dump($_POST['status']);
+
     echo "<h3>Current Round: {$bidStatus->getRound()} <br>
           Status: $status</h3><br>
         <form method='POST' action='admin.php'>";
