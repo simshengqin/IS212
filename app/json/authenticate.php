@@ -46,7 +46,7 @@ else{
                 'message' => 'invalid username'
             ];
         }
-        elseif ($student->authenticate($password) ) {       // check password
+        elseif ($student->getPassword() == $password) {       // check password
             $result = [
                 'status' => 'success'
             ];

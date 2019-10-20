@@ -13,6 +13,7 @@ if (empty($student)){
         'message' => ['invalid userid']
     ];
 }
+
 else {
     $result = [
         'status' => 'success',

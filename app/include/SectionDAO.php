@@ -67,6 +67,7 @@ class SectionDAO {
         }
         return $result;
     }
+    
     public function retrieveSectionByCourse($course,$section){
         #$sql = 'select * from section';
         $sql = "SELECT * FROM section WHERE course = :course AND section = :section";
