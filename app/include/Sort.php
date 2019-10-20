@@ -17,6 +17,15 @@ class Sort {
 	{
 		return strcmp(end($a),end($b));
 	}
+	
+#####################
+## Bid Amount Sort ##
+#####################
+
+	function bidAmount ($a, $b)
+	{
+	return $a['amount'] < $b['amount'] ? 1:-1;
+	}
 
 #####################
 ## Bid Amount Sort ##
