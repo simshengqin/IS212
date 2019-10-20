@@ -37,9 +37,10 @@
         $course=$student_data->getCode();
         $sectionStudent->add($id,$course,$section,$amount);
     }
-    header("Location: admin.php");
-    return;
 }
+
+header("Location: admin.php");
+return;
 
 
 ?>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Oct 19, 2019 at 01:54 PM
+-- Generation Time: Oct 20, 2019 at 06:10 AM
 -- Server version: 5.7.23
 -- PHP Version: 7.2.10
 
@@ -21,8 +21,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `biosdb`
 --
-CREATE DATABASE IF NOT EXISTS `biosdb` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `biosdb`;
 
 -- --------------------------------------------------------
 
@@ -51,6 +49,13 @@ CREATE TABLE IF NOT EXISTS `bid_status` (
   `status` varchar(10) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `bid_status`
+--
+
+INSERT INTO `bid_status` (`id`, `round`, `status`) VALUES
+(1, 0, 'closed');
 
 -- --------------------------------------------------------
 
