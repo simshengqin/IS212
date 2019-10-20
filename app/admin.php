@@ -47,8 +47,6 @@ require_once 'include/protect.php';
 <?php 
   $bidStatusDAO = new BidStatusDAO();
   $bidStatus = $bidStatusDAO->getBidStatus();
-  var_dump($_POST['round']);
-  var_dump($_POST['status']);
   if (isset($_POST['round']) && (isset($_POST['status']))){    
     # upon clearing round 1
     if ($bidStatus->getRound() == '1' && $bidStatus->getStatus() == 'closed')
