@@ -17,7 +17,7 @@ $json_ext =".php";
 
 // Grab user's input of URL
 if ( isset($_REQUEST['url'])) {
-    // grab from query parameter if available.
+    // grab from query parameter if available.  
     $url = $_REQUEST['url'];
 
 } elseif ( isset($argv) && count($argv) > 1) {

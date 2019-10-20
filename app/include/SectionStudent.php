@@ -7,7 +7,6 @@ class Section {
     private $section;
     private $amount;
 
-
     public function __construct($userid, $course, $section, $amount)
     {
         $this->userid = $userid;
@@ -27,9 +26,6 @@ class Section {
     public function getAmount(){
         return $this->amount;
     }
-
-    }
-
 }
 
 ?>
