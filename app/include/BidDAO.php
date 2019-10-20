@@ -160,6 +160,26 @@ class BidDAO {
         $stmt->execute();
     }
 
+    public function getUniqueCodeAndSection(){
+        $sql = "SELECT distinct code, section from bid";
+        $connMgr = new ConnectionManager();
+        $conn = $connMgr->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+
+        $result = [];   
+
+        while($row = $stmt->fetch())
+        {
+            $result[] = [
+                "code" => $row['code'],
+                "section" => $row['section'],
+            ];
+        }
+        return $result;
+    }
+
 
 }
 
