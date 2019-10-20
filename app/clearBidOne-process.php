@@ -2,6 +2,7 @@
   require_once 'include/common.php';
   require_once 'include/protect.php';
 
+function doRoundOne() {
   $bidDAO = new BidDAO();
   $allCodeandSection = $bidDAO->getUniqueCodeAndSection();
 #sort code and section
@@ -27,7 +28,6 @@
 
     $sectionStudent = new sectionStudentDAO();
 
-    var_dump($allStudents);
     #access each key & value pair 
     for ($i=0; $i<$sectionsize;$i++){
         $student_data = $allStudents[$i];
@@ -39,8 +39,7 @@
     }
 }
 
-header("Location: admin.php");
-return;
+}
 
 
 ?>

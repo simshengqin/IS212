@@ -1,6 +1,7 @@
 <?php
 require_once 'include/common.php';
 require_once 'include/protect.php';
+// require_once 'clearBidOne-process.php';
 
 
 
@@ -49,13 +50,13 @@ require_once 'include/protect.php';
   $bidStatus = $bidStatusDAO->getBidStatus();
   if (isset($_POST['round']) && (isset($_POST['status']))){    
     # upon clearing round 1
-    if ($bidStatus->getRound() == '1' && $bidStatus->getStatus() == 'closed')
-    {
-      header("Location: adminCloseRound1-process.php");
-      return;
-    }
     if (!($bidStatus->getRound() == '2' && $bidStatus->getStatus() == 'cleared'))
       $bidStatusDAO->updateBidStatus($_POST['round'], $_POST['status']);
+    // if ($bidStatus->getRound() == '1' && $bidStatus->getStatus() == 'closed')
+    // {
+    //   doRoundOne();
+    // }
+
   }
   
   
@@ -72,7 +73,6 @@ require_once 'include/protect.php';
     //Round 2 clearing takes place here. Only takes place once, will convert status from closed to cleared
     if ($bidStatus->getRound() == '2' && $bidStatus->getStatus() == 'closed') {
       $bidStatusDAO->updateBidStatus('2', 'cleared');
-      
     }
   }
   // After round 1 starts
