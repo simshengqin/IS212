@@ -1,5 +1,10 @@
 <?php
 class Sort {
+
+####################
+## Bootstrap Sort ##
+####################
+
 	function comp($a, $b)
 	{
 		if ($a['file'] == $b['file']) {
@@ -11,6 +16,15 @@ class Sort {
 	function bootstrap($a, $b)
 	{
 		return strcmp(end($a),end($b));
+	}
+
+#####################
+## Bid Amount Sort ##
+#####################
+
+	function bidAmount ($a, $b)
+	{
+		return $a['amount'] < $b['amount'] ? 1:-1;
 	}
 
 ################

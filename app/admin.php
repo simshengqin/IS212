@@ -91,8 +91,7 @@ require_once 'include/protect.php';
               </form>";
     }
   }
-   
-
+  
   if (isset($_SESSION['bootstrap_error']['error']) && sizeof($_SESSION['bootstrap_error']['error']) != 0 
               && ($bidStatus->getRound() == '1' && $bidStatus->getStatus() == 'open')) {    // To prevent it from constantly appearing
     echo

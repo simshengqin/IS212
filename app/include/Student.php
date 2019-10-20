@@ -33,6 +33,7 @@ class Student {
     public function getEdollar(){
         return $this->edollar;
     }
+    
 }
 
 ?>

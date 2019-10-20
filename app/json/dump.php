@@ -1,7 +1,7 @@
 <?php
 require_once '../include/common.php';
 try {
-    $output = [
+    $result = [
         "status" => "success",
         "course" => [],
         "student" => [],
@@ -40,10 +40,10 @@ try {
         $temp["exam date"] = $course->getExamdate();
         $temp["exam start"] = $course->getExamstart();
         $temp["exam end"] = $course->getExamend();
-        $output["course"][] = $temp;
+        $result["course"][] = $temp;
     }
     
-    $output["course"] = $sortclass->sort_it($output["course"], "course");         // Sort course
+    $result["course"] = $sortclass->sort_it($result["course"], "course");         // Sort course
 
 
 #################
@@ -58,10 +58,10 @@ try {
         $temp["name"] = $student->getName();
         $temp["school"] = $student->getSchool();
         $temp["edollar"] = $student->getEdollar();
-        $output["student"][] = $temp;
+        $result["student"][] = $temp;
     }
 
-    $output["student"] = $sortclass->sort_it($output["student"], "student");      // Sort student
+    $result["student"] = $sortclass->sort_it($result["student"], "student");      // Sort student
 
 
 #################
@@ -79,10 +79,10 @@ try {
         $temp["instructor"] = $section->getInstructor();
         $temp["venue"] = $section->getVenue();
         $temp["size"] = $section->getSize();
-        $output["section"][] = $temp;
+        $result["section"][] = $temp;
     }
 
-    $output["section"] = $sortclass->sort_it($output["section"], "section");      // Sort section
+    $result["section"] = $sortclass->sort_it($result["section"], "section");      // Sort section
 
 
 ######################
@@ -94,10 +94,10 @@ try {
         $temp = [];
         $temp["course"] = $prerequisite->getCourse();
         $temp["prerequisite"] = $prerequisite->getPrerequisite();
-        $output["prerequisite"][] = $temp;
+        $result["prerequisite"][] = $temp;
     }
 
-    $output["prerequisite"] = $sortclass->sort_it($output["prerequisite"], "prerequisite");      // Sort prerequisite
+    $result["prerequisite"] = $sortclass->sort_it($result["prerequisite"], "prerequisite");      // Sort prerequisite
                                          
     
 #########################
@@ -110,10 +110,10 @@ try {
         $temp["userid"] = $courseCompleted->getUserid();
         $temp["course"] = $courseCompleted->getCourse();
         
-        $output["course_completed"][] = $temp;
+        $result["course_completed"][] = $temp;
     }
 
-    $output["course_completed"] = $sortclass->sort_it($output["course_completed"], "course_completed");      // Sort course_completed
+    $result["course_completed"] = $sortclass->sort_it($result["course_completed"], "course_completed");      // Sort course_completed
 
 
 #############
@@ -127,21 +127,21 @@ try {
         $temp["amount"] = $bid->getAmount();
         $temp["course"] = $bid->getCode();
         $temp["section"] = $bid->getSection();
-        $output["bid"][] = $temp;
+        $result["bid"][] = $temp;
     }
 
-    $output["bid"] = $sortclass->sort_it($output["bid"], "bid");      // Sort prerequisite
+    $result["bid"] = $sortclass->sort_it($result["bid"], "bid");      // Sort prerequisite
 
     header('Content-Type: application/json');
-    echo json_encode($output, JSON_PRETTY_PRINT);
+    echo json_encode($result, JSON_PRETTY_PRINT);
 }
 
 catch (Exception $e) {                  // if there's any error from dumping table
-    $output = [
+    $result = [
         "status" => "error" 
     ];
     header('Content-Type: application/json');
-    echo json_encode($output, JSON_PRETTY_PRINT);
+    echo json_encode($result, JSON_PRETTY_PRINT);
 }
 
 
