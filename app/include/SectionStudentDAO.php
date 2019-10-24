@@ -1,4 +1,7 @@
 <?php
+    require_once 'include/common.php';
+    require_once 'include/protect.php';
+
 
 class SectionStudentDAO {
 
@@ -26,7 +29,7 @@ class SectionStudentDAO {
 
 
     public function retrieveAll(){
-        $sql = 'select * from section_student';
+        $sql = 'SELECT * from section_student';
 
         $connMgr = new ConnectionManager();      
         $conn = $connMgr->getConnection();
@@ -55,9 +58,42 @@ class SectionStudentDAO {
         $count = $stmt->rowCount();
     }
 
+    public function retrieveByID($userid){
+        $sql = 'SELECT * from section_student where userid=:userid';
+        
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+
+        $result = [];
+
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result[] = new SectionStudent($row['userid'], $row['course'], $row['section'], $row['amount']);
+        }
+        return $result;
+    }
+
+    public function removeByID($userid,$course){
+        $sql = 'DELETE from section_student where userid=:userid and course = :course';
+        
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
+        $stmt->bindParam(':course', $course, PDO::PARAM_STR);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        return $stmt->execute();
+    }
 
 
 }
+
+
 
 
 
