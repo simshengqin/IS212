@@ -134,7 +134,35 @@ class SectionDAO {
         return $result;
     }
 
+    public function retrieveMinBid($course, $section){
+        #$sql = 'select * from section';
+        $sql = "SELECT * FROM section WHERE course =:course AND section = :section";
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
 
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':course', $course, PDO::PARAM_STR);
+        $stmt->bindParam(':section', $section, PDO::PARAM_STR);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result = $row['minbid'];
+        }
+        return $result;
+    }
+
+    public function updateMinBid($course,$section,$minbid){
+        $sql = "UPDATE section SET minbid =:minbid WHERE course =:course AND section =:section";
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':course', $course, PDO::PARAM_STR);
+        $stmt->bindParam(':section', $section, PDO::PARAM_STR);
+        $stmt->bindParam(':minbid', $minbid, PDO::PARAM_STR);
+        $stmt->execute();
+    }
 
     public function removeAll(){
         $sql = 'TRUNCATE TABLE section';

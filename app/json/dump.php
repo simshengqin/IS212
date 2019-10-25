@@ -124,7 +124,7 @@ try {
     foreach ($bidList as $bid) {                                                        
         $temp = [];
         $temp["userid"] = $bid->getUserid();
-        $temp["amount"] = $bid->getAmount();
+        $temp["amount"] = (float) $bid->getAmount();
         $temp["course"] = $bid->getCode();
         $temp["section"] = $bid->getSection();
         $result["bid"][] = $temp;
@@ -133,7 +133,9 @@ try {
     $result["bid"] = $sortclass->sort_it($result["bid"], "bid");      // Sort prerequisite
 
     header('Content-Type: application/json');
-    echo json_encode($result, JSON_PRETTY_PRINT);
+    $result = json_encode($result, JSON_PRETTY_PRINT | JSON_PRESERVE_ZERO_FRACTION); // JSON_PRESERVE_ZERO_FRACTION to preserve float value
+
+    echo $result; 
 }
 
 catch (Exception $e) {                  // if there's any error from dumping table
@@ -141,7 +143,7 @@ catch (Exception $e) {                  // if there's any error from dumping tab
         "status" => "error" 
     ];
     header('Content-Type: application/json');
-    echo json_encode($result, JSON_PRETTY_PRINT);
+    echo json_encode($result, JSON_PRETTY_PRINT );
 }
 
 

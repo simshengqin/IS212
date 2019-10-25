@@ -44,8 +44,10 @@
     $stuEdollar = $student->getEdollar();
 
     $bidDAO = new BidDAO();
+    $bidStatusDAO = new BidStatusDAO();
+    $bidRoundStatus = $bidStatusDAO->getBidStatus();
     $stuBids = $bidDAO->retrieveStudentBids($stuID);
-
+    $allBids = $bidDAO->retrieveAll();
     // calculate remaining amount
     foreach($stuBids as $value)
     {
@@ -137,7 +139,8 @@
            <th>Section Code</th>
            <th>Amount Bid</th>
            <th> Status </th>
-         </tr>
+           <?= $bidRoundStatus->getRound() == 2 ? "<th> Min Bid </th>": "" ?>
+         </tr>  
          </thead>
          <tbody>
            <?php
@@ -145,68 +148,75 @@
              {
                echo "<tr> <td colspan='4'> <h4 style='text-align: center;'> You currently have no bids </h4> </td> </tr>";
              }
-             else
-             {
-               $sectionDAO = new SectionDAO();
-               $bidDAO = new BidDAO();
+            echo "<tbody>";
+            $sectionDAO = new SectionDAO();
+            $bidDAO = new BidDAO();
 
-               echo "<tbody>";
-               foreach($stuBids as $value)
-               {
-                 $course = $value->getCode();
-                 $section = $value->getSection();
-                 $amount = $value->getAmount();
-                 $status = "Pending";
-                 //Round 2 clearing logic. Real-time check of the min bid value. If the bid is unsuccessful, reflect it.
-                 //Get the total number of seats available for this specific course-section pair
-                 $sectionObj = $sectionDAO->retrieveSectionByCourse($course,$section);
-                 $seatsAvailable = $sectionObj->getSize();
-                 //Get the total number of bids for the same specific course-section pair, which is also sorted in descending order
-                 $biddedCourses = $bidDAO->retrieveStudentBidsByCourseAndSectionOrderDesc($course,$section);
+            
+            foreach($allBids as $value)
+            {
+              $userid = $value->getUserid();
+              $course = $value->getCode();
+              $section = $value->getSection();
+              $amount = $value->getAmount();
+              $status = "Pending";
+              //Round 2 clearing logic. Real-time check of the min bid value. If the bid is unsuccessful, reflect it.
+              //Get the total number of seats available for this specific course-section pair
+              $sectionObj = $sectionDAO->retrieveSectionByCourse($course,$section);
+              $seatsAvailable = $sectionObj->getSize();
+              //Get the total number of bids for the same specific course-section pair, which is also sorted in descending order
+              $biddedCourses = $bidDAO->retrieveStudentBidsByCourseAndSectionOrderDesc($course,$section);
 
-                 $bidCount = sizeof($biddedCourses);
-                 var_dump($biddedCourses);
-                 echo "Seats available: $seatsAvailable Bid count: $bidCount ";
-                 // N is the seatsavailable
-                 if ($seatsAvailable > $bidCount) {
-                   $minBidAmount = 10;                
-                 }
-                 else {
-                   //Min bid amount is equal to the Nth bid amount + 1
-                   $nthBid = $biddedCourses[$seatsAvailable - 1];
-                   $multipleSimilarMinBids = False;
-                   if ($seatsAvailable < $bidCount) {
-                        $nthPlusOneBid = $biddedCourses[$seatsAvailable];
-                        //If there are more then one course with the same min bid amount, reject all of them
-                        if ($nthBid->getAmount() == $nthPlusOneBid->getAmount()) {
-                            $multipleSimilarMinBids = True;
-                        }
-                   }
-                   $minBidAmount = $nthBid->getAmount() + 1;
-
-                   echo "Min bid amount: $minBidAmount ";
-                   //2 scenarios for the bid to be considered unsuccessful
-                   //if bid amount is equal to minbidamount and it is not the nthBid, it means there are multiple courses with the same minbid. No space left=>Reject
-                   //if bid amount is smaller than minbidamount => Automatically rejected
-                   if ( ($amount == ($minBidAmount - 1) && $multipleSimilarMinBids == True) || $amount < ($minBidAmount - 1)){
-                       $status = "Failed";
-                   }
-                 }
-                 echo $sectionObj->getCourse() . " " . $sectionObj->getSection() . $sectionObj->getSize();
-                 echo "<tr>";
-                   echo"<td>" . $course . "</td>";
-                   echo"<td>". $section . "</td>";
-                   echo"<td>" .$amount. "</td>";
-                   if ($status == "Pending") {
-                       echo"<td> $status </td>";
-                   }
-                   else {
-                       echo"<td> $status , Min bid amount: $minBidAmount</td>";
-                   }
-                 echo "</tr>";
-               }
-               echo "</tbody>";
-             }
+              $bidCount = sizeof($biddedCourses);
+              // N is the seatsavailable
+              if ($seatsAvailable > $bidCount) {
+                $minBid = 10;   
+                $status = "success";             
+              }
+              else {
+                //Min bid amount is equal to the Nth bid amount + 1
+                $nthBid = $biddedCourses[$seatsAvailable - 1];
+                $multipleSimilarMinBids = False;
+                if ($seatsAvailable < $bidCount) {
+                    $nthPlusOneBid = $biddedCourses[$seatsAvailable];
+                    //If there are more than one course with the same min bid amount, reject all of them
+                    if ($nthBid->getAmount() == $nthPlusOneBid->getAmount()) {
+                        $multipleSimilarMinBids = True;
+                    }
+                }
+                $oldMinBid = $sectionDAO->retrieveMinBid($course, $section);
+                if ( ($nthBid->getAmount() + 1) > $oldMinBid) {
+                  $minBid = $nthBid->getAmount() + 1;
+                  $sectionDAO -> updateMinBid($course,$section,$minBid);
+                }
+                else {
+                  $minBid = $oldMinBid;
+                }
+                //2 scenarios for the bid to be considered unsuccessful
+                //if bid amount is equal to minBid and it is not the nthBid, it means there are multiple courses with the same minbid. No space left=>Reject
+                //if bid amount is smaller than minBid => Automatically rejected
+                if ( ($amount == ($minBid - 1) && $multipleSimilarMinBids == True) || $amount < ($minBid - 1)){
+                    $status = "Fail";                  
+                }
+                else {
+                    $status = "Success";
+                    
+                }
+                
+              }
+              $bidDAO->updateStatus($userid,$course,$section,$status);
+              //Only print out the bids for the userid that is currently logged in
+              if ($userid == $stuID) {
+                echo "<tr>";
+                  echo"<td>" . $course . "</td>";
+                  echo"<td>". $section . "</td>";
+                  echo"<td>" .$amount. "</td>";
+                  echo"<td> $status </td>";
+                  echo ($bidRoundStatus->getRound() == 2 ? "<td>" . $minBid . "</td>": "");
+                echo "</tr>";
+              }
+            }
+            echo "</tbody>";
            ?>
          </tbody>
      </table>
@@ -229,7 +239,7 @@
           </tr>
         </thead>
           <tbody>
-            <?php
+            <?php 
             if(count($stuSections) == 0)
             {
               echo "<tr> <td colspan='4'> <h4 style='text-align: center;'> You are currently not enrolled in any course </h4> </td> </tr>";

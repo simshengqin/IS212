@@ -47,6 +47,26 @@ class CourseDAO {
         return $result;
     }
 
+    public function retrieveCourse($course){
+        #$sql = 'select * from section';
+        $sql = "SELECT * FROM course WHERE course = :course";
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':course', $course, PDO::PARAM_STR);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+
+        $result = [];
+
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result[] = new Course($row['course'], $row['school'],$row['title'], $row['description'], 
+                                    $row['exam date'], $row['exam start'], $row['exam end']);
+        }
+        return $result;
+    }
+
     public function removeAll(){
         $sql = 'TRUNCATE TABLE course';
         

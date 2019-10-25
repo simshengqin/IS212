@@ -33,7 +33,12 @@ class Sort {
 
 	function course($a, $b)
 	{
-		return strcmp($a['course'], $b['course']);
+		$temp_a = preg_split("/((?<=[a-z])(?=\d))/i", $a['course']);;
+		$temp_b = preg_split("/((?<=[a-z])(?=\d))/i", $b['course']);
+		if ($temp_a[0] == $temp_b[0])
+			return $temp_a[1] - $temp_b[1];
+		return strcmp($temp_a[0], $temp_b[0]);
+		// return strcmp($a['course'], $b['course']);
 	}
 
 	function student($a, $b)
@@ -86,6 +91,7 @@ class Sort {
 #####################
 ### Main Function ###
 #####################
+
 	function sort_it($list,$sorttype)
 	{
 		usort($list,array($this,$sorttype));
