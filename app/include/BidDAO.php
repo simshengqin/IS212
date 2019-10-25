@@ -23,8 +23,35 @@ class BidDAO {
 
         return $isAddOK;
     }
+    /*
+    public function retrieveStatus($userid,$code,$section){
+        #$sql = 'select * from section';
+        $sql = "SELECT * FROM section WHERE userid = :userid AND code = :code AND section = :section";
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
 
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
+        $stmt->bindParam(':code', $code, PDO::PARAM_STR);
+        $stmt->bindParam(':section', $section, PDO::PARAM_STR);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
 
+        return $row['status'];
+    }  
+    */
+    public function updateStatus($userid,$course,$section,$status){
+        $sql = "UPDATE bid SET status =:status WHERE userid =:userid AND code =:course AND section =:section";
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
+        $stmt->bindParam(':course', $course, PDO::PARAM_STR);
+        $stmt->bindParam(':section', $section, PDO::PARAM_STR);
+        $stmt->bindParam(':status', $status, PDO::PARAM_STR);
+        $stmt->execute();
+    }
     public function retrieveAll(){
         $sql = 'select * from bid';
 

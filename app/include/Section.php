@@ -9,7 +9,7 @@ class Section {
     private $end;
 
 
-    public function __construct($course, $section, $day, $start, $end, $instructor, $venue, $size)
+    public function __construct($course, $section, $day, $start, $end, $instructor, $venue, $size, $minbid=10)
     {
         $this->course = $course;
         $this->section = $section;
@@ -19,6 +19,7 @@ class Section {
         $this->instructor = $instructor;
         $this->venue = $venue;
         $this->size = $size;
+        $this->minbid = $minbid;
 
     }
     public function getCourse(){
@@ -44,6 +45,9 @@ class Section {
     }
     public function getSize(){
         return $this->size;
+    }
+    public function getMinbid(){
+        return $this->minbid;
     }
 
 }

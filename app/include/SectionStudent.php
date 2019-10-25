@@ -1,6 +1,6 @@
 <?php
 
-class Section {
+class SectionStudent {
     // property declaration
     private $userid;
     private $course;

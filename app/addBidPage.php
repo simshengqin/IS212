@@ -296,8 +296,9 @@
     $bidStatus = $bidStatusDAO->getBidStatus();
     if ($bidStatus->getStatus() == 'open')
       echo"<input type='submit' value='Add Bid' class='btn btn-primary' style='margin: 0 0 15px 0'>";
-    elseif ($bidStatus->getStatus() == 'closed')
+    elseif ($bidStatus->getStatus() == 'closed' or $bidStatus->getStatus() == 'cleared')
       echo"<button class='btn btn-primary' disabled data-toggle='modal' data-target='#round_closed' style='margin: 0 0 15px 0'>Add Bid</button> Bidding Round has not started yet.";
+    
     ?>
     </form>
   </div>

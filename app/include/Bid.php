@@ -7,12 +7,13 @@ class Bid {
     private $code;
     private $section;
 
-    public function __construct($userid='', $amount='', $code='', $section='')
+    public function __construct($userid='', $amount='', $code='', $section='', $status='pending')
     {
         $this->userid = $userid;
         $this->amount = $amount;
         $this->code = $code;
         $this->section = $section;
+        $this->status = $status;
     }
 
     public function getUserid()
@@ -35,6 +36,10 @@ class Bid {
       return $this->section;
     }
 
+    public function getStatus()
+    {
+      return $this->status;
+    }
 }
 
 ?>
