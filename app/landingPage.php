@@ -229,7 +229,7 @@
           </tr>
         </thead>
           <tbody>
-            <?php
+            <?php 
             if(count($stuSections) == 0)
             {
               echo "<tr> <td colspan='4'> <h4 style='text-align: center;'> You are currently not enrolled in any course </h4> </td> </tr>";

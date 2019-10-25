@@ -85,6 +85,7 @@ class BidDAO {
     
         return $result;
         }
+
     public function retrieveStudentBidsWithInfo($userid){
         $sql = "SELECT b.userid, b.amount, b.code, b.section, s.day, s.start, s.end, `exam date`, `exam start`, `exam end`
                     FROM bid b INNER JOIN section s INNER JOIN course c 
@@ -97,6 +98,40 @@ class BidDAO {
         $stmt->execute();
 
         $result = [];   
+
+        while($row = $stmt->fetch())
+        {
+            $result[] = [
+                "userid" => $row['userid'], 
+                "amount" => $row['amount'],
+                "code" => $row['code'],
+                "section" => $row['section'],
+                "day" => $row['day'],
+                "start" => $row['start'],
+                "end" => $row['end'],
+                "exam date" => $row['exam date'],
+                "exam start" => $row['exam start'],
+                "exam end" => $row['exam end']
+            ];
+        }
+        return $result;
+    }
+
+    public function retrieveStudentBidsWithInfoByCourseSection($userid, $course, $section){
+        $sql = "SELECT b.userid, b.amount, b.code, b.section, s.day, s.start, s.end, `exam date`, `exam start`, `exam end`
+                    FROM bid b INNER JOIN section s INNER JOIN course c 
+                        WHERE b.section = s.section AND b.code = s.course AND s.course = c.course AND b.userid = :userid 
+                                                    AND b.section = :section AND s.course = :course";
+        $connMgr = new ConnectionManager();
+        $conn = $connMgr->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
+        $stmt->bindParam(':course', $course, PDO::PARAM_STR);
+        $stmt->bindParam(':section', $section, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $result = [];  
 
         while($row = $stmt->fetch())
         {
