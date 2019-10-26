@@ -2,9 +2,9 @@
 
 require_once '../include/common.php';
 
-##########################
-### DAO Initialization ###
-##########################
+########################
+## DAO Initialization ##
+########################
 
 $bidDAO = new BidDAO();
 $studentDAO = new StudentDAO();
@@ -24,9 +24,8 @@ $sectionStudentDAO = new SectionStudentDAO();
 $allSectionData = $sectionDAO->retrieveAll();
 $allStudentData = $studentDAO->retrieveAll();
 $allCourseData = $courseDAO->retrieveAll();
-$allEnrolledData = $SectionStudentDAO->retrieveAll();
 
-$bidRoundStatus = $bidStatus->retrieveBidStatus();
+$bidRoundStatus = $bidStatusDAO->getBidStatus();
 
 $studentList = [];
 $courseList = [];
@@ -61,16 +60,19 @@ $data = json_decode($request, true);
 $student = $studentDAO->retrieveStudent($data['userid']);
 // Get edollar from student class
 $studentEdollar = $student->getEdollar();
-// Get a list of student bids (Bid Class)
+// Get a list of student bids (Associative Array)
 $studentBids = $bidDAO->retrieveStudentBidsWithInfo($data['userid']);
 // Get the section course info (Section Class)
 $section = $sectionDAO->retrieveSectionByCourse($data['course'], $data['section']);
 // Get course info (Course Class)
 $course = $courseDAO->retrieveCourse($data['course']);
-// Get a list of all the course completed of the user (List of Course)
-$coursesCompleted = $courseCompletedDAO->retrieveCourseCompletedByUserId($userid);
-// Get a list of all the prerequisites of the user (List of Prerequisites)
-$prerequisites = $prerequisiteDAO -> retrievePrerequisiteByCourse($bidCode);
+// Get a list of all the course completed of the user (List of Course class)
+$coursesCompleted = $courseCompletedDAO->retrieveCourseCompletedByUserId($data['userid']);
+// Get a list of all the prerequisites of the user (List of Prerequisites class)
+$prerequisites = $prerequisiteDAO -> retrievePrerequisiteByCourse($data['course']);
+// Get a list of enrolled courses of the user (List of SectionStudent class)
+$enrolledClasses = $sectionStudentDAO->retrieveByID($data['userid']);
+
 
 #################
 ## Validations ##
@@ -79,6 +81,9 @@ $prerequisites = $prerequisiteDAO -> retrievePrerequisiteByCourse($bidCode);
 //--------------//
 // Check UserID // 
 //--------------//
+/*
+    The userid is not found in the syste records
+*/
 
 $errors = [];
 if (!in_array($data['userid'], $studentList)){
@@ -96,7 +101,7 @@ if(!is_numeric($data['amount']) || $data['amount'] < 10.0){       // check if ed
     $errors[] = "invalid amount";
 }
 else {
-    if ((intval($bidAmount) != $bidAmount) && (strlen($bidAmount) - strrpos($bidAmount, '.') - 1 > 2)) {    // check that the edollar is not more than 2 decimal places
+    if ((intval($data['amount']) != $data['amount']) && (strlen($data['amount']) - strrpos($data['amount'], '.') - 1 > 2)) {    // check that the edollar is not more than 2 decimal places
         $errors[] = "invalid amount";
     }
 }
@@ -130,10 +135,9 @@ else {
 /*
     The amount must be more than the minimum bid (only applicable for round 2)
 */
-
-
-
-
+if ($bidRoundStatus->getRound() == 2 && $data['amount'] <= $sectionDAO->retrieveMinBid($data['course'], $data['section'])){
+    $errors[] = "bid too low";
+}
 
 //-----------------//
 // Insufficient e$ //
@@ -144,8 +148,8 @@ else {
     from the cancellation of the previous bid first.
 */
 foreach ($studentBids as $studentBid) {
-    if ($studentBid->getCode() == $data['course'] && $studentBid->getSection() == $data['section']){
-        $studentEdollar+= $studentBid->getAmount();
+    if ($studentBid['code'] == $data['course'] && $studentBid['section'] == $data['section']){
+        $studentEdollar+= $studentBid['amount'];
     }
 }
 if (($studentEdollar - $data['amount']) < 0)+
@@ -230,27 +234,81 @@ if (in_array($data['course'],$coursesCompleted)) {
 /*
     Student has already won a bid for a section in this course in a previous round
 */
-foreach ($allEnrolledData as $enrolledData){
-    if ($enrolled)
+foreach ($enrolledClasses as $sectionStudent){
+    if ($sectionStudent->getCourse() == $data['course'] && $sectionStudent->getSection() == $data['section']){
+        $errors[] = "course enrolled";
+    }
 }
 
-
-
 //-----------------------//
-// Section Limit Reached //
+// Section Limit Reached // 
 //-----------------------//
 /*
     Student has already bidded for 5 sections. If it is an update of a 
     previous bid, account for the cancellation of the previous bid. 
 */
+$num = 0;
+foreach($studentBids as $bid) {
+    if ($bid['userid'] == $data['userid'] && $bid['code'] != $data['course']) {   // Would not count if it's an update of previous bid.
+        $num++;
+    }
+}
+if ($num >= 5) {
+    $errors[] = "section limit reached";
+}
 
 
+
+//-----------------------//
+// Not own School Course //
+//-----------------------//
+/*
+    This only happens in round 1 where students are
+    allowed to bid for modules from their own school.
+*/
+if (isset($student) && isset($course) && $bidRoundStatus->getRound() == '1' && $student->getSchool() != $course->getSchool() ){ // if student bid is not from their own school
+    $errors[] = "not own school course";  
+}
+
+
+
+//------------//
+// No Vacancy //
+//------------//
+/*
+    There is 0 vacancy for the section that the user is bidding.
+*/  
+$enrolledStudents = $sectionStudentDAO->retrieveByCourseSection($data['course'], $data['section']);
+if (sizeof($enrolledStudents) == $section->getSize()){
+    $errors[] = "no vacancy";
+}
+
+//---------------------------------//
+// Check if user has bidded before //
+//---------------------------------//
+/*
+    If user bids for the first time, it will be added.
+    else will update existing bid.
+*/
+$bidCount = 0;
+foreach ($studentBids as $bid){
+    if ($data['course'] == $bid['code'])
+        $bidCount++;
+}
+$first = ($bidCount == 0);
 
 
 if (sizeof($errors)==0){
+    if ($first)
+        $bidDAO->add($data['userid'], $data['amount'], $data['course'], $data['section']);
+    else
+        $bidDAO->updateBid($data['userid'], $data['amount'], $data['course'], $data['section']);
     $result = [
         "status" => "success"
     ];
+    
+    header('Content-Type: application/json');
+    echo json_encode($result, JSON_PRETTY_PRINT);
 
 }
 else {
@@ -258,6 +316,8 @@ else {
         "status" => "error",
         "message" => $errors
     ];
+    header('Content-Type: application/json');
+    echo json_encode($result, JSON_PRETTY_PRINT);
 }
 
 

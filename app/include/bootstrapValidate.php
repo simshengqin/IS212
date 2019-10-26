@@ -446,8 +446,10 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     if (in_array($bidCode,$coursesCompleted)) {
         $message[] = "course completed";
     }
-
-    // Check for Section limit (Student can only bid for 5 sections)
+    
+    //---------------------------------------------------------------//
+    // Check for Section limit (Student can only bid for 5 sections) //
+    //---------------------------------------------------------------//
     $num = 0;
     foreach($bidInfo as $bid) {
         if ($bid['userid'] == $userid) {

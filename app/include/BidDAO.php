@@ -52,6 +52,20 @@ class BidDAO {
         $stmt->bindParam(':status', $status, PDO::PARAM_STR);
         $stmt->execute();
     }
+
+    public function updateBid($userid, $amount, $course,$section){
+        $sql = "UPDATE bid SET amount=:amount WHERE userid =:userid AND code =:course AND section =:section";
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
+        $stmt->bindParam(':course', $course, PDO::PARAM_STR);
+        $stmt->bindParam(':section', $section, PDO::PARAM_STR);
+        $stmt->bindParam(':amount', $amount, PDO::PARAM_STR);
+        $stmt->execute();
+    }
+
     public function retrieveAll(){
         $sql = 'select * from bid';
 

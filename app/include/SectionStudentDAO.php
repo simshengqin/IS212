@@ -1,7 +1,4 @@
 <?php
-    require_once 'include/common.php';
-    require_once 'include/protect.php';
-
 
 class SectionStudentDAO {
 
@@ -66,6 +63,26 @@ class SectionStudentDAO {
 
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+
+        $result = [];
+
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result[] = new SectionStudent($row['userid'], $row['course'], $row['section'], $row['amount']);
+        }
+        return $result;
+    }
+
+    public function retrieveByCourseSection($course, $section){
+        $sql = 'SELECT * from section_student where course=:course AND section=:section';
+        
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':course', $course, PDO::PARAM_STR);
+        $stmt->bindParam(':section', $section, PDO::PARAM_STR);
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->execute();
 
