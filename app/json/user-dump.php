@@ -2,7 +2,7 @@
 require_once '../include/common.php';
 
 $studentDAO = new StudentDAO();
-$request = $_GET['r'];
+$request = $_REQUEST['r'];
 $data = json_decode($request, true);
 $userid = $data['userid'];
 

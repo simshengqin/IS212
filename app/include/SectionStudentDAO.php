@@ -94,6 +94,28 @@ class SectionStudentDAO {
         return $result;
     }
 
+    public function retrieveByCourseSectionUser($course, $section, $userid){
+        $sql = 'SELECT * from section_student where course=:course AND section=:section AND userid=:userid';
+        
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':course', $course, PDO::PARAM_STR);
+        $stmt->bindParam(':section', $section, PDO::PARAM_STR);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+
+        $result = "";
+
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            // Bid class here for round 1 comparison
+            $result = new Bid($row['userid'], $row['amount'] , $row['course'], $row['section']);
+        }
+        return $result;
+    }
+
     public function removeByID($userid,$course){
         $sql = 'DELETE from section_student where userid=:userid and course = :course';
         

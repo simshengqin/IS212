@@ -123,8 +123,6 @@ function doBootstrap() {
 				$prerequisiteDAO->removeAll();
 
 
-
-
 				# then read each csv file line by line (remember to skip the header)
 				# $data = fgetcsv($file) gets you the next line of the CSV file which will be stored 
 				# in the array $data

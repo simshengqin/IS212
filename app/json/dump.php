@@ -1,14 +1,15 @@
 <?php
 require_once '../include/common.php';
+require_once '../include/protect_json.php';
 try {
     $result = [
         "status" => "success",
         "course" => [],
-        "student" => [],
         "section" => [],
+        "student" => [],
         "prerequisite" => [],
-        "course_completed" => [],
         "bid" => [],
+        "completed-course" => [],
         "section-student" => []
     ];
 
@@ -22,7 +23,7 @@ try {
     $prerequisiteDAO = new PrerequisiteDAO();
     $courseCompletedDAO = new CourseCompletedDAO();
     $bidDAO = new BidDAO();
-    // $sectionStudentDAO = new SectionStudentDAO();
+    $sectionStudentDAO = new SectionStudentDAO();
     $sortclass = new Sort();
 
 
@@ -110,11 +111,26 @@ try {
         $temp["userid"] = $courseCompleted->getUserid();
         $temp["course"] = $courseCompleted->getCourse();
         
-        $result["course_completed"][] = $temp;
+        $result["completed-course"][] = $temp;
     }
 
-    $result["course_completed"] = $sortclass->sort_it($result["course_completed"], "course_completed");      // Sort course_completed
+    $result["completed-course"] = $sortclass->sort_it($result["completed-course"], "course_completed");      // Sort completed-course
 
+####################
+## SectionStudent ##
+####################
+
+    $sectionStudentList = $sectionStudentDAO->retrieveAll();                          
+    foreach ($sectionStudentList as $sectionStudent) {                                
+        $temp = [];
+        $temp["userid"] = $sectionStudent->getUserid();
+        $temp["course"] = $sectionStudent->getCourse();
+        $temp["section"] = $sectionStudent->getSection();
+        $temp["amount"] = (float) $sectionStudent->getAmount();
+        $result["section-student"][] = $temp;
+    }
+
+    $result["section-student"] = $sortclass->sort_it($result["section-student"], "section_student");
 
 #############
 ## BidList ##
