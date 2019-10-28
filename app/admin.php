@@ -62,10 +62,11 @@ require_once 'clearBidTwo-process.php';
   
   // if the round 1 is not started yet
   if (($bidStatus->getRound() == '0' && $bidStatus->getStatus() == 'closed') || ($bidStatus->getRound() == '2' && ($bidStatus->getStatus() == 'closed' || $bidStatus->getStatus() == 'cleared'))){ 
-    echo '
+    echo '  
+      <h3>Bootstrap File: </h3><br>
       <form id="bootstrap-form" action="bootstrap-process.php" method="post" enctype="multipart/form-data">
-        Bootstrap file:  
-        &nbsp;<input id="bootstrap-file" type="file" name="bootstrap-file"><br>
+        <input id="bootstrap-file" type="file" name="bootstrap-file">
+      <br><br>
         <input type="submit" name="submit" value="Import">
       </form>
       ';
@@ -100,6 +101,7 @@ require_once 'clearBidTwo-process.php';
               <button type='submit' name='status' value='open'>Open round </button>
               </form></div>";
     }
+    // Put bootstrap option on the right
     echo '<div class="col-md">
     <h3>Bootstrap File: </h3><br>
       <form id="bootstrap-form" action="bootstrap-process.php" method="post" enctype="multipart/form-data">
