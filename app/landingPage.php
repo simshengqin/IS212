@@ -171,7 +171,7 @@
               // N is the seatsavailable
               if ($seatsAvailable > $bidCount) {
                 $minBid = 10;   
-                $status = "success";             
+                $status = "Success";             
               }
               else {
                 //Min bid amount is equal to the Nth bid amount + 1
@@ -211,7 +211,7 @@
                   echo"<td>" . $course . "</td>";
                   echo"<td>". $section . "</td>";
                   echo"<td>" .$amount. "</td>";
-                  echo"<td> $status </td>";
+                  echo ($bidRoundStatus->getRound() == 2 ? "<td>" . $status . "</td>": "Pending");
                   echo ($bidRoundStatus->getRound() == 2 ? "<td>" . $minBid . "</td>": "");
                 echo "</tr>";
               }

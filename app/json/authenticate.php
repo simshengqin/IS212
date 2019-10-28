@@ -29,6 +29,7 @@ else{
                 'status' => 'success',
                 'token' => generate_token($userid)
             ];
+            $_SESSION['token'] = generate_token($userid);
         }
         else{
             $result = [

@@ -27,15 +27,20 @@ function doRoundOne() {
     // var_dump($sectionsize);
 
     $sectionStudent = new sectionStudentDAO();
-
-    #access each key & value pair 
+  
+    # access each key & value pair 
     for ($i=0; $i<$sectionsize;$i++){
-        $student_data = $allStudents[$i];
-        $id = $student_data->getUserid();
+      $student_data = $allStudents[$i];
+      $userid = $student_data->getUserid();
+      $sectionStudentData = $sectionStudent->retrieveByCourseSectionUser($value['code'], $value['section'], $userid);
+
+      // To prevent duplicates 
+      if ($student_data != $sectionStudentData){
         $amount = $student_data->getAmount();
         $section = $student_data->getSection();
         $course=$student_data->getCode();
-        $sectionStudent->add($id,$course,$section,$amount);
+        $sectionStudent->add($userid,$course,$section,$amount);
+      }
     }
 }
 
