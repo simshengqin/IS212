@@ -7,6 +7,7 @@ $numSegment = count($pathSegments);
 $currentFolder = $pathSegments[$numSegment - 2]; # Current folder
 $page = $pathSegments[$numSegment -1]; # Current page e.g. 'authenticate.php'
 
+$result = [];
 if ($currentFolder != 'json'){
 	$_REQUEST['status'] = 'error';
 }
@@ -29,7 +30,12 @@ elseif ($page != 'authenticate.php'){	// Check for token from json requests othe
 	}
 }
 
-
+if (!empty($result)){
+	header('Content-Type: application/json');
+	$result = json_encode($result, JSON_PRETTY_PRINT | JSON_PRESERVE_ZERO_FRACTION);
+	echo $result;
+	exit();
+}
 
 
 

@@ -3,16 +3,6 @@
 require_once '../include/common.php';
 require_once '../include/protect_json.php';
 
-if (!empty($result)){
-    header('Content-Type: application/json');
-    echo json_encode($result, JSON_PRETTY_PRINT);
-}
-else
-    updateBid();
-    
-
-function updateBid() {
-    
 ########################
 ## DAO Initialization ##
 ########################
@@ -337,7 +327,7 @@ else {
     header('Content-Type: application/json');
     echo json_encode($result, JSON_PRETTY_PRINT);
 }
-}
+
 
 
 

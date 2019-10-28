@@ -2,7 +2,7 @@
 require_once "JWT.php";
 
 // Secret key is something you hardcoded for your server/application
-const SECRET_KEY = "qwertyuiop";
+const SECRET_KEY = "SPMG4T6";
 
 /**
  * @param string $username  Login user's username
