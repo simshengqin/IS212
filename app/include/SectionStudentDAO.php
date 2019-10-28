@@ -129,6 +129,20 @@ class SectionStudentDAO {
         return $stmt->execute();
     }
 
+    public function removeByIDCourseSection($userid,$course, $section){
+        $sql = 'DELETE from section_student where userid=:userid and course = :course and section = :section';
+        
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
+        $stmt->bindParam(':course', $course, PDO::PARAM_STR);
+        $stmt->bindParam(':section', $section, PDO::PARAM_STR);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        return $stmt->execute();
+    }
+
 
 }
 

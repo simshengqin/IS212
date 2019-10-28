@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once '../include/common.php';
 require_once '../include/protect_json.php';
 
@@ -7,19 +7,18 @@ if (!empty($result)){
     echo json_encode($result, JSON_PRETTY_PRINT);
 }
 else
-    bidDump();
+    sectionDump();
 
-    
-function bidDump() {
+
+function sectionDump() {
 
 ########################
 ## DAO Initialization ##
 ########################
-$bidDAO = new BidDAO();
 $courseDAO = new CourseDAO();
 $sectionDAO = new SectionDAO();
-$bidStatusDAO = new BidStatusDAO();
-$bidRoundStatus = $bidStatusDAO->getBidStatus();
+$sectionStudentDAO = new SectionStudentDAO();
+$sortclass = new Sort();
 
 
 ###########################
@@ -27,7 +26,7 @@ $bidRoundStatus = $bidStatusDAO->getBidStatus();
 ###########################
 /*
 -- JSON Request Example --
-http://<host>/app/json/bid-dump.php?r={
+http://<host>/app/json/section-dump.php?r={
          "course": "IS100",
          "section": "S1"
 }
@@ -61,31 +60,27 @@ elseif (empty($sectionInfo)){
 }
 
 
-####################
-## Bid Dump Logic ##
-####################
+########################
+## Section Dump Logic ##
+########################
 /*
-    This web service will allow an administrator to retrieve the bidding information of a specific section for the current 
-    bidding round. If no bidding rounds are active, the information for the most recently concluded round is dumped.
+    This web service will allow an administrator to retrieve the information for a section, 
+    and it's enrolled students. During round 2, this should return the enrolled students bidded successfully in round 1. 
+    After round 2 is closed, this should return the enrolled students who bidded successfully in round 1 & 2.
 */
 if (empty($errors)) {
     $result = [
         "status" => "success",
-        "bids" => []
+        "students" => []
     ];
-    $row = 1; 
-    $bidList = $bidDAO->retrieveStudentBidsByCourseAndSectionOrderDesc($data['course'], $data['section']);
-    foreach ($bidList as $bid){
+    $sectionStudentList = $sectionStudentDAO->retrieveByCourseSection($data['course'], $data['section']);
+    foreach ($sectionStudentList as $sectionStudent){
         $temp = [];
-        $temp['row'] = $row;
-        $temp['userid'] = $bid->getUserid();
-        $temp['amount'] = (float) $bid->getAmount();
-        if ($bidRoundStatus->getStatus() == 'open')
-            $temp['result'] = '-';
-        else
-            $temp['result'] = $bid->getStatus() == 'success' ? 'in' : 'out';
-        $result['bids'][] = $temp;
+        $temp['userid'] = $sectionStudent->getUserid();
+        $temp['amount'] = (float) $sectionStudent->getAmount();
+        $result['students'][] = $temp;
     }
+    $result['students'] = $sortclass->sort_it($result['students'], 'student');
 }
 else {
     $result = [
@@ -97,7 +92,5 @@ else {
 header('Content-Type: application/json');
 $result = json_encode($result, JSON_PRETTY_PRINT | JSON_PRESERVE_ZERO_FRACTION);
 echo $result;
-
 }
-
 ?>

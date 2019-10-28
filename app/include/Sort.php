@@ -1,4 +1,6 @@
 <?php
+require_once '../include/common.php';
+
 class Sort {
 
 ####################
@@ -87,7 +89,9 @@ class Sort {
 			return strcmp($a['userid'], $b['userid']);
 		return strcmp($a['course'], $b['course']);
 	}
-	
+
+
+
 #####################
 ### Main Function ###
 #####################
