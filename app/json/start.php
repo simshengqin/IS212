@@ -1,5 +1,16 @@
 <?php
 require_once '../include/common.php';
+require_once '../include/protect_json.php';
+
+if (!empty($result)){
+    header('Content-Type: application/json');
+    echo json_encode($result, JSON_PRETTY_PRINT);
+}
+else
+    doStart();
+
+
+function doStart() {
 
 $bidStatusDAO = new BidStatusDAO();
 $result = [
@@ -23,12 +34,12 @@ elseif ($bidStatus->getStatus() == 'closed') {
     echo json_encode($result, JSON_PRETTY_PRINT);
 }
 elseif ($bidStatus->getStatus() == 'open') {
-    $result["status"] = 'error';
-    $result["message"][] = "round {$bidStatus->getRound()} started";
+    $result["status"] = 'success';
+    $result["message"] = $bidStatus->getRound();
     
     header('Content-Type: application/json');
     echo json_encode($result, JSON_PRETTY_PRINT);
 }
-
+}
 
 ?>

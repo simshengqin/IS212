@@ -5,27 +5,30 @@ require_once 'common.php';
 $pathSegments = explode('/',$_SERVER['PHP_SELF']); # Current url
 $numSegment = count($pathSegments);
 $currentFolder = $pathSegments[$numSegment - 2]; # Current folder
-$page = $pathSegments[$numSegment -1]; # Current page
+$page = $pathSegments[$numSegment -1]; # Current page e.g. 'authenticate.php'
 
 if ($currentFolder != 'json'){
 	$_REQUEST['status'] = 'error';
 }
-else {
-
+elseif ($page != 'authenticate.php'){	// Check for token from json requests other than authenticate
 	$token = '';
-	if  (isset($_REQUEST['token'])) {
-		$token = $_REQUEST['token'];
+	if  (!isset($_REQUEST['token'])) {
+		$result = [
+			"status"=> "error",
+			"message"=> "missing token"
+		];
 	}
-
-	# check if token is not valid
-	# reply with appropriate JSON error message
-
-	# add your code here 
-	if (verify_token($token))
-		$_REQUEST['status'] = 'success';
-	else	
-		$_REQUEST['status'] = 'error';
+	else {
+		$token = $_REQUEST['token'];
+		if (!verify_token($token)){
+			$result = [
+				"status"=> "error",
+				"message"=> "invalid token"
+			];
+		}
+	}
 }
+
 
 
 

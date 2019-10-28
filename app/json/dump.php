@@ -1,6 +1,15 @@
 <?php
 require_once '../include/common.php';
 require_once '../include/protect_json.php';
+
+if (!empty($result)){
+    header('Content-Type: application/json');
+    echo json_encode($result, JSON_PRETTY_PRINT);
+}
+else
+    doDump();
+    
+function doDump(){
 try {
     $result = [
         "status" => "success",
@@ -161,6 +170,5 @@ catch (Exception $e) {                  // if there's any error from dumping tab
     header('Content-Type: application/json');
     echo json_encode($result, JSON_PRETTY_PRINT );
 }
-
-
+}
 ?>

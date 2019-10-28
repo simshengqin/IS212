@@ -8,7 +8,8 @@ function trimWhitespace($data) {
 	return $data;
 }
 function doBootstrap() {
-		
+	$bidStatusDAO = new BidStatusDAO();
+	$bidStatusDAO->updateBidStatus(1, 'open');
 
 	$errors = array();
 
@@ -288,9 +289,6 @@ function doBootstrap() {
 				}
 				fclose($bid);
 				@unlink($bid_path);
-
-
-				
 			}
 		}
 	}
@@ -314,7 +312,6 @@ function doBootstrap() {
 		$result['status'] = 'error';
 		$result['error'] = $errors;
 
-		
 		return $result;
 	}
 	else

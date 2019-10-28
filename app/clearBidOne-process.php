@@ -34,13 +34,22 @@ function doRoundOne() {
       $userid = $student_data->getUserid();
       $sectionStudentData = $sectionStudent->retrieveByCourseSectionUser($value['code'], $value['section'], $userid);
 
+      $amount = $student_data->getAmount();
+      $section = $student_data->getSection();
+      $course=$student_data->getCode();
+      $bidDAO->updateStatus($userid,$course,$section,"success");
       // To prevent duplicates 
       if ($student_data != $sectionStudentData){
-        $amount = $student_data->getAmount();
-        $section = $student_data->getSection();
-        $course=$student_data->getCode();
         $sectionStudent->add($userid,$course,$section,$amount);
       }
+    }
+
+    for ($j = $sectionsize; $j < sizeof($allStudents); $j++){
+      $student_data = $allStudents[$j];
+      $userid = $student_data->getUserid();
+      $section = $student_data->getSection();
+      $course=$student_data->getCode();
+      $bidDAO->updateStatus($userid,$course,$section,"fail");
     }
 }
 

@@ -44,20 +44,18 @@ require_once 'clearBidTwo-process.php';
 <h3> Welcome Admin! </h3>
 
 <br>
-<?php 
+<?php
   $bidStatusDAO = new BidStatusDAO();
   $bidDAO = new BidDAO();
   $bidStatus = $bidStatusDAO->getBidStatus();
   if (isset($_POST['round']) && (isset($_POST['status']))){    
-    # upon clearing round 1
     if (!($bidStatus->getRound() == '2' && $bidStatus->getStatus() == 'cleared'))
       $bidStatusDAO->updateBidStatus($_POST['round'], $_POST['status']);
-    if ($bidStatus->getRound() == '1' && $bidStatus->getStatus() == 'closed')
-    {
+    ## upon clearing round 1
+    if ($_POST['round'] == '1' && $_POST['status'] == 'closed')
       doRoundOne();
+    if ($_POST['round'] == '2' && $_POST['status'] == 'open')
       $bidDAO->removeAll();
-    }
-
   }
   $bidStatus = $bidStatusDAO->getBidStatus();
   
@@ -74,17 +72,16 @@ require_once 'clearBidTwo-process.php';
     //////Round 2 clearing takes place here. Only takes place once, will convert status from closed to cleared
     if ($bidStatus->getRound() == '2' && $bidStatus->getStatus() == 'closed') {
         doRoundTwo();
+        $bidDAO->removeAll();
     }
   }
   // After round 1 starts
   else {
     $status = ucfirst($bidStatus->getStatus());     // capitalize the first letter of status 
     $round = $bidStatus->getRound();
-
-    var_dump($status);
-    var_dump($round);
-    //var_dump($_POST['round']);
-    //var_dump($_POST['status']);
+    echo "<div class='container'>
+            <div class='row'>
+              <div class='col-md'>";
 
     echo "<h3>Current Round: {$bidStatus->getRound()} <br>
           Status: $status</h3><br>
@@ -94,15 +91,25 @@ require_once 'clearBidTwo-process.php';
         echo "<input type='hidden' id='round' name='round' value='$round'>
               <br>
               <button type='submit' name='status' value='closed'>Close round </button>
-              </form>";
+              </form></div>";
     }
     elseif ($bidStatus->getStatus() == 'closed'){
       $round++;
         echo "<input type='hidden' id='round' name='round' value='$round'>
               <br>
               <button type='submit' name='status' value='open'>Open round </button>
-              </form>";
+              </form></div>";
     }
+    echo '<div class="col-md">
+    <h3>Bootstrap File: </h3><br>
+      <form id="bootstrap-form" action="bootstrap-process.php" method="post" enctype="multipart/form-data">
+      <div>
+        <input id="bootstrap-file" type="file" name="bootstrap-file">
+      <br><br>
+        <input type="submit" name="submit" value="Import">
+      </div>
+      </form></div></div></div>
+      ';
   }
   
   if (isset($_SESSION['bootstrap_error']['error']) && sizeof($_SESSION['bootstrap_error']['error']) != 0 

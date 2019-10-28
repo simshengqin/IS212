@@ -17,7 +17,7 @@ function doRoundTwo(){
         $course = $value->getCode();
         $section = $value->getSection();
         $amount = $value->getAmount();
-        $status = "Pending";
+        $status = "pending";
         //Round 2 clearing logic. Real-time check of the min bid value. If the bid is unsuccessful, reflect it.
         //Get the total number of seats available for this specific course-section pair
         $sectionObj = $sectionDAO->retrieveSectionByCourse($course,$section);
@@ -30,7 +30,7 @@ function doRoundTwo(){
         // N is the seatsAvailable
         if ($seatsAvailable > $bidCount) {
             $minBid = 10;   
-            $status = "Success";             
+            $status = "success";             
         }
         else {
         //Min bid amount is equal to the Nth bid amount + 1
@@ -55,10 +55,10 @@ function doRoundTwo(){
         //if bid amount is equal to minBid and it is not the nthBid, it means there are multiple courses with the same minbid. No space left=>Reject
         //if bid amount is smaller than minBid => Automatically rejected
         if ( ($amount == ($minBid - 1) && $multipleSimilarMinBids == True) || $amount < ($minBid - 1)){
-            $status = "Fail";                  
+            $status = "fail";                  
         }
         else {
-            $status = "Success";
+            $status = "success";
             
         }
         }

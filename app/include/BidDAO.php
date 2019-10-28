@@ -106,7 +106,7 @@ class BidDAO {
     }
 
     public function retrieveStudentBidsByCourseAndSectionOrderDesc($code,$section){
-        $sql = "SELECT userid, amount, code, section FROM bid WHERE code=:code AND section=:section ORDER BY amount DESC";
+        $sql = "SELECT userid, amount, code, section, status FROM bid WHERE code=:code AND section=:section ORDER BY amount DESC";
     
         $connMgr = new ConnectionManager();
         $conn = $connMgr->getConnection();
@@ -121,7 +121,7 @@ class BidDAO {
     
         while($row = $stmt->fetch(PDO::FETCH_ASSOC))
         {
-            $result[] = new Bid($row['userid'], $row['amount'],$row['code'], $row['section']);
+            $result[] = new Bid($row['userid'], $row['amount'],$row['code'], $row['section'], $row['status']);
         }
     
         return $result;
@@ -192,8 +192,6 @@ class BidDAO {
         return $result;
     }
 
-    
-
     public function removeAll(){
         $sql = 'TRUNCATE TABLE bid';
 
@@ -235,6 +233,7 @@ class BidDAO {
         $stmt-> bindParam(':section', $section,PDO::PARAM_STR);
         $stmt->execute();
     }
+
 
     public function getUniqueCodeAndSection(){
         $sql = "SELECT distinct code, section from bid";
