@@ -276,7 +276,12 @@ function doBootstrap() {
 									$edollarList[$bid_data[0]] = $bid_data[1];
 								$student = $studentDAO->retrieveStudent($bid_data[0]); // get student info
 								if ($edollarList[$bid_data[0]] < $student->getEdollar()){   // compare total bid amount against student's edollar
-									$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
+									$bidList = $bidDAO->retrieveStudentBidsByCourse($bid_data[0], $bid_data[2]);
+									$testBid = new Bid($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
+									if (!empty($bidList) && in_array($testBid, $bidList))
+										$bidDAO->updateBid($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
+									else
+										$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
 									$record['num-record-loaded']['bid.csv']++;
 								}
 								else{

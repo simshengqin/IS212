@@ -44,16 +44,24 @@
     $stuSections = [];
     $stuEdollar = $student->getEdollar();
 
+    $sectionStudentDAO = new SectionStudentDAO();
+    $sectionInfo = $sectionStudentDAO->retrieveByID($stuID);
+
+            
+            
+
     $bidDAO = new BidDAO();
     $bidStatusDAO = new BidStatusDAO();
     $bidRoundStatus = $bidStatusDAO->getBidStatus();
     $stuBids = $bidDAO->retrieveStudentBids($stuID);
     $allBids = $bidDAO->retrieveAll();
     // calculate remaining amount
-    foreach($stuBids as $value)
-    {
-      
-      $stuEdollar -= $value->getAmount();
+    if ($bidRoundStatus->getStatus() == 'open'){
+      foreach($stuBids as $value)
+      {
+        
+        $stuEdollar -= $value->getAmount();
+      }
     }
    ?>
 
@@ -133,7 +141,7 @@
  <div class = "row">
    <div class="col-sm-12" style='margin-top: 7.5vh'>
      <table class="table table-striped">
-       <h3> Bid(s) </h3>
+       <h3> <?= $bidRoundStatus->getStatus()=='closed' ? "Round {$bidRoundStatus->getRound()} Results" : 'Bid(s)'?> </h3>
        <thead>
          <tr>
            <th>Course Code</th>
@@ -147,7 +155,10 @@
            <?php
              if(count($stuBids) == 0)
              {
-               echo "<tr> <td colspan='4'> <h4 style='text-align: center;'> You currently have no bids </h4> </td> </tr>";
+                if ($bidRoundStatus->getRound() == 2)
+                echo "<tr> <td colspan='5'> <h4 style='text-align: center;'> You currently have no bids </h4> </td> </tr>";
+                else
+                echo "<tr> <td colspan='4'> <h4 style='text-align: center;'> You currently have no bids </h4> </td> </tr>";
              }
             echo "<tbody>";
             $sectionDAO = new SectionDAO();
@@ -230,36 +241,40 @@
   <div class = "row">
     <div class="col-sm-12" style='margin-top: 7.5vh'>
       <table class="table table-striped">
-        <h3> Sections(s) </h3>
+        <h3> Section(s) </h3>
         <thead>
           <tr>
             <th>Course Code</th>
             <th>Section Code</th>
             <th>Amount Bid</th>
-            <th> Status </th>
           </tr>
         </thead>
           <tbody>
             <?php 
-            if(count($stuSections) == 0)
+            if(count($sectionInfo) == 0)
             {
               echo "<tr> <td colspan='4'> <h4 style='text-align: center;'> You are currently not enrolled in any course </h4> </td> </tr>";
             }
             else
             {
-              /*
+              
               echo "<tbody>";
-              foreach($stuSections as $value)
-              {
-                echo "<tr>";
-                  echo"<td>$value[2]</td>";
-                  echo"<td>$value[3]</td>";
-                  echo"<td>$value[1]</td>";
-                echo "</tr>";
-              }
+              foreach($sectionInfo as $sectionRow){
+
+                $course = $sectionRow->getCourse();
+                $section = $sectionRow->getSection();
+                $amount = $sectionRow->getAmount();
+              
+              echo "
+              <tr>
+                <td> $course </td>
+                <td> $section </td>
+                <td> $amount </td>
+              </tr>";
               echo "</tbody>";
-              */
+              
             }
+          }
 
             ?>
           </tbody>

@@ -53,8 +53,22 @@ class BidDAO {
         $stmt->execute();
     }
 
-    public function updateBid($userid, $amount, $course,$section){
+    public function updateBidAmount($userid, $amount, $course,$section){
         $sql = "UPDATE bid SET amount=:amount WHERE userid =:userid AND code =:course AND section =:section";
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
+        $stmt->bindParam(':course', $course, PDO::PARAM_STR);
+        $stmt->bindParam(':section', $section, PDO::PARAM_STR);
+        $stmt->bindParam(':amount', $amount, PDO::PARAM_STR);
+        $stmt->execute();
+    }
+
+    public function updateBid($userid, $amount, $course,$section){
+        $sql = "UPDATE bid SET userid =:userid AND code =:course AND section =:section AND amount=:amount 
+                            WHERE userid =:userid AND code =:course";
         $connMgr = new ConnectionManager();      
         $conn = $connMgr->getConnection();
 
@@ -82,6 +96,26 @@ class BidDAO {
             $result[] = new Bid($row['userid'], $row['amount'],$row['code'], $row['section']);
         }
         return $result;
+    }
+
+    public function retrieveStudentBidsByCourse($userid, $course){
+        $sql = 'select userid, amount, code, section from bid where userid=:userid and code =:code';
+    
+        $connMgr = new ConnectionManager();
+        $conn = $connMgr->getConnection();
+    
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
+        $stmt->bindParam(':code', $course, PDO::PARAM_STR);
+        $stmt->execute();
+    
+        $result = array();
+    
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+            $result[] = new Bid($row['userid'], $row['amount'],$row['code'], $row['section']);
+        }
     }
 
     public function retrieveStudentBids($userid){

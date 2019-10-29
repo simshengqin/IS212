@@ -27,9 +27,12 @@ function doRoundOne() {
     // var_dump($sectionsize);
 
     $sectionStudent = new sectionStudentDAO();
-  
+    $studentDAO = new StudentDAO();
     # access each key & value pair 
     for ($i=0; $i<$sectionsize;$i++){
+      if (sizeof($allStudents) <= $i){
+        break;
+      }
       $student_data = $allStudents[$i];
       $userid = $student_data->getUserid();
       $sectionStudentData = $sectionStudent->retrieveByCourseSectionUser($value['code'], $value['section'], $userid);
@@ -38,6 +41,9 @@ function doRoundOne() {
       $section = $student_data->getSection();
       $course=$student_data->getCode();
       $bidDAO->updateStatus($userid,$course,$section,"success");
+      $student = $studentDAO->retrieveStudent($userid);
+      $studentEdollar = $student->getEdollar();
+      $studentDAO->updateEdollar($userid, $studentEdollar-$amount);
       // To prevent duplicates 
       if ($student_data != $sectionStudentData){
         $sectionStudent->add($userid,$course,$section,$amount);
