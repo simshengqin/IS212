@@ -266,22 +266,37 @@ function doBootstrap() {
 					}
 					else {
 						$sectionsInfo = $sectionDAO->retrieveSectionByFilter($bid_data[2]);  // Get section list by the course 		
-						$bidValidation = validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo);		
-						if (sizeof($bidValidation)==0){
-							if (array_key_exists($bid_data[0], $edollarList))
-								$edollarList[$bid_data[0]] += $bid_data[1];
+						$tempCourseList = $courseDAO->retrieveCourse($bid_data[2]);
+						if (!empty($tempCourseList)){
+							$bidValidation = validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo);		
+							if (sizeof($bidValidation)==0){
+								if (array_key_exists($bid_data[0], $edollarList))
+									$edollarList[$bid_data[0]] += $bid_data[1];
+								else
+									$edollarList[$bid_data[0]] = $bid_data[1];
+								$student = $studentDAO->retrieveStudent($bid_data[0]); // get student info
+								if ($edollarList[$bid_data[0]] < $student->getEdollar()){   // compare total bid amount against student's edollar
+									$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
+									$record['num-record-loaded']['bid.csv']++;
+								}
+								else{
+									$bidValidation = [
+										"file" => 'bid.csv',
+										"line" => $row,
+										"message" => ['not enough e-dollar']
+									];
+									$errors[] = $bidValidation;
+								}
+							}
 							else
-								$edollarList[$bid_data[0]] = $bid_data[1];
-							$student = $studentDAO->retrieveStudent($bid_data[0]); // get student info
-							if ($edollarList[$bid_data[0]] < $student->getEdollar()){   // compare total bid amount against student's edollar
-								$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
-								$record['num-record-loaded']['bid.csv']++;
-							}
-							else{
-								$bidValidation[] = "not enough e-dollar";
-							}
+								$errors[] = $bidValidation;
 						}
 						else {
+							$bidValidation = [
+								"file" => 'bid.csv',
+								"line" => $row,
+								"message" => ["invalid course"]
+							];
 							$errors[] = $bidValidation;
 						}
 					}

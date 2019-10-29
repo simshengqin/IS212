@@ -44,22 +44,33 @@ function validateCourse($course_data, $row){
     //---------------------------//
     // Validation for Exam Start //
     //---------------------------//
-    $exam_start_timing = DateTime::createFromFormat('H:i', $exam_start)->format("H:i");
-    $exam_end_timing = DateTime::createFromFormat('H:i', $exam_end)->format("H:i");
-    $exam_start = explode(":", $exam_start);
-    $exam_end = explode(":", $exam_end);
+    # Only become false if there is a ':' inside. 
+    $invalidExamStart = True;
+    $invalidExamEnd = True;
 
+    if (strpos($exam_start, ':')){
+        $exam_start_timing = DateTime::createFromFormat('H:i', $exam_start)->format("H:i");
+        $exam_start = explode(":", $exam_start);
+        $invalidExamStart = (!($exam_start[0] >= 0 && $exam_start[0] <= 23) || !($exam_start[1] >= 0 && $exam_start[1] <= 59));
+    }
 
-    if (!($exam_start[0] >= 0 && $exam_start[0] <= 23) || !($exam_start[1] >= 0 && $exam_start[1] <= 59)){
+    if (strpos($exam_end, ':')){
+        $exam_end_timing = DateTime::createFromFormat('H:i', $exam_end)->format("H:i");
+        $exam_end = explode(":", $exam_end);
+        $invalidExamEnd = (!($exam_end[0] >= 0 && $exam_end[0] <= 23) || !($exam_end[1] >= 0 && $exam_end[1] <= 59));
+
+    }
+
+    if ($invalidExamStart){
         $message[] = "invalid exam start";
     }
     //-------------------------//
     // Validation for Exam End //
     //-------------------------//
-    if (!($exam_end[0] >= 0 && $exam_end[0] <= 23) || !($exam_end[1] >= 0 && $exam_end[1] <= 59)){
+    if ($invalidExamEnd) {
         $message[] = "invalid exam end";
     }
-    elseif (!($exam_start[0] >= 0 && $exam_start[0] <= 23) || !($exam_start[1] >= 0 && $exam_start[1] <= 59)){   
+    elseif (!$invalidExamStart){   
         if ($exam_start_timing > $exam_end_timing)
             $message[] = "invalid exam end";
     }
@@ -153,22 +164,32 @@ function validateSection($section_data, $row, $allCourseInfo){
     //------------------------------//
     // Validation for Section Start //
     //------------------------------//
-    $section_start_timing = DateTime::createFromFormat('H:i', $section_start)->format("H:i");
-    $section_end_timing = DateTime::createFromFormat('H:i', $section_end)->format("H:i");
-    $section_start = explode(":", $section_start);
-    $section_end = explode(":", $section_end);
+    $invalidSectionStart = True;
+    $invalidSectionEnd = True;
+
+    if (strpos($section_start, ':')){
+        $section_start_timing = DateTime::createFromFormat('H:i', $section_start)->format("H:i");
+        $section_start = explode(":", $section_start);
+        $invalidSectionStart = (!($section_start[0] >= 0 && $section_start[0] <= 23) || !($section_start[1] >= 0 && $section_start[1] <= 59));
+    }
+
+    if (strpos($section_end, ':')){
+        $section_end_timing = DateTime::createFromFormat('H:i', $section_end)->format("H:i");
+        $section_end = explode(':', $section_end);
+        $invalidSectionEnd = (!($section_end[0] >= 0 && $section_end[0] <= 23) || !($section_end[1] >= 0 && $section_end[1] <= 59));
+    }
 
 
-    if (!($section_start[0] >= 0 && $section_start[0] <= 23) || !($section_start[1] >= 0 && $section_start[1] <= 59)){
+    if ($invalidSectionStart){
         $message[] = "invalid section start";
     }
     //-------------------------//
     // Validation for Exam End //
     //-------------------------//
-    if (!($section_end[0] >= 0 && $section_end[0] <= 23) || !($section_end[1] >= 0 && $section_end[1] <= 59)){
+    if ($invalidSectionEnd){
         $message[] = "invalid section end";
     }
-    elseif (!($section_start[0] >= 0 && $section_start[0] <= 23) || !($section_start[1] >= 0 && $section_start[1] <= 59)){   
+    elseif (!$invalidSectionStart){   
         if ($section_start_timing > $section_end_timing)
             $message[] = "invalid section end";
     }
@@ -391,10 +412,10 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
             $course = $val;                         // Retrieve 'course' class for logic validation 
         $courseList[] = $val->getCourse();          // Store all course in $courseList
     }
-    if (!in_array($bidCode, $courseList)){                 // Check if inputted course exist in current course database
-        $message[] = "invalid course";                           
-    }
-    else {                                                
+    if (in_array($bidCode, $courseList)){                 // Check if inputted course exist in current course database
+    //     $message[] = "invalid course";                           
+    // }
+    // else {                                                
         // Section Validation                              // Check ONLY if course validation is valid
         $sectionList = [];
         foreach($sectionsInfo as $val){
@@ -407,21 +428,26 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
         }
     }
 
-
-    // Logic Validation
+    //------------------//
+    // Logic Validation //
+    //------------------//
                                                                 ### Not yet implemented bid round checking ###
     if (isset($student) && isset($course) && $bidStatus->getRound() == '1' && $student->getSchool() != $course->getSchool() ){ // if student bid is not from their own school
         $message[] = "not own school course";  
     }
-
-    // Check for class timetable clash 
+    
+    //---------------------------------//
+    // Check for class timetable clash //
+    //---------------------------------//
     foreach ($bidInfo as $bid) {
         if (isset($section) && ($bid['day'] == $section->getDay())  && ($bid['start'] == $section->getStart() || $bid['end'] == $section->getEnd())){
             $message[] = "class timetable clash";
         }
     }
 
-    // Check for exam timetable clash
+    //--------------------------------//
+    // Check for exam timetable clash //
+    //--------------------------------//
     foreach ($bidInfo as $bid) {
         if (($bid['exam date'] == $course->getExamdate()) && ($bid['exam start'] == $course->getExamstart() || $bid['exam end'] == $course->getExamend())){
             $message[] = "exam timetable clash";
@@ -469,17 +495,7 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     //     if($bidAmount <= $student->getEdollar()){                           
     //         $eDollar = $student->getEdollar()-$bidAmount;   
     //         foreach($bidInfo as $bid) {    
-    //             if ($bid['userid'] == $userid && $bid['code'] == $bidCode && $bid['section'] != $bidSection) {
-    //                 $bidDAO->removeBidByUseridAndCode($userid,$bidCode);
-    //                 $eDollar+=$bid['amount'];
-    //             }
-    //         }
-    //         $studentDAO-> updateEDollar($userid,$eDollar);
-    //     } else{
-    //         $message[] = "not enough e-dollar";     
-    //     }
-    //     $bidDAO->removeBid($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
-    // }
+  
     
     if (sizeof($message)!=0) {  // if there is/are error(s) in $message, add filename and row
         $error['file'] = 'bid.csv';
