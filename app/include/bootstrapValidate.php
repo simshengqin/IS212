@@ -49,17 +49,25 @@ function validateCourse($course_data, $row){
     $invalidExamEnd = True;
 
     if (strpos($exam_start, ':')){
-        $exam_start_timing = DateTime::createFromFormat('H:i', $exam_start)->format("H:i");
         $exam_start = explode(":", $exam_start);
-        $invalidExamStart = (!($exam_start[0] >= 0 && $exam_start[0] <= 23) || !($exam_start[1] >= 0 && $exam_start[1] <= 59));
+        $filteredExamStart = array_filter($exam_start, 'is_numeric');
+        if (sizeof($filteredExamStart) == sizeof($exam_start)){
+            $invalidExamStart = (!($exam_start[0] >= 0 && $exam_start[0] <= 23) || !($exam_start[1] >= 0 && $exam_start[1] <= 59));
+        }
     }
 
     if (strpos($exam_end, ':')){
-        $exam_end_timing = DateTime::createFromFormat('H:i', $exam_end)->format("H:i");
-        $exam_end = explode(":", $exam_end);
-        $invalidExamEnd = (!($exam_end[0] >= 0 && $exam_end[0] <= 23) || !($exam_end[1] >= 0 && $exam_end[1] <= 59));
-
+        $exam_end = explode(':', $exam_end);
+        $filteredExamEnd = array_filter($exam_end, 'is_numeric');
+        if (sizeof($filteredExamEnd) == sizeof($exam_end)){
+            $invalidExamEnd = (!($exam_end[0] >= 0 && $exam_end[0] <= 23) || !($exam_end[1] >= 0 && $exam_end[1] <= 59));
+        }
+        if ($invalidExamEnd && !$invalidExamStart){
+            $invalidExamEnd = ($exam_end[0]<$exam_start[0] || ($exam_end[0] == $exam_start[0] && $exam_end[1]<=$exam_start[1]));
+        }
     }
+
+
 
     if ($invalidExamStart){
         $message[] = "invalid exam start";
@@ -69,10 +77,6 @@ function validateCourse($course_data, $row){
     //-------------------------//
     if ($invalidExamEnd) {
         $message[] = "invalid exam end";
-    }
-    elseif (!$invalidExamStart){   
-        if ($exam_start_timing > $exam_end_timing)
-            $message[] = "invalid exam end";
     }
 
     //----------------------//
@@ -168,31 +172,34 @@ function validateSection($section_data, $row, $allCourseInfo){
     $invalidSectionEnd = True;
 
     if (strpos($section_start, ':')){
-        $section_start_timing = DateTime::createFromFormat('H:i', $section_start)->format("H:i");
         $section_start = explode(":", $section_start);
-        $invalidSectionStart = (!($section_start[0] >= 0 && $section_start[0] <= 23) || !($section_start[1] >= 0 && $section_start[1] <= 59));
+        $filteredSectionStart = array_filter($section_start, 'is_numeric');
+        if (sizeof($filteredSectionStart) == sizeof($section_start)){
+            $invalidSectionStart = (!($section_start[0] >= 0 && $section_start[0] <= 23) || !($section_start[1] >= 0 && $section_start[1] <= 59));
+        }
     }
 
     if (strpos($section_end, ':')){
-        $section_end_timing = DateTime::createFromFormat('H:i', $section_end)->format("H:i");
         $section_end = explode(':', $section_end);
-        $invalidSectionEnd = (!($section_end[0] >= 0 && $section_end[0] <= 23) || !($section_end[1] >= 0 && $section_end[1] <= 59));
+        $filteredSectionEnd = array_filter($section_end, 'is_numeric');
+        if (sizeof($filteredSectionEnd) == sizeof($section_end)){
+            $invalidSectionEnd = (!($section_end[0] >= 0 && $section_end[0] <= 23) || !($section_end[1] >= 0 && $section_end[1] <= 59));
+        }
+        if ($invalidSectionEnd && !$invalidSectionStart){
+            $invalidSectionEnd = ($section_end[0]<$section_start[0] || ($section_end[0] == $section_start[0] && $section_end[1]<=$section_start[1]));
+        }
     }
 
-
     if ($invalidSectionStart){
-        $message[] = "invalid section start";
+        $message[] = "invalid start";
     }
     //-------------------------//
     // Validation for Exam End //
     //-------------------------//
     if ($invalidSectionEnd){
-        $message[] = "invalid section end";
-    }
-    elseif (!$invalidSectionStart){   
-        if ($section_start_timing > $section_end_timing)
-            $message[] = "invalid section end";
-    }
+        $message[] = "invalid end";
+    } 
+    
 
 
     //-------------------------------//

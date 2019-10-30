@@ -6,8 +6,9 @@ require_once '../include/protect_json.php';
 
 
 // isMissingOrEmpty(...) is in common.php
-$errors = [ isMissingOrEmpty ('userid'), 
+$errors = [ isMissingOrEmpty ('username'), 
             isMissingOrEmpty ('password') ];
+
 $errors = array_filter($errors);
 
 
@@ -18,7 +19,7 @@ if (!isEmpty($errors)) {
         ];
 }
 else{
-    $userid = $_POST['userid'];
+    $userid = $_POST['username'];
     $password = $_POST['password'];
 
 # complete authenticate API

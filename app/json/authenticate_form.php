@@ -9,7 +9,7 @@
                 <tr>
                     <td>User ID</td>
                     <td>
-                        <input name='userid' value='ben.ng.2009' />
+                        <input name='username' value='ben.ng.2009' />
                     </td>
                 </tr>
                 <tr>

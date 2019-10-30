@@ -23,7 +23,7 @@ function doBootstrap() {
 	$record['num-record-loaded'] = [
 		"bid.csv" => 0,
 		"course.csv" => 0,
-		"courseCompleted.csv" => 0,
+		"course_completed.csv" => 0,
 		"prerequisite.csv" => 0,
 		"section.csv" => 0,
 		"student.csv" => 0	
@@ -247,7 +247,7 @@ function doBootstrap() {
 						}
 						else 
 							$errors[] = $courseCompletedValidation;
-					}
+					}	
 					$row++;
 				}
 				fclose($courseCompleted);
@@ -267,7 +267,7 @@ function doBootstrap() {
 					else {
 						$sectionsInfo = $sectionDAO->retrieveSectionByFilter($bid_data[2]);  // Get section list by the course 		
 						$tempCourseList = $courseDAO->retrieveCourse($bid_data[2]);
-						if (!empty($tempCourseList)){
+						if (!empty($tempCourseList)){			// Check if course is valid
 							$bidValidation = validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo);		
 							if (sizeof($bidValidation)==0){
 								if (array_key_exists($bid_data[0], $edollarList))
