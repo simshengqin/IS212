@@ -5,14 +5,6 @@
   if (isset($_SESSION["user"]))
   {
     $student = $_SESSION["user"]; // retrive the student's information.
-    if (isset($_SESSION["initialize"]))
-    {
-        $initialize = false;
-    }
-    else
-    {
-        $initialize = true;
-    }
   }
 ?>
 
@@ -27,12 +19,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
 
-<script type="text/javascript">
-    $(document).ready(function()
-    {
-        $("#initialize-User-Info").modal('show');
-    });
-</script>
+
 
 <body>
 
@@ -65,37 +52,7 @@
     }
    ?>
 
-   <?php
-    if($initialize == true)
-    {
-      echo
-      "
-        <div class='modal fade' id='initialize-User-Info'>
-          <div class='modal-dialog modal-dialog-centered'>
-            <div class='modal-content'>
 
-              <div class='modal-header'>
-                <h4 class='modal-title'> Welcome $stuName! </h4>
-                <button type='button' class='close' data-dismiss='modal'> &times; </button>
-              </div>
-
-              <div class='modal-body'>
-                You currently have e$$stuEdollar in your account.
-              </div>
-
-              <div class='modal-footer'>
-                <button type='button' class='btn btn-danger' data-dismiss='modal'> Close </button>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      ";
-    }
-    $initialize = false;
-    $_SESSION['initialize'] = $initialize;
-
-   ?>
 
 <div class="container">
 
