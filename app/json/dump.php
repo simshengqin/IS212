@@ -40,8 +40,8 @@ try {
         $temp["title"] = $course->getTitle();
         $temp["description"] = $course->getDescription();
         $temp["exam date"] = $course->getExamdate();
-        $temp["exam start"] = $course->getExamstart();
-        $temp["exam end"] = $course->getExamend();
+        $temp["exam start"] = DateTime::createFromFormat('H:i:s',$course->getExamstart())->format('Gi'); 
+        $temp["exam end"] = DateTime::createFromFormat('H:i:s',$course->getExamend())->format('Gi'); 
         $result["course"][] = $temp;
     }
     
@@ -59,7 +59,7 @@ try {
         $temp["password"] = $student->getPassword();
         $temp["name"] = $student->getName();
         $temp["school"] = $student->getSchool();
-        $temp["edollar"] = $student->getEdollar();
+        $temp["edollar"] = (float) $student->getEdollar();
         $result["student"][] = $temp;
     }
 
@@ -69,18 +69,19 @@ try {
 #################
 ## SectionList ##
 #################
+    $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; 
 
     $sectionList = $sectionDAO->retrieveAll();                                    
     foreach ($sectionList as $section) {                                          
         $temp = [];
         $temp["course"] = $section->getCourse();
         $temp["section"] = $section->getSection();
-        $temp["day"] = $section->getDay();
-        $temp["start"] = $section->getStart();
-        $temp["end"] = $section->getEnd();
+        $temp["day"] = $days[$section->getDay()-1];
+        $temp["start"] = DateTime::createFromFormat('H:i:s',$section->getStart())->format('Gi'); 
+        $temp["end"] = DateTime::createFromFormat('H:i:s',$section->getEnd())->format('Gi'); 
         $temp["instructor"] = $section->getInstructor();
         $temp["venue"] = $section->getVenue();
-        $temp["size"] = $section->getSize();
+        $temp["size"] = (int) $section->getSize();
         $result["section"][] = $temp;
     }
 
