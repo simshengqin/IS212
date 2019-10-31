@@ -67,11 +67,12 @@ class BidDAO {
     }
 
     public function updateBid($userid, $amount, $course,$section){
-        $sql = "UPDATE bid SET userid =:userid AND code =:course AND section =:section AND amount=:amount 
+        $sql = "UPDATE bid SET userid =:userid, code =:course, section =:section, amount=:amount 
                             WHERE userid =:userid AND code =:course";
         $connMgr = new ConnectionManager();      
         $conn = $connMgr->getConnection();
 
+        
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
         $stmt->bindParam(':course', $course, PDO::PARAM_STR);
@@ -116,6 +117,7 @@ class BidDAO {
         {
             $result[] = new Bid($row['userid'], $row['amount'],$row['code'], $row['section']);
         }
+        return $result;
     }
 
     public function retrieveStudentBids($userid){

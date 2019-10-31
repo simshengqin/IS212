@@ -34,11 +34,20 @@ class Sort {
 
 	function course($a, $b)
 	{
-		$temp_a = preg_split("/((?<=[a-z])(?=\d))/i", $a['course']);;
+		$temp_a = preg_split("/((?<=[a-z])(?=\d))/i", $a['course']);
 		$temp_b = preg_split("/((?<=[a-z])(?=\d))/i", $b['course']);
-		if ($temp_a[0] == $temp_b[0])
-			return $temp_a[1] - $temp_b[1];
-		return strcmp($temp_a[0], $temp_b[0]);
+
+		if (sizeof($temp_a) == 2 && sizeof($temp_b) == 2){
+			if ($temp_a[0] == $temp_b[0])
+				if (is_numeric($temp_a[1]) && is_numeric($temp_b[1]))
+					return $temp_a[1] - $temp_b[1];
+				else
+					return strcmp($temp_a[1], $temp_b[1]);
+			return strcmp($temp_a[0], $temp_b[0]);
+		}
+		else 
+			return strcmp($temp_a[0], $temp_b[0]);
+		
 		// return strcmp($a['course'], $b['course']);
 	}
 
@@ -48,9 +57,11 @@ class Sort {
 	}
 
 	function section($a, $b)
-	{
+
+	{	$temp_a = preg_split("/((?<=[a-z])(?=\d))/i", $a['section']);
+		$temp_b = preg_split("/((?<=[a-z])(?=\d))/i", $b['section']);
 		if ($a['course'] == $b['course'])
-			return strcmp($a['section'], $b['section']);
+			return $temp_a[1] - $temp_b[1];
 		return strcmp($a['course'], $b['course']);
 	}
 	

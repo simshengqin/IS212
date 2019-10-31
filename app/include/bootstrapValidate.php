@@ -62,7 +62,7 @@ function validateCourse($course_data, $row){
         if (sizeof($filteredExamEnd) == sizeof($exam_end)){
             $invalidExamEnd = (!($exam_end[0] >= 0 && $exam_end[0] <= 23) || !($exam_end[1] >= 0 && $exam_end[1] <= 59));
         }
-        if ($invalidExamEnd && !$invalidExamStart){
+        if (!$invalidExamEnd && !$invalidExamStart){
             $invalidExamEnd = ($exam_end[0]<$exam_start[0] || ($exam_end[0] == $exam_start[0] && $exam_end[1]<=$exam_start[1]));
         }
     }
@@ -185,7 +185,7 @@ function validateSection($section_data, $row, $allCourseInfo){
         if (sizeof($filteredSectionEnd) == sizeof($section_end)){
             $invalidSectionEnd = (!($section_end[0] >= 0 && $section_end[0] <= 23) || !($section_end[1] >= 0 && $section_end[1] <= 59));
         }
-        if ($invalidSectionEnd && !$invalidSectionStart){
+        if (!$invalidSectionEnd && !$invalidSectionStart){
             $invalidSectionEnd = ($section_end[0]<$section_start[0] || ($section_end[0] == $section_start[0] && $section_end[1]<=$section_start[1]));
         }
     }
@@ -391,6 +391,9 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     $bidStatus = $bidStatusDAO->getBidStatus();
     $bidInfo = $bidDAO->retrieveStudentBidsWithInfo($userid);  // Retrieve INNER JOIN table of bid and section and course
     $courseCompletedDAO = new CourseCompletedDAO();
+
+    
+
     // UserID Validation 
     $useridList = [];
     foreach($allStudentInfo as $val){
@@ -434,6 +437,10 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
             $message[] = "invalid section";  
         }
     }
+
+    $bidList = $bidDAO->retrieveStudentBidsByCourse($userid, $bidCode);
+    if (!empty($bidList) && (sizeof($message)==0))
+        return $message;
 
     //------------------//
     // Logic Validation //

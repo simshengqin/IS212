@@ -17,6 +17,23 @@ $prerequisiteDAO = new PrerequisiteDAO();
 $sectionStudentDAO = new SectionStudentDAO(); 
 
 
+##########################
+## Check Missing Fields ##
+##########################
+
+function checkMissingFields($data, $fields){
+    $errors = [];
+    if (sizeof($data) != sizeof($fields)){
+        foreach ($fields as $field){
+            if (!array_key_exists($field, $data)){
+                $errors[] = "missing $field";
+            }
+        }
+    return $errors;
+    }
+}
+
+
 
 #######################################
 ##  Retrieve All Info from the DAOs  ##
@@ -50,10 +67,21 @@ http://<host>/app/json/update-bid.php?r={
 }
 */
 $errors = [];
+$fields = ['userid', 'amount', 'course', 'section'];
 if (isset($_GET['r'])) {
     $request = $_GET['r'];
     $data = json_decode($request, true);     
+    $errors = array_merge(checkMissingFields($data, $fields), $errors);
 
+    if (!empty($errors)){
+        $result = [
+            "status" => "error",
+            "message" => $errors
+        ];
+        header('Content-Type: application/json');
+        echo json_encode($result, JSON_PRETTY_PRINT);
+        exit();
+    }
 
 ############################
 ## Get Specific User Info ##
