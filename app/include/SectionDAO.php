@@ -2,9 +2,9 @@
 
 class SectionDAO {
 
-    public function add($course, $section, $day, $start, $end, $instructor, $venue, $size) {
-        $sql = 'INSERT INTO section (course, section, day, start, end, instructor, venue, size) 
-                    VALUES (:course, :section, :day, :start, :end, :instructor, :venue, :size)';
+    public function add($course, $section, $day, $start, $end, $instructor, $venue, $size, $vacancy) {
+        $sql = 'INSERT INTO section (course, section, day, start, end, instructor, venue, size, vacancy) 
+                    VALUES (:course, :section, :day, :start, :end, :instructor, :venue, :size, :vacancy)';
         
         $connMgr = new ConnectionManager();       
         $conn = $connMgr->getConnection();
@@ -19,6 +19,7 @@ class SectionDAO {
         $stmt->bindParam(':instructor', $instructor, PDO::PARAM_STR);
         $stmt->bindParam(':venue', $venue, PDO::PARAM_STR);
         $stmt->bindParam(':size', $size, PDO::PARAM_STR);
+        $stmt->bindParam(':vacancy', $vacancy, PDO::PARAM_STR);
         
         $isAddOK = False;
         if ($stmt->execute()) {
@@ -43,7 +44,7 @@ class SectionDAO {
 
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $result[] = new Section($row['course'], $row['section'],$row['day'], $row['start'], 
-                            $row['end'], $row['instructor'], $row['venue'], $row['size']);
+                            $row['end'], $row['instructor'], $row['venue'], $row['size'], $row['minbid'], $row['vacancy']);
         }
         return $result;
     }
@@ -63,7 +64,7 @@ class SectionDAO {
 
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $result[] = new Section($row['course'], $row['section'],$row['day'], $row['start'], 
-                            $row['end'], $row['instructor'], $row['venue'], $row['size']);
+                            $row['end'], $row['instructor'], $row['venue'], $row['size'], $row['minbid'], $row['vacancy']);
         }
         return $result;
     }
@@ -84,7 +85,7 @@ class SectionDAO {
 
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $result = new Section($row['course'], $row['section'],$row['day'], $row['start'], 
-                            $row['end'], $row['instructor'], $row['venue'], $row['size']);
+                            $row['end'], $row['instructor'], $row['venue'], $row['size'], $row['minbid'], $row['vacancy']);
         }
         return $result;
     }
@@ -129,7 +130,7 @@ class SectionDAO {
 
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $result[] = new Section($row['course'], $row['section'],$row['day'], $row['start'], 
-                            $row['end'], $row['instructor'], $row['venue'], $row['size']);
+                            $row['end'], $row['instructor'], $row['venue'], $row['size'], $row['minbid'], $row['vacancy']);
         }
         return $result;
     }
@@ -152,6 +153,23 @@ class SectionDAO {
         return $result;
     }
 
+    public function retrieveVacancy($course, $section){
+        #$sql = 'select * from section';
+        $sql = "SELECT * FROM section WHERE course =:course AND section = :section";
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':course', $course, PDO::PARAM_STR);
+        $stmt->bindParam(':section', $section, PDO::PARAM_STR);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result = $row['vacancy'];
+        }
+        return $result;
+    }
     public function updateMinBid($course,$section,$minbid){
         $sql = "UPDATE section SET minbid =:minbid WHERE course =:course AND section =:section";
         $connMgr = new ConnectionManager();      
@@ -164,6 +182,17 @@ class SectionDAO {
         $stmt->execute();
     }
 
+    public function updateVacancy($course,$section,$vacancy){
+        $sql = "UPDATE section SET vacancy =:vacancy WHERE course =:course AND section =:section";
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':course', $course, PDO::PARAM_STR);
+        $stmt->bindParam(':section', $section, PDO::PARAM_STR);
+        $stmt->bindParam(':vacancy', $vacancy, PDO::PARAM_STR);
+        $stmt->execute();
+    }
     public function removeAll(){
         $sql = 'TRUNCATE TABLE section';
         

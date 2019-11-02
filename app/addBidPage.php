@@ -244,7 +244,7 @@
 <div class = "row">
   <div class="col-sm-12" style='margin-top: 7.5vh'>           
     <table class="table table-striped">
-      <h3>Add Bid(s)</h3>
+      <h3> Course List </h3>
       <thead>
         <tr>
           <th>Course</th>
@@ -254,7 +254,8 @@
           <th>End</th>
           <th>Instructor</th>
           <th>Venue</th>
-          <th>Size</th>
+          <th>Minbid</th>
+          <th>Vacancy</th>
           <th>Bid ?</th>
         </tr>    
         </thead>
@@ -282,7 +283,8 @@
                   echo "<td>{$section->getEnd()}</td>";
                   echo "<td>{$section->getInstructor()}</td>";  
                   echo "<td>{$section->getVenue()}</td>";
-                  echo "<td>{$section->getSize()}</td>";
+                  echo "<td>{$section->getMinbid()}</td>";
+                  echo "<td>{$section->getVacancy()}/{$section->getSize()}</td>";
                   echo "<td><input type='number' step='0.01' name={$section->getCourse()}.{$section->getSection()} min='10' ></td>";
                   echo "</tr>";
                 }
