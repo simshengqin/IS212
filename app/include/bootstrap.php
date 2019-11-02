@@ -273,9 +273,9 @@ function doBootstrap() {
 								$bidList = $bidDAO->retrieveStudentBidsByCourse($bid_data[0], $bid_data[2]);
 								$existSameCourseSameUser = !empty($bidList);
 								if (!$existSameCourseSameUser)				// if there isn't an existing same course same user bid in the database
-									if (array_key_exists($bid_data[0], $edollarList)) 
+									if (array_key_exists($bid_data[0], $edollarList))
 										$edollarList[$bid_data[0]] += $bid_data[1];
-									else 
+									else
 										$edollarList[$bid_data[0]] = $bid_data[1];
 								else
 									$edollarList[$bid_data[0]] = $bid_data[1];
