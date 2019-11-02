@@ -2,6 +2,8 @@
   require_once 'include/common.php';
   require_once 'include/protect.php';
   require_once 'include/webValidation.php';
+  require_once 'clearBidTwo-process.php';
+
 ?>
 
 <?php
@@ -46,7 +48,13 @@ if (isset($_POST)) {
 
                 $bidValidation = validateBid($bid_data, "NIL", $allStudentInfo, $allCourseInfo, $sectionsInfo);		
                 if (sizeof($bidValidation)==0){
-                    $bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
+                    $userid = $bid_data[0];
+                    $amount = $bid_data[1];
+                    $course = $bid_data[2];
+                    $section = $bid_data[3]; 
+                    $bidDAO->add($userid, $amount, $course, $section);
+                    $sectionDAO->updateVacancy($course,$section,$sectionDAO->retrieveVacancy($course, $section) - 1);
+                    doRoundTwo();                   
                 }
                 else {
                     $errors = array_merge($errors, $bidValidation);
