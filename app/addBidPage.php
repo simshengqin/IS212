@@ -280,10 +280,10 @@
                   echo "<td>{$day_of_week[intval($section->getDay())-1]}</td>";
                   echo "<td>{$section->getStart()}</td>";
                   echo "<td>{$section->getEnd()}</td>";
-                  echo "<td>{$section->getInstructor()}</td>";
+                  echo "<td>{$section->getInstructor()}</td>";  
                   echo "<td>{$section->getVenue()}</td>";
                   echo "<td>{$section->getSize()}</td>";
-                  echo "<td><input type='number' name={$section->getCourse()}.{$section->getSection()} min='10' ></td>";
+                  echo "<td><input type='number' step='0.01' name={$section->getCourse()}.{$section->getSection()} min='10' ></td>";
                   echo "</tr>";
                 }
             }
