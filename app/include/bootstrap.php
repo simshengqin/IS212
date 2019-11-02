@@ -243,7 +243,7 @@ function doBootstrap() {
 						$courseCompletedValidation = validateCourseCompleted($courseCompleted_data, $row, $allCourseInfo, $allStudentInfo, $allPrerequisiteInfo);
 						if (sizeof($courseCompletedValidation)==0){
 							$courseCompletedDAO->add($courseCompleted_data[0], $courseCompleted_data[1]);
-							$record['num-record-loaded']['courseCompleted.csv']++;
+							$record['num-record-loaded']['course_completed.csv']++;
 						}
 						else 
 							$errors[] = $courseCompletedValidation;
@@ -270,13 +270,17 @@ function doBootstrap() {
 						if (!empty($tempCourseList)){			// Check if course is valid
 							$bidValidation = validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo);		
 							if (sizeof($bidValidation)==0){
-								if (array_key_exists($bid_data[0], $edollarList))
-									$edollarList[$bid_data[0]] += $bid_data[1];
+								$bidList = $bidDAO->retrieveStudentBidsByCourse($bid_data[0], $bid_data[2]);
+								$existSameCourseSameUser = !empty($bidList);
+								if (!$existSameCourseSameUser)				// if there isn't an existing same course same user bid in the database
+									if (array_key_exists($bid_data[0], $edollarList)) 
+										$edollarList[$bid_data[0]] += $bid_data[1];
+									else 
+										$edollarList[$bid_data[0]] = $bid_data[1];
 								else
 									$edollarList[$bid_data[0]] = $bid_data[1];
 								$student = $studentDAO->retrieveStudent($bid_data[0]); // get student info
-								if ($edollarList[$bid_data[0]] <= $student->getEdollar()){   // compare total bid amount against student's edollar
-									$bidList = $bidDAO->retrieveStudentBidsByCourse($bid_data[0], $bid_data[2]);
+								if ($edollarList[$bid_data[0]] <= $student->getEdollar()){   // compare total bid amount against student's edollar						
 									if (!empty($bidList))
 										$bidDAO->updateBid($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
 									else 

@@ -33,7 +33,7 @@ if (isset($_POST)) {
                 $codeSectionList = explode("_", $key);
                 $code = $codeSectionList[0];
                 $section = $codeSectionList[1];
-                $amount = intval($value);
+                $amount = floatval($value);
                 //echo "$code $section $amount <br>"; 
                 //$bidDAO->add($userid, $amount, $code, $section);
                 $bid_data = [$userid, $amount, $code, $section];
