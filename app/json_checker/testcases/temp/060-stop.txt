@@ -1,0 +1,6 @@
+{
+   "userid": "anaconda",
+   "amount": 11.0,
+   "course": "EE001",
+   "section": "S99"
+}

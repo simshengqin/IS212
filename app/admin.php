@@ -127,7 +127,7 @@ require_once 'clearBidTwo-process.php';
               </form></div>";
 
 
-    }
+    } 
     // Put bootstrap option on the right
     echo '<div class="col-md">
     <h3>Bootstrap File: </h3><br>

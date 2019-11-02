@@ -36,16 +36,15 @@ function doRoundOne() {
       $student_data = $allStudents[$i];
       $userid = $student_data->getUserid();
       $sectionStudentData = $sectionStudent->retrieveByCourseSectionUser($value['code'], $value['section'], $userid);
-
       $amount = $student_data->getAmount();
       $section = $student_data->getSection();
       $course=$student_data->getCode();
       $bidDAO->updateStatus($userid,$course,$section,"success");
       $student = $studentDAO->retrieveStudent($userid);
       $studentEdollar = $student->getEdollar();
-      $studentDAO->updateEdollar($userid, $studentEdollar-$amount);
       // To prevent duplicates 
-      if ($student_data != $sectionStudentData){
+      if ($userid != $sectionStudentData->getUserid() && $course != $sectionStudentData->getCourse()){
+        $studentDAO->updateEdollar($userid, $studentEdollar-$amount);
         $sectionStudent->add($userid,$course,$section,$amount);
       }
     }
