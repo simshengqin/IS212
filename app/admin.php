@@ -45,26 +45,29 @@ require_once 'clearBidTwo-process.php';
 
 <br>
 <?php
+
   $bidStatusDAO = new BidStatusDAO();
   $bidDAO = new BidDAO();
   $bidStatus = $bidStatusDAO->getBidStatus();
-  if (isset($_POST['round']) && (isset($_POST['status']))){    
+  if (isset($_POST['round']) && (isset($_POST['status']))){
+    #update bids according to the $_POST response 
     if (!($bidStatus->getRound() == '2' && $bidStatus->getStatus() == 'cleared'))
       $bidStatusDAO->updateBidStatus($_POST['round'], $_POST['status']);
     ## upon clearing round 1
     if ($bidStatus->getRound() == '1' && $bidStatus->getStatus() == 'closed')
     {
       doRoundOne();
-      $bidStatusDAO->updateBidStatus('1', 'cleared');
+      $bidStatusDAO->updateBidStatus('2', 'open');
+
+      
     }
     if ($_POST['round'] == '2' && $_POST['status'] == 'open')
       $bidDAO->removeAll();
   }
   $bidStatus = $bidStatusDAO->getBidStatus();
   
-  
   // if the round 1 is not started yet
-  if (($bidStatus->getRound() == '0' && $bidStatus->getStatus() == 'closed') ||  $bidStatus->getStatus() == 'cleared'){ 
+  if (($bidStatus->getRound() == '0' && $bidStatus->getStatus() == 'closed') ||  ($bidStatus->getRound() == '2' && $bidStatus->getStatus() == 'cleared')){ 
     echo '  
       <h3>Bootstrap File: </h3><br>
       <form id="bootstrap-form" action="bootstrap-process.php" method="post" enctype="multipart/form-data">

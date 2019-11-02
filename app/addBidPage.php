@@ -7,7 +7,10 @@
   $studentDAO = new StudentDAO();
   $student = $_SESSION["user"];     //Student class
   $userid = $student-> getUserid();
-
+  if(!isset($errors)){
+    $errors = [];
+  }
+  
   $bidDAO = new BidDAO();
   $stuBids = $bidDAO->retrieveStudentBids($userid);
   $stuEdollar = $student -> getEdollar();
@@ -18,9 +21,7 @@
     }
   
   $name= $student -> getName();
-  
-  
-  
+
 ?>
 
 <html>
@@ -236,7 +237,7 @@
   
 <?php
   if(sizeof($errors) != 0){
-    foreach ($errors as $error)
+    foreach ($errors['message'] as $error)
       echo "<a style = 'color:red'>$error</a><br>";
   }
 

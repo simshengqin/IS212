@@ -83,12 +83,13 @@ if (empty($errors)) {
     $sectionStudentDAO->removeByIDCourseSection($data['userid'],$data['course'], $data['section']);
 
     //-----------//
-    // Refund e$ //
+    // Refund e$ and vacancy //
     //-----------//
     if (!empty($sectionStudentInfo)){
         $refundAmount = $sectionStudentInfo->getAmount();
         $edollar = $studentInfo->getEdollar() + $refundAmount;
         $studentDAO->updateEDollar($data['userid'],$edollar);
+        $sectionDAO->updateVacancy($course,$section,$sectionDAO->retrieveVacancy($course, $section) - 1);
     }
 }
 else {
