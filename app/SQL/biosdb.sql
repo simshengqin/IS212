@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Oct 25, 2019 at 11:40 AM
+-- Generation Time: Nov 02, 2019 at 02:17 AM
 -- Server version: 5.7.23
 -- PHP Version: 7.2.10
 
@@ -21,8 +21,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `biosdb`
 --
-CREATE DATABASE IF NOT EXISTS `biosdb` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `biosdb`;
 
 -- --------------------------------------------------------
 
@@ -32,11 +30,12 @@ USE `biosdb`;
 
 DROP TABLE IF EXISTS `bid`;
 CREATE TABLE IF NOT EXISTS `bid` (
-  `userid` varchar(128) DEFAULT NULL,
-  `amount` int(2) DEFAULT NULL,
-  `code` varchar(10) DEFAULT NULL,
+  `userid` varchar(128) NOT NULL,
+  `amount` float DEFAULT NULL,
+  `code` varchar(10) NOT NULL,
   `section` varchar(3) DEFAULT NULL,
-  `status` varchar(10) NOT NULL DEFAULT 'pending'
+  `status` varchar(10) NOT NULL DEFAULT 'pending',
+  PRIMARY KEY (`userid`,`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -53,11 +52,6 @@ CREATE TABLE IF NOT EXISTS `bid_status` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Truncate table before insert `bid_status`
---
-
-TRUNCATE TABLE `bid_status`;
 --
 -- Dumping data for table `bid_status`
 --
