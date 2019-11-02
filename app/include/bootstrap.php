@@ -168,7 +168,7 @@ function doBootstrap() {
 						$sectionValidation = validateSection($section_data, $row, $allCourseInfo);
 						if (sizeof($sectionValidation) == 0){
 							$sectionDAO->add($section_data[0], $section_data[1], $section_data[2], $section_data[3], 
-											$section_data[4], $section_data[5], $section_data[6], $section_data[7]);
+											$section_data[4], $section_data[5], $section_data[6], $section_data[7], $section_data[7]);
 							$record['num-record-loaded']['section.csv']++;
 						}
 						else

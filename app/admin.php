@@ -52,8 +52,11 @@ require_once 'clearBidTwo-process.php';
     if (!($bidStatus->getRound() == '2' && $bidStatus->getStatus() == 'cleared'))
       $bidStatusDAO->updateBidStatus($_POST['round'], $_POST['status']);
     ## upon clearing round 1
-    if ($_POST['round'] == '1' && $_POST['status'] == 'closed')
+    if ($bidStatus->getRound() == '1' && $bidStatus->getStatus() == 'closed')
+    {
       doRoundOne();
+      $bidStatusDAO->updateBidStatus('1', 'cleared');
+    }
     if ($_POST['round'] == '2' && $_POST['status'] == 'open')
       $bidDAO->removeAll();
   }
@@ -72,7 +75,8 @@ require_once 'clearBidTwo-process.php';
       ';
     //////Round 2 clearing takes place here. Only takes place once, will convert status from closed to cleared
     if ($bidStatus->getRound() == '2' && $bidStatus->getStatus() == 'closed') {
-        doRoundTwo();
+        //doRoundTwo(true);
+        $bidStatusDAO->updateBidStatus('2', 'cleared');
         $bidDAO->removeAll();
     }
   }
@@ -94,7 +98,7 @@ require_once 'clearBidTwo-process.php';
               <button type='submit' name='status' value='closed'>Close round </button>
               </form></div>";
     }
-    elseif ($bidStatus->getStatus() == 'closed'){
+    elseif ($bidStatus->getStatus() == 'closed' || $bidStatus->getStatus() == 'cleared'){
       $round++;
         echo "<input type='hidden' id='round' name='round' value='$round'>
               <br>

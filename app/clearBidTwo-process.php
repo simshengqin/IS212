@@ -1,10 +1,10 @@
 <?php
 
-function doRoundTwo(){
-    // Round 2 clearing takes place here. Only takes place once, will convert status from closed to cleared
+function doRoundTwo($convertsection = false){
+    // Round 2 clearing takes place here. Only takes place once, 
+    //Will not convert status from closed to cleared. Do it after this function!!
     $bidStatusDAO = new BidStatusDAO();
     $bidStatus = $bidStatusDAO->getBidStatus();
-    $bidStatusDAO->updateBidStatus('2', 'cleared');
     $bidDAO = new BidDAO();
     $allBids = $bidDAO->retrieveAll();
     $sectionDAO = new SectionDAO();
@@ -64,7 +64,7 @@ function doRoundTwo(){
         }
         $bidDAO->updateStatus($userid,$course,$section,$status);
         //New
-        if ($status == "success") {
+        if ($convertsection == true && $status == "success") {
             $sectionStudentDAO->add($userid, $course, $section, $amount);
             $student = $studentDAO->retrieveStudent($userid);
             $edollar = $student->getEdollar();
