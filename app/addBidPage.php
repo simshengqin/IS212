@@ -244,7 +244,7 @@
 <div class = "row">
   <div class="col-sm-12" style='margin-top: 7.5vh'>           
     <table class="table table-striped">
-      <h3>Add Bid(s)</h3>
+      <h3> Course List </h3>
       <thead>
         <tr>
           <th>Course</th>
