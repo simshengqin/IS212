@@ -23,7 +23,7 @@ if (isset($_POST)) {
         $section ="";
         $amount = "";
         if (array_sum($_POST) > $edollar) { //Does not allow user to bid if his total bid amount exceeds his current edollar amount
-            $errors[] = "Insufficient edollars!";
+            $errors['message'][] = "Insufficient edollars!";
             break;
         }
         elseif($key!= "Add_Bid") 
@@ -53,8 +53,17 @@ if (isset($_POST)) {
                     $course = $bid_data[2];
                     $section = $bid_data[3]; 
                     $bidDAO->add($userid, $amount, $course, $section);
-                    $sectionDAO->updateVacancy($course,$section,$sectionDAO->retrieveVacancy($course, $section) - 1);
-                    doRoundTwo();                   
+                    
+                    #retrieve the round 
+                    $bid_status_DAO = new BidstatusDAO();
+                    $bid_status = $bid_status_DAO->getBidStatus();
+                    $round = $bid_status_DAO->getRound();
+                    
+                    #Update vacancy: Only done if it is round 2.
+                    if ($round == '2'){
+                        $sectionDAO->updateVacancy($course,$section,$sectionDAO->retrieveVacancy($course, $section) - 1);
+                        doRoundTwo();
+                    }
                 }
                 else {
                     $errors = array_merge($errors, $bidValidation);
