@@ -29,8 +29,8 @@ function checkMissingFields($data, $fields){
                 $errors[] = "missing $field";
             }
         }
-    return $errors;
     }
+    return $errors;
 }
 
 
@@ -90,7 +90,8 @@ if (isset($_GET['r'])) {
     // Get student information (Student class)
     $student = $studentDAO->retrieveStudent($data['userid']);
     // Get edollar from student class
-    $studentEdollar = $student->getEdollar();
+    if (!empty($student))
+        $studentEdollar = $student->getEdollar();
     // Get a list of student bids (Associative Array)
     $studentBids = $bidDAO->retrieveStudentBidsWithInfo($data['userid']);
     // Get the section course info (Section Class)
@@ -104,6 +105,11 @@ if (isset($_GET['r'])) {
     // Get a list of enrolled courses of the user (List of SectionStudent class)
     $enrolledClasses = $sectionStudentDAO->retrieveByID($data['userid']);
 
+    //---------------------------------//
+    // Check if user has bidded before //
+    //---------------------------------//
+    $bidList = $bidDAO->retrieveStudentBidsByCourse($data['userid'], $data['course']);
+    $existSameCourseSameUser = !empty($bidList);
 
 #################
 ## Validations ##
@@ -126,9 +132,10 @@ if (isset($_GET['r'])) {
         /*
             The userid is not found in the system records
         */
-        if (!in_array($data['userid'], $studentList)){
+        if (empty($student)){
             $errors[] = "invalid userid";
         }
+        else {
 
         //------------------//
         // Check Bid Amount //
@@ -174,7 +181,7 @@ if (isset($_GET['r'])) {
         /*
             The amount must be more than the minimum bid (only applicable for round 2)
         */
-        if ($bidRoundStatus->getRound() == 2 && $data['amount'] <= $sectionDAO->retrieveMinBid($data['course'], $data['section'])){
+        if ($bidRoundStatus->getRound() == 2 && $data['amount'] < $sectionDAO->retrieveMinBid($data['course'], $data['section'])){
             $errors[] = "bid too low";
         }
 
@@ -186,13 +193,14 @@ if (isset($_GET['r'])) {
             update of a previous bid, account for the extra e$ gained back 
             from the cancellation of the previous bid first.
         */
-        foreach ($studentBids as $studentBid) {
-            if ($studentBid['code'] == $data['course'] && $studentBid['section'] == $data['section']){
-                $studentEdollar+= $studentBid['amount'];
-            }
-        }
-        if (($studentEdollar - $data['amount']) < 0)+
+        $temp = 0;
+        if ($existSameCourseSameUser)
+            $studentEdollar += $bidList->getAmount();
+
+        if (($studentEdollar - $data['amount']) < 0)
             $errors[] = 'insufficient e$';
+
+        if (!$existSameCourseSameUser){
 
         //-----------------------//
         // Class Timetable Clash //
@@ -202,24 +210,13 @@ if (isset($_GET['r'])) {
             of a previously bidded section
         */
 
-        $start_timing = [                           // Changed to 08:30:00 instead of 8:30 because it's converted to DATETIME format
-            '08:30:00' => 0,                        // when it's uploaded to the database (PHPmyAdmin)
-            '12:00:00' => 1, 
-            '15:30:00' => 2
-        ];
-        $end_timing = [
-            '11:45:00' => 0, 
-            '15:15:00' => 1, 
-            '18:45:00' => 2
-        ];
-
         foreach ($studentBids as $bid) {
-            if (isset($section) && ($bid['day'] == $section->getDay())  && ($start_timing[$bid['start']] == $start_timing[$section->getStart()] || $end_timing[$bid['end']] == $end_timing[$section->getEnd()])){
+            if (isset($section) && ($bid['day'] == $section->getDay())  && ($bid['start'] == $section->getStart() || $bid['end'] == $section->getEnd())){
                 $errors[] = "class timetable clash";
             }
         }
 
-        //----------------------//
+        //----------------------//  
         // Exam Timetable Clash //
         //----------------------//
         /*
@@ -227,7 +224,7 @@ if (isset($_GET['r'])) {
             of a previously bidded section
         */
         foreach ($studentBids as $bid) {
-            if (($bid['exam date'] == $course->getExamdate())  && ($start_timing[$bid['exam start']] == $start_timing[$course->getExamstart()] || $end_timing[$bid['exam end']] == $end_timing[$course->getExamend()])){
+            if (($bid['exam date'] == $course->getExamdate())  && ($bid['exam start'] == $course->getExamstart() || $bid['exam end'] == $course->getExamend())){
                 $errors[] = "exam timetable clash";
             }
         }
@@ -285,6 +282,7 @@ if (isset($_GET['r'])) {
             $errors[] = "section limit reached";
         }
 
+        
 
         //-----------------------//
         // Not own School Course //
@@ -296,8 +294,7 @@ if (isset($_GET['r'])) {
         if (isset($student) && isset($course) && $bidRoundStatus->getRound() == '1' && $student->getSchool() != $course->getSchool() ){ // if student bid is not from their own school
             $errors[] = "not own school course";  
         }
-
-
+    }
 
         //------------//
         // No Vacancy //
@@ -311,21 +308,9 @@ if (isset($_GET['r'])) {
                 $errors[] = "no vacancy";
             }
         }
+    }
 
-
-        //---------------------------------//
-        // Check if user has bidded before //
-        //---------------------------------//
-        /*
-            If user bids for the first time, it will be added.
-            else will update existing bid.
-        */
-        $bidCount = 0;
-        foreach ($studentBids as $bid){
-            if ($data['course'] == $bid['code'])
-                $bidCount++;
-        }
-        $first = ($bidCount == 0); 
+     
 
         } // if round is still open
     } 
@@ -335,10 +320,14 @@ if (isset($_GET['r'])) {
     }
 
 if (sizeof($errors)==0){
-    if ($first)
+    if (!$existSameCourseSameUser){
         $bidDAO->add($data['userid'], $data['amount'], $data['course'], $data['section']);
-    else
+        $studentDAO->updateEDollar($data['userid'], $student->getEdollar() - $data['amount']);
+    }
+    else{
         $bidDAO->updateBid($data['userid'], $data['amount'], $data['course'], $data['section']);
+        $studentDAO->updateEDollar($data['userid'], $student->getEdollar() + $bidList->getAmount() - $data['amount']);
+    }
     $result = [
         "status" => "success"
     ];

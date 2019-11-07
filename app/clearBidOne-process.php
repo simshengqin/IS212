@@ -1,6 +1,5 @@
 <?php
   require_once 'include/common.php';
-  require_once 'include/protect.php';
 
 function doRoundOne() {
   $bidDAO = new BidDAO();
@@ -20,14 +19,32 @@ function doRoundOne() {
 
     #check class for number of slots (say number of slots = x)
     $sectionDAO = new SectionDAO();
-    $section = $sectionDAO->retrieveSectionByCourse($value['code'],$value['section']);
-    $sectionsize = $section->getSize();
+    $sectionInfo = $sectionDAO->retrieveSectionByCourse($value['code'],$value['section']);
+    $sectionsize = $sectionInfo->getSize();
 
     // var_dump($section);
     // var_dump($sectionsize);
 
     $sectionStudent = new sectionStudentDAO();
     $studentDAO = new StudentDAO();
+
+    $multipleStudentWithClearingPrice = False;
+
+    # get clearing price
+    $clearingPrice = 0;
+    if (sizeof($allStudents) >= $sectionsize){
+      $clearingPrice = $allStudents[$sectionsize-1]->getAmount();
+    }
+
+    #check if there are multiple students with same clearing price
+    $count = 0;
+    foreach ($allStudents as $student){
+      if ($clearingPrice == $student->getAmount())
+        $count++;
+    }
+    if ($count > 1)
+      $multipleStudentWithClearingPrice = True;
+
     # access each key & value pair 
     for ($i=0; $i<$sectionsize;$i++){
       if (sizeof($allStudents) <= $i){
@@ -43,9 +60,14 @@ function doRoundOne() {
       $student = $studentDAO->retrieveStudent($userid);
       $studentEdollar = $student->getEdollar();
       // To prevent duplicates 
-      if ($userid != $sectionStudentData->getUserid() && $course != $sectionStudentData->getCourse()){
-        $studentDAO->updateEdollar($userid, $studentEdollar-$amount);
+      if (empty($sectionStudentData) && ($amount > $clearingPrice || ($amount == $clearingPrice && !$multipleStudentWithClearingPrice))){
         $sectionStudent->add($userid,$course,$section,$amount);
+        $bidDAO->updateStatus($userid,$course,$section,"success");
+        $sectionDAO->updateVacancy($course,$section, $sectionInfo->getVacancy()-1);
+      }
+      else{
+        $bidDAO->updateStatus($userid,$course,$section,"fail");
+        $studentDAO->updateEdollar($userid, $studentEdollar+$amount);
       }
     }
 
@@ -54,7 +76,9 @@ function doRoundOne() {
       $userid = $student_data->getUserid();
       $section = $student_data->getSection();
       $course=$student_data->getCode();
+      $studentEdollar = $student->getEdollar();
       $bidDAO->updateStatus($userid,$course,$section,"fail");
+      $studentDAO->updateEdollar($userid, $studentEdollar+$amount);
     }
 }
 

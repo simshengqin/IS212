@@ -153,18 +153,6 @@ function validateSection($section_data, $row, $allCourseInfo){
         $message[] = "invalid day";        // Check day value between 1 to 7  
     }
 
-    // Section Start Validation 
-    $section_start_timing = [
-        '8:30' => 0, 
-        '12:00' => 1, 
-        '15:30' => 2
-    ];
-    $section_end_timing = [
-        '11:45' => 0, 
-        '15:15' => 1, 
-        '18:45' => 2
-    ];
-
     //------------------------------//
     // Validation for Section Start //
     //------------------------------//
