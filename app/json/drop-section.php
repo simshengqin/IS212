@@ -89,7 +89,7 @@ if (empty($errors)) {
         $refundAmount = $sectionStudentInfo->getAmount();
         $edollar = $studentInfo->getEdollar() + $refundAmount;
         $studentDAO->updateEDollar($data['userid'],$edollar);
-        $sectionDAO->updateVacancy($course,$section,$sectionDAO->retrieveVacancy($course, $section) - 1);
+        $sectionDAO->updateVacancy($data['course'],$data['section'],$sectionDAO->retrieveVacancy($data['course'], $data['section']) + 1);
     }
 }
 else {

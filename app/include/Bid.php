@@ -23,7 +23,7 @@ class Bid {
 
     public function getAmount()
     {
-      return $this->amount;
+      return (float) $this->amount;
     }
 
     public function getCode()

@@ -28,47 +28,47 @@ function doRoundTwo($convertsection = false){
         $bidCount = sizeof($biddedCourses);
 
         // N is the seatsAvailable
-        if ($seatsAvailable > $bidCount) {
+        if ($seatsAvailable >= $bidCount) {
             $minBid = 10;   
             $status = "success";             
         }
         else {
-        //Min bid amount is equal to the Nth bid amount + 1
-        $nthBid = $biddedCourses[$seatsAvailable - 1];
-        $multipleSimilarMinBids = False;
-        if ($seatsAvailable < $bidCount) {
-            $nthPlusOneBid = $biddedCourses[$seatsAvailable];
-            //If there are more then one course with the same min bid amount, reject all of them
-            if ($nthBid->getAmount() == $nthPlusOneBid->getAmount()) {
-                $multipleSimilarMinBids = True;
+            //Min bid amount is equal to the Nth bid amount + 1
+            $nthBid = $biddedCourses[$seatsAvailable - 1];
+            $multipleSimilarMinBids = False;
+            if ($seatsAvailable < $bidCount) {
+                $nthPlusOneBid = $biddedCourses[$seatsAvailable];
+                //If there are more then one course with the same min bid amount, reject all of them
+                if ($nthBid->getAmount() == $nthPlusOneBid->getAmount()) {
+                    $multipleSimilarMinBids = True;
+                }
             }
-        }
-        $oldMinBid = $sectionDAO -> retrieveMinBid($course, $section);
-        if ( ($nthBid->getAmount() + 1) > $oldMinBid) {
-            $minBid = $nthBid->getAmount() + 1;
-            $sectionDAO -> updateMinBid($course,$section,$minBid);
-        }
-        else {
-            $minBid = $oldMinBid;
-        }
-        //2 scenarios for the bid to be considered unsuccessful
-        //if bid amount is equal to minBid and it is not the nthBid, it means there are multiple courses with the same minbid. No space left=>Reject
-        //if bid amount is smaller than minBid => Automatically rejected
-        if ( ($amount == ($minBid - 1) && $multipleSimilarMinBids == True) || $amount < ($minBid - 1)){
-            $status = "fail";                  
-        }
-        else {
-            $status = "success";
-            
-        }
+            $oldMinBid = $sectionDAO -> retrieveMinBid($course, $section);
+            if ( ($nthBid->getAmount() + 1) > $oldMinBid) {
+                $minBid = $nthBid->getAmount() + 1;
+                $sectionDAO -> updateMinBid($course,$section,$minBid);
+            }
+            else {
+                $minBid = $oldMinBid;
+            }
+            //2 scenarios for the bid to be considered unsuccessful
+            //if bid amount is equal to minBid and it is not the nthBid, it means there are multiple courses with the same minbid. No space left=>Reject
+            //if bid amount is smaller than minBid => Automatically rejected
+            if ( ($amount == ($minBid - 1) && $multipleSimilarMinBids == True) || $amount < ($minBid - 1)){
+                $status = "fail";                  
+            }
+            else {
+                $status = "success";
+                
+            }
         }
         $bidDAO->updateStatus($userid,$course,$section,$status);
         //New
         if ($convertsection == true && $status == "success") {
             $sectionStudentDAO->add($userid, $course, $section, $amount);
-            $student = $studentDAO->retrieveStudent($userid);
-            $edollar = $student->getEdollar();
-            $studentDAO->updateEDollar($userid,$edollar - $amount);          
+            // $student = $studentDAO->retrieveStudent($userid);
+            // $edollar = $student->getEdollar();
+            // $studentDAO->updateEDollar($userid,$edollar - $amount);   #05/11/2019: now e$ deduction is done the monent user place a bid
         }
     }
 }

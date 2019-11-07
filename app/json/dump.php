@@ -39,7 +39,7 @@ try {
         $temp["school"] = $course->getSchool();
         $temp["title"] = $course->getTitle();
         $temp["description"] = $course->getDescription();
-        $temp["exam date"] = $course->getExamdate();
+        $temp["exam date"] = DateTime::createFromFormat('Y-m-d',$course->getExamdate())->format('Ymd');
         $temp["exam start"] = DateTime::createFromFormat('H:i:s',$course->getExamstart())->format('Gi'); 
         $temp["exam end"] = DateTime::createFromFormat('H:i:s',$course->getExamend())->format('Gi'); 
         $result["course"][] = $temp;

@@ -123,6 +123,9 @@ function doBootstrap() {
 				$prerequisiteDAO = new PrerequisiteDAO();
 				$prerequisiteDAO->removeAll();
 
+				$sectionStudentDAO = new SectionStudentDAO();
+				$sectionStudentDAO->removeAll();
+
 
 				# then read each csv file line by line (remember to skip the header)
 				# $data = fgetcsv($file) gets you the next line of the CSV file which will be stored 
@@ -272,39 +275,52 @@ function doBootstrap() {
 							if (sizeof($bidValidation)==0){
 								$bidList = $bidDAO->retrieveStudentBidsByCourse($bid_data[0], $bid_data[2]);
 								$existSameCourseSameUser = !empty($bidList);
-								if (!$existSameCourseSameUser)				// if there isn't an existing same course same user bid in the database
-									if (array_key_exists($bid_data[0], $edollarList))
-										$edollarList[$bid_data[0]] += $bid_data[1];
-									else
-										$edollarList[$bid_data[0]] = $bid_data[1];
-								else
-									$edollarList[$bid_data[0]] = $bid_data[1];
-								$student = $studentDAO->retrieveStudent($bid_data[0]); // get student info
-								if ($edollarList[$bid_data[0]] <= $student->getEdollar()){   // compare total bid amount against student's edollar						
-									if (!empty($bidList))
+								$student = $studentDAO->retrieveStudent($bid_data[0]); // get student info						 					
+								if ($existSameCourseSameUser){
+									if ($bid_data[1] <= $student->getEdollar() + $bidList->getAmount()){  // compare total bid amount against student's edollar	
 										$bidDAO->updateBid($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
-									else 
-										$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
-									$record['num-record-loaded']['bid.csv']++;
+										$studentDAO->updateEDollar($bid_data[0], $student->getEdollar() + $bidList->getAmount() - $bid_data[1]);
+										$record['num-record-loaded']['bid.csv']++;
+									}
+									else {
+										$bidValidation = [
+											"file" => 'bid.csv',
+											"line" => $row,
+											"message" => ['not enough e-dollar']
+										];
+										$errors[] = $bidValidation;	
+									}						
 								}
-								else{
-									$bidValidation = [
-										"file" => 'bid.csv',
-										"line" => $row,
-										"message" => ['not enough e-dollar']
-									];
-									$errors[] = $bidValidation;
+								else {
+									if ($bid_data[1] <= $student->getEdollar()){
+										$bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
+										$studentDAO->updateEDollar($bid_data[0], $student->getEdollar() - $bid_data[1]);
+										$record['num-record-loaded']['bid.csv']++;
+									} else {
+										$bidValidation = [
+											"file" => 'bid.csv',
+											"line" => $row,
+											"message" => ['not enough e-dollar']
+										];
+										$errors[] = $bidValidation;
+									}						
 								}
 							}
 							else
 								$errors[] = $bidValidation;
 						}
 						else {
-							$bidValidation = [
-								"file" => 'bid.csv',
-								"line" => $row,
-								"message" => ["invalid course"]
-							];
+							$bidValidation = validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sectionsInfo);
+							if (sizeof($bidValidation) == 0){
+								$bidValidation = [
+									"file" => 'bid.csv',
+									"line" => $row,
+									"message" => ["invalid course"]
+								];
+							}
+							else{
+								$bidValidation['message'][] = 'invalid course';
+							}
 							$errors[] = $bidValidation;
 						}
 					}
