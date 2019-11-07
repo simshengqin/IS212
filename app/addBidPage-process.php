@@ -13,7 +13,8 @@ $student = $_SESSION["user"];
 $userid = $student-> getUserid();
 $edollar = $student -> getEdollar();
 if (isset($_POST)) {
-    //var_dump($_POST); 
+    var_dump($_POST); 
+    var_dump($student);
     //print(array_sum($_POST));
     $errors = [];
     foreach($_POST as $key => $value)
@@ -22,6 +23,7 @@ if (isset($_POST)) {
         $code ="";
         $section ="";
         $amount = "";
+
         if (array_sum($_POST) > $edollar) { //Does not allow user to bid if his total bid amount exceeds his current edollar amount
             $errors['message'][] = "Insufficient edollars!";
             break;
@@ -61,6 +63,21 @@ if (isset($_POST)) {
                     
                     #Update vacancy: Only done if it is round 2.
                     if ($round == '2'){
+                        
+                        //Validate if vacancy above 0. If not, throw an error 
+                        //Retrieve Vacancy
+                        $SectionDAO = new SectionDAO();
+                        $vacancy = $sectionDAO->retrieveVacancy($course, $section);
+                        var_dump($vacancy);
+
+                        // Error message for vacancy
+                        if ($vacancy == 0 ){
+                            $errors['message'][] = "Course: $course Section: $section Error: No Vacancy";
+                            // Removing Bid 
+                            $bidDAO->removeBidByUseridAndCode($userid, $course);
+                            continue;
+                        }
+
                         $sectionDAO->updateVacancy($course,$section,$sectionDAO->retrieveVacancy($course, $section) - 1);
                         doRoundTwo();
                     }

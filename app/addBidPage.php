@@ -240,6 +240,9 @@
     foreach ($errors['message'] as $error)
       echo "<a style = 'color:red'>$error</a><br>";
   }
+  else{
+    echo "<a style = 'color:blue'>You have no errors!</a><br>";
+  }
 
  ?>
 <div class = "row">

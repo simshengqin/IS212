@@ -509,7 +509,6 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     //     if($bidAmount <= $student->getEdollar()){                           
     //         $eDollar = $student->getEdollar()-$bidAmount;   
     //         foreach($bidInfo as $bid) {    
-  
     
     if (sizeof($message)!=0) {  // if there is/are error(s) in $message, add filename and row
         $error['file'] = 'bid.csv';
