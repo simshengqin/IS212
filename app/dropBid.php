@@ -16,13 +16,33 @@
 //   var_dump($bids);
   $initialize = false; # To determine whether to show confirm dopped bids dialogue box
 
+// Find the round 
+  $BidStatusDAO = new BidStatusDAO();
+  $BidStatus = $BidStatusDAO->getBidStatus();
+  $round = $BidStatus->getRound();
+
   #Remove checkboxed value from database if submitted 
   if(!empty($_POST)){
     if (isset($_POST)){
-        //var_dump($_POST);
+        // var_dump($_POST);
         $userid = $student->getUserid();
         $codeList = [];
         foreach($_POST as $code){
+          
+          #If in round 2, increase vacancy 
+          if ($round == 2){
+            #find the section number of the student 
+            $bid = $bidDAO->retrieveStudentBidsByCourse($userid, $code);
+            // var_dump($bid);
+            $section = $bid->getSection();
+            #Retrieve vacancy of the bid 
+             
+            $SectionDAO = new SectionDAO ;
+            $vacancy = $SectionDAO->retrieveVacancy($code, $section);
+            // var_dump($vacancy);
+
+            $SectionDAO->updateVacancy($code,$section,$vacancy+1);
+          }
           $bidDAO->removeBidByUseridAndCode($userid, $code);
           $codeList[] = $code; # capture the list of bid(s) 
         }

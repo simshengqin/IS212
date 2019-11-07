@@ -55,9 +55,9 @@ if (isset($_POST)) {
                     $bidDAO->add($userid, $amount, $course, $section);
                     
                     #retrieve the round 
-                    $bid_status_DAO = new BidstatusDAO();
-                    $bid_status = $bid_status_DAO->getBidStatus();
-                    $round = $bid_status_DAO->getRound();
+                    $bidStatusDAO = new BidStatusDAO();
+                    $bidStatus = $bidStatusDAO->getBidStatus();
+                    $round = $bidStatus->getRound();
                     
                     #Update vacancy: Only done if it is round 2.
                     if ($round == '2'){
