@@ -18,7 +18,7 @@ class Sort {
 	{
 		return strcmp(end($a),end($b));
 	}
-	
+
 #####################
 ## Bid Amount Sort ##
 #####################

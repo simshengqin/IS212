@@ -120,6 +120,29 @@ class BidDAO {
         return $result;
     }
 
+    public function retrieveStudentBidsWithEnrolled($course, $section){
+        $sql = "SELECT b.userid, b.amount, b.code, b.section FROM bid b WHERE b.section=:section and b.code =:course 
+                UNION SELECT sc.userid, sc.amount, sc.course, sc.section FROM section_student sc 
+                WHERE sc.section=:section and sc.course =:course ORDER BY amount DESC";
+    
+        $connMgr = new ConnectionManager();
+        $conn = $connMgr->getConnection();
+    
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->bindParam(':section', $section, PDO::PARAM_STR);
+        $stmt->bindParam(':course', $course, PDO::PARAM_STR);
+        $stmt->execute();
+    
+        $result = [];
+    
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+            $result[] = new Bid($row['userid'], $row['amount'],$row['code'], $row['section']);
+        }
+        return $result;
+    }
+
     public function retrieveStudentBids($userid){
     $sql = 'select userid, amount, code, section from bid where userid=:userid';
 

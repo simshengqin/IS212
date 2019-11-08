@@ -2,6 +2,7 @@
 
 require_once '../include/common.php';
 require_once '../include/protect_json.php';
+require_once '../clearBidTwo-process.php';
 
 ########################
 ## DAO Initialization ##
@@ -15,6 +16,7 @@ $courseCompletedDAO = new CourseCompletedDAO();
 $bidStatusDAO = new BidStatusDAO();
 $prerequisiteDAO = new PrerequisiteDAO();
 $sectionStudentDAO = new SectionStudentDAO(); 
+$sort = new Sort();
 
 
 ##########################
@@ -23,11 +25,12 @@ $sectionStudentDAO = new SectionStudentDAO();
 
 function checkMissingFields($data, $fields){
     $errors = [];
-    if (sizeof($data) != sizeof($fields)){
-        foreach ($fields as $field){
-            if (!array_key_exists($field, $data)){
-                $errors[] = "missing $field";
-            }
+    foreach ($fields as $field){
+        if (!array_key_exists($field, $data)){
+            $errors[] = "missing $field";
+        }
+        elseif ($data[$field] == ""){
+            $errors[] = "blank $field";
         }
     }
     return $errors;
@@ -67,7 +70,7 @@ http://<host>/app/json/update-bid.php?r={
 }
 */
 $errors = [];
-$fields = ['userid', 'amount', 'course', 'section'];
+$fields = ['amount', 'course', 'section','userid'];
 if (isset($_GET['r'])) {
     $request = $_GET['r'];
     $data = json_decode($request, true);     
@@ -143,12 +146,15 @@ if (isset($_GET['r'])) {
         /*
             Amount must be positive number >= e$10.00 and not more than 2 decimal places
         */
+        $invalidAmount = False;
         if(!is_numeric($data['amount']) || $data['amount'] < 10.0){       // check if edollar is not numerical value or less than e$10
             $errors[] = "invalid amount";
+            $invalidAmount = True;
         }
         else {
             if ((intval($data['amount']) != $data['amount']) && (strlen($data['amount']) - strrpos($data['amount'], '.') - 1 > 2)) {    // check that the edollar is not more than 2 decimal places
                 $errors[] = "invalid amount";
+                $invalidAmount = True;
             }
         }
 
@@ -175,15 +181,6 @@ if (isset($_GET['r'])) {
         }
 
 
-        //-------------//
-        // Bid Too Low //
-        //-------------//
-        /*
-            The amount must be more than the minimum bid (only applicable for round 2)
-        */
-        if ($bidRoundStatus->getRound() == 2 && $data['amount'] < $sectionDAO->retrieveMinBid($data['course'], $data['section'])){
-            $errors[] = "bid too low";
-        }
 
         //-----------------//
         // Insufficient e$ //
@@ -194,11 +191,13 @@ if (isset($_GET['r'])) {
             from the cancellation of the previous bid first.
         */
         $temp = 0;
-        if ($existSameCourseSameUser)
-            $studentEdollar += $bidList->getAmount();
+        if (!$invalidAmount){
+            if ($existSameCourseSameUser)
+                $studentEdollar += $bidList->getAmount();
 
-        if (($studentEdollar - $data['amount']) < 0)
-            $errors[] = 'insufficient e$';
+            if (($studentEdollar - $data['amount']) < 0)
+                $errors[] = 'insufficient e$';
+        }
 
         if (!$existSameCourseSameUser){
 
@@ -320,22 +319,39 @@ if (isset($_GET['r'])) {
     }
 
 if (sizeof($errors)==0){
-    if (!$existSameCourseSameUser){
-        $bidDAO->add($data['userid'], $data['amount'], $data['course'], $data['section']);
-        $studentDAO->updateEDollar($data['userid'], $student->getEdollar() - $data['amount']);
-    }
-    else{
-        $bidDAO->updateBid($data['userid'], $data['amount'], $data['course'], $data['section']);
-        $studentDAO->updateEDollar($data['userid'], $student->getEdollar() + $bidList->getAmount() - $data['amount']);
-    }
-    $result = [
-        "status" => "success"
-    ];
     
-    header('Content-Type: application/json');
-    echo json_encode($result, JSON_PRETTY_PRINT);
-}
 
+    // The amount must be more than the minimum bid (only applicable for round 2)
+    if ($bidRoundStatus->getRound() == 2 && $data['amount'] < $sectionDAO->retrieveMinBid($data['course'], $data['section'])){
+        $errors[] = "bid too low";
+        $result = [
+            "status" => "error",
+            "message" => $errors
+        ];
+        doRoundTwo();
+        header('Content-Type: application/json');
+        echo json_encode($result, JSON_PRETTY_PRINT);    
+    } 
+    else {
+        if (!$existSameCourseSameUser){    
+            $bidDAO->add($data['userid'], $data['amount'], $data['course'], $data['section']);
+            $studentDAO->updateEDollar($data['userid'], $student->getEdollar() - $data['amount']);
+            $sectionDAO->updateVacancy($data['course'], $data['section'], $section->getVacancy() - 1);   
+        }
+        else{
+            $bidDAO->updateBid($data['userid'], $data['amount'], $data['course'], $data['section']);
+            $studentDAO->updateEDollar($data['userid'], $student->getEdollar() + $bidList->getAmount() - $data['amount']);
+            $sectionDAO->updateVacancy($data['course'], $bidList->getSection(), $section->getVacancy() + 1);
+            $sectionDAO->updateVacancy($data['course'], $data['section'], $section->getVacancy() - 1);
+        }
+        doRoundTwo();
+        $result = [
+            "status" => "success"
+        ];
+        header('Content-Type: application/json');
+        echo json_encode($result, JSON_PRETTY_PRINT);
+    }
+}
 else {
     $result = [
         "status" => "error",

@@ -75,6 +75,7 @@ if (empty($errors)) {
         else
             $temp['result'] = $bid->getStatus() == 'success' ? 'in' : 'out';
         $result['bids'][] = $temp;
+        $row++;
     }
 }
 else {

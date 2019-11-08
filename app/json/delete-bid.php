@@ -45,7 +45,7 @@ $bidRoundStatus = $bidStatusDAO->getBidStatus();
 $sectionStudentInfo = $sectionStudentDAO->retrieveByCourseSectionUser($data['course'], $data['section'], $data['userid']);
 # Bid Info
 $bidInfo = $bidDAO->retrieveStudentBidsWithInfoByCourseSection($data['userid'], $data['course'], $data['section']);
-
+$bidItem = $bidDAO->retrieveStudentBidsByCourse($data['userid'], $data['course']);
 
 #######################
 ## Errors Validation ##
@@ -84,6 +84,7 @@ if (empty($errors)){
             "status" => "success"
         ];
         $bidDAO->removeBidByUseridAndCode($data['userid'], $data['course']);
+        $studentDAO->updateEdollar($data['userid'], $studentInfo->getEdollar() + $bidItem->getAmount());
     }
 }
 else {

@@ -33,7 +33,7 @@ if ($bidRoundStatus->getStatus() == 'open'){
         $bidStatusDAO->updateBidStatus(1, 'closed');
     }
     elseif ($bidRoundStatus->getRound() == '2'){
-        doRoundTwo(); 
+        doRoundTwo(True); 
         $bidStatusDAO->updateBidStatus('2', 'cleared');
         $bidStatusDAO->updateBidStatus(2, 'closed');
     }
