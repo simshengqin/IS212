@@ -14,7 +14,7 @@
   $bidDAO = new BidDAO();
   $stuBids = $bidDAO->retrieveStudentBids($userid);
   $stuEdollar = $student -> getEdollar();
-  var_dump($_POST);
+  // var_dump($_POST);
 
   foreach($stuBids as $value)
     {
