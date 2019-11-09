@@ -25,7 +25,9 @@ function doRoundTwo($convertsection = false){
         $sectionSize = $sectionObj->getSize();
         //Get the total number of bids for the same specific course-section pair, which is also sorted in descending order
         $biddedCourses = $bidDAO->retrieveStudentBidsByCourseAndSectionOrderDesc($course,$section);
+
         $biddedCoursesWithEnrolled = $bidDAO->retrieveStudentBidsWithEnrolled($course, $section);
+
         $enrolledStudents = $sectionStudentDAO->retrieveByCourseSection($course, $section);
         $noOfEnrolledStudents = sizeof($enrolledStudents);
         $numberOfBids = sizeof($biddedCourses);
@@ -37,7 +39,12 @@ function doRoundTwo($convertsection = false){
         if ($seatsAvailable == 0){
             $nthBid = $biddedCoursesWithEnrolled[$sectionSize - 1]; 
             $sectionDAO -> updateMinBid($course,$section, $nthBid->getAmount() + 1);
-            $status = "success";
+            if (sizeof($biddedCoursesWithEnrolled) <= $sectionSize)
+                $status = 'success';
+            elseif ($amount < $nthBid->getAmount() + 1)
+                $status = "fail";
+            else
+                $status = "success";
         }
         else {
             if (sizeof($biddedCoursesWithEnrolled) <= $sectionSize) { 

@@ -114,6 +114,8 @@ if (isset($_GET['r'])) {
     $bidList = $bidDAO->retrieveStudentBidsByCourse($data['userid'], $data['course']);
     $existSameCourseSameUser = !empty($bidList);
 
+    $enrolledClassesWithInfo = $sectionStudentDAO->retrieveStudentEnrolledWithInfo($data['userid']);
+
 #################
 ## Validations ##
 #################
@@ -208,12 +210,23 @@ if (isset($_GET['r'])) {
             The class timeslot for the section clashes with that 
             of a previously bidded section
         */
-
-        foreach ($studentBids as $bid) {
-            if (isset($section) && ($bid['day'] == $section->getDay())  && ($bid['start'] == $section->getStart() || $bid['end'] == $section->getEnd())){
+        if (!in_array("invalid section", $errors)){
+            foreach ($studentBids as $bid) {
+                if (isset($section) && ($bid['day'] == $section->getDay())  && ($bid['start'] == $section->getStart() || $bid['end'] == $section->getEnd() || 
+                    ($section->getStart() < $bid['end'] && $section->getStart() > $bid['start']) || ($section->getEnd() < $bid['end'] && $section->getEnd() > $bid['start']))){
                 $errors[] = "class timetable clash";
+                }
             }
-        }
+
+            if (!in_array("class timetable clash", $errors)){
+                foreach($enrolledClassesWithInfo as $class) {
+                    if (isset($section) && ($class['day'] == $section->getDay())  && ($class['start'] == $section->getStart() || $class['end'] == $section->getEnd() || 
+                        ($section->getStart() < $class['end'] && $section->getStart() > $class['start']) || ($section->getEnd() < $class['end'] && $section->getEnd() > $class['start']))){
+                    $errors[] = "class timetable clash";
+                    }
+                }
+            }
+        
 
         //----------------------//  
         // Exam Timetable Clash //
@@ -222,12 +235,23 @@ if (isset($_GET['r'])) {
             The exam timeslot for this section clashes with that
             of a previously bidded section
         */
-        foreach ($studentBids as $bid) {
-            if (($bid['exam date'] == $course->getExamdate())  && ($bid['exam start'] == $course->getExamstart() || $bid['exam end'] == $course->getExamend())){
-                $errors[] = "exam timetable clash";
+            foreach ($studentBids as $bid) {
+                if (($bid['exam date'] == $course->getExamdate()) && ($bid['exam start'] == $course->getExamstart() || $bid['exam end'] == $course->getExamend() || 
+                ($course->getExamstart() < $bid['exam end'] && $course->getExamstart() > $bid['exam start']) || ($course->getExamend() < $bid['exam end'] && $course->getExamend() > $bid['exam start']))){
+                    $errors[] = "exam timetable clash";
+                }
+            }
+
+            if (!in_array("exam timetable clash", $errors)){
+                foreach($enrolledClassesWithInfo as $class) {
+                    if (($class['exam date'] == $course->getExamdate()) && ($class['exam start'] == $course->getExamstart() || $class['exam end'] == $course->getExamend() || 
+                    ($course->getExamstart() < $class['exam end'] && $course->getExamstart() > $class['exam start']) || ($course->getExamend() < $class['exam end'] && $course->getExamend() > $class['exam start']))){
+                    $errors[] = "exam timetable clash";
+                    }
+                }
             }
         }
-
+    
 
         //--------------------------//
         // Incomplete Prerequisites //
@@ -317,7 +341,7 @@ if (isset($_GET['r'])) {
     else {
         $errors[] = 'no request'; 
     }
-
+sort($errors);
 if (sizeof($errors)==0){
     
 
@@ -336,7 +360,8 @@ if (sizeof($errors)==0){
         if (!$existSameCourseSameUser){    
             $bidDAO->add($data['userid'], $data['amount'], $data['course'], $data['section']);
             $studentDAO->updateEDollar($data['userid'], $student->getEdollar() - $data['amount']);
-            $sectionDAO->updateVacancy($data['course'], $data['section'], $section->getVacancy() - 1);   
+            if ($section->getVacancy() > 0)
+                $sectionDAO->updateVacancy($data['course'], $data['section'], $section->getVacancy() - 1);   
         }
         else{
             $bidDAO->updateBid($data['userid'], $data['amount'], $data['course'], $data['section']);

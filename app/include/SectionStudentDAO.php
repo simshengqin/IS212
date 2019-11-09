@@ -143,7 +143,36 @@ class SectionStudentDAO {
         return $stmt->execute();
     }
 
+    public function retrieveStudentEnrolledWithInfo($userid){
+        $sql = "SELECT sc.userid, sc.amount, sc.course, sc.section, s.day, s.start, s.end, `exam date`, `exam start`, `exam end`
+                    FROM section_student sc INNER JOIN section s INNER JOIN course c 
+                        WHERE sc.section = s.section AND sc.course = s.course AND s.course = c.course AND sc.userid = :userid";
+        $connMgr = new ConnectionManager();
+        $conn = $connMgr->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
+        $stmt->execute();
 
+        $result = [];   
+
+        while($row = $stmt->fetch())
+        {
+            $result[] = [
+                "userid" => $row['userid'], 
+                "amount" => $row['amount'],
+                "code" => $row['course'],
+                "section" => $row['section'],
+                "day" => $row['day'],
+                "start" => $row['start'],
+                "end" => $row['end'],
+                "exam date" => $row['exam date'],
+                "exam start" => $row['exam start'],
+                "exam end" => $row['exam end']
+            ];
+        }
+        return $result;
+    }
 }
 
 
