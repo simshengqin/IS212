@@ -13,21 +13,80 @@ $student = $_SESSION["user"];
 $userid = $student-> getUserid();
 $edollar = $student -> getEdollar();
 if (isset($_POST)) {
-    var_dump($_POST); 
-    var_dump($student);
+    
+    // var_dump($student);
     //print(array_sum($_POST));
     $errors = [];
+    $check_repeats =[];
+    // Cannot display the same error message twice fpr user bid vali 
+    $sameSectionErrorTriggered = FALSE;
+
     foreach($_POST as $key => $value)
     {
+        // var_dump($key);
+        // var_dump($value);
         $codeSectionList = [];
         $code ="";
         $section ="";
         $amount = "";
+        
+        // Validation: Check if the user bids for multiple sections of the same course 
+        $codeSectionList = explode("_", $key);
+        $code = $codeSectionList[0];
+        $section = $codeSectionList[1];
 
-        if (array_sum($_POST) > $edollar) { //Does not allow user to bid if his total bid amount exceeds his current edollar amount
-            $errors['message'][] = "Insufficient edollars!";
+        if($value != ""){
+            $check_repeats[] = $code;
+        }
+        // var_dump($check_repeats);
+        $counts = array_count_values($check_repeats);
+
+        if ($counts[$code] > 1 ){
+            // echo "Triggered!";
+            if($sameSectionErrorTriggered == false){
+                $sameSectionErrorTriggered = TRUE;
+                // Check round 
+                $bidStatusDAO = new BidStatusDAO();
+                $bidStatus = $bidStatusDAO->getBidStatus();
+                $round = $bidStatus->getRound();
+
+                // Only update vacancy if in round 2 
+                if($round == 2){
+                    
+                    // Remove from the current bid database 
+                    
+                    $bidDAO = new BidDAO;
+                    $sectionDAO = new SectionDAO();
+                    // var_dump($userid);
+                    // var_dump($code);
+
+                    // Retrieve class that is currently in database
+                    $sectionToRemove = $bidDAO->retrieveStudentBidsByCourse($userid, $code);
+                    //Retrieve vacancy of the database 
+                    // var_dump($sectionToRemove);
+                    $sectionToRemove = $sectionToRemove->getSection();
+
+                    $vacancy = $sectionDAO->retrieveVacancy($code, $sectionToRemove);
+                    $bidDAO->removeBidByUseridAndCode($userid, $code);
+                    $sectionDAO->updateVacancy($code,$sectionToRemove,$vacancy + 1);
+                    
+                }
+
+                $bidDAO = new BidDAO;
+                $bidDAO->removeBidByUseridAndCode($userid, $code);
+                $errors['message'][] = "Error: The following course is bidded in two or more sections: $code. All sections of this course will not be bidded.";
+                continue;
+            }
+            continue;
+        }
+
+        //Validation: Does not allow user to bid if his total bid amount exceeds his current edollar amount
+        if (array_sum($_POST) > $edollar) { 
+            $errors['message'][] = "Error: Insufficient edollars!";
             break;
         }
+        
+
         elseif($key!= "Add_Bid") 
         {
             if ($value != "")
@@ -68,7 +127,7 @@ if (isset($_POST)) {
                         //Retrieve Vacancy
                         $SectionDAO = new SectionDAO();
                         $vacancy = $sectionDAO->retrieveVacancy($course, $section);
-                        var_dump($vacancy);
+                        // var_dump($vacancy);
 
                         // Error message for vacancy
                         if ($vacancy == 0 ){
