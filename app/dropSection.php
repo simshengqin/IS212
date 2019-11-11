@@ -93,22 +93,29 @@ if (isset($_POST['dropsection'])){
             $SectionStudentDAO = new SectionStudentDAO();
             $SectionInformation = $SectionStudentDAO->retrieveByID($userid);
             // var_dump($SectionInformation);
-            
-            foreach($SectionInformation as $sectionrow){
+            if(count($SectionInformation) == 0)
+              {
+                echo"<tr> <td colspan='4'> <h4 style='text-align: center;'> You currently have no sections </h4> </td> </tr>";
+              }
 
-              $course = $sectionrow->getCourse();
-              $section = $sectionrow->getSection();
-              $amount = $sectionrow->getAmount();
-            
-            echo "
-            <tr>
-              <td> $course </td>
-              <td> $section </td>
-              <td> $amount </td>
-              <td> <input type=checkbox name = dropsection[] value = $course> </td>
-            </tr>";
+            else{
+              foreach($SectionInformation as $sectionrow){
 
+                $course = $sectionrow->getCourse();
+                $section = $sectionrow->getSection();
+                $amount = $sectionrow->getAmount();
+              
+              echo "
+              <tr>
+                <td> $course </td>
+                <td> $section </td>
+                <td> $amount </td>
+                <td> <input type=checkbox name = dropsection[] value = $course> </td>
+              </tr>";
+  
+              }
             }
+            
 
           ?>
         </tbody>
@@ -119,6 +126,29 @@ if (isset($_POST['dropsection'])){
 
         ?>
     </table>
+<?php
+    // Validation: Can only drop a section when the round is active
+
+  // Pull round information 
+  $BidStatusDAO = new BidStatusDAO();
+  $bidStatus = $BidStatusDAO->getBidStatus();
+  $round = $bidStatus->getStatus();
+  // var_dump($round);
+  
+  // Error validation 
+  if ($round == "closed"){
+    echo "Dropping a section can be done only during active bidding rounds";
+    echo "
+    </form>
+    </div>
+  </div>
+  </div>
+  </html>
+  ";
+
+    return;
+  }
+    ?>
     <input type='submit' class="btn btn-primary" value='Drop Section(s)'>
   </form>
   </div>
