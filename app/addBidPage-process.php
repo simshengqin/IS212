@@ -30,11 +30,23 @@ if (isset($_POST)) {
         $section ="";
         $amount = "";
         
-        // Validation: Check if the user bids for multiple sections of the same course 
+        
         $codeSectionList = explode("_", $key);
         $code = $codeSectionList[0];
         $section = $codeSectionList[1];
 
+        //Validation: Does not allow bid if the same course of a different section is already in the database
+        $bidDAO = new BidDAO;
+        $seeIfExist = $bidDAO->retrieveStudentBidsByCourse($userid, $code);
+        var_dump($seeIfExist);
+
+        if(is_string($seeIfExist) == FALSE && $value!=""){
+            echo "hello";
+            $errors['message'][] = "Error: Already bidded for $code!";
+            break;
+        }
+
+        // Validation: Check if the user bids for multiple sections of the same course 
         if($value != ""){
             $check_repeats[] = $code;
         }
@@ -80,13 +92,13 @@ if (isset($_POST)) {
             continue;
         }
 
+
+
         //Validation: Does not allow user to bid if his total bid amount exceeds his current edollar amount
         if (array_sum($_POST) > $edollar) { 
             $errors['message'][] = "Error: Insufficient edollars!";
             break;
         }
-        
-
         elseif($key!= "Add_Bid") 
         {
             if ($value != "")
