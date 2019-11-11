@@ -81,7 +81,6 @@ require_once 'clearBidTwo-process.php';
     //////Round 2 clearing takes place here. Only takes place once, will convert status from closed to cleared
   elseif ($bidStatus->getRound() == '2' && $bidStatus->getStatus() == 'closed') {
     doRoundTwo(true);
-    $bidStatusDAO->updateBidStatus('2', 'cleared');
     echo "<div class='container'>
     <div class='row'>";
       

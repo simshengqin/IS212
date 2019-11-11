@@ -94,6 +94,26 @@ class SectionStudentDAO {
         return $result;
     }
 
+    public function retrieveByCourseUserID($course, $userid){
+        $sql = 'SELECT * from section_student where course=:course AND userid=:userid';
+        
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':course', $course, PDO::PARAM_STR);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+
+        $result = [];
+
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result[] = new SectionStudent($row['userid'], $row['course'], $row['section'], $row['amount']);
+        }
+        return $result;
+    }
+
     public function retrieveByCourseSectionUser($course, $section, $userid){
         $sql = 'SELECT * from section_student where course=:course AND section=:section AND userid=:userid';
         

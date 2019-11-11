@@ -42,14 +42,7 @@
     $bidRoundStatus = $bidStatusDAO->getBidStatus();
     $stuBids = $bidDAO->retrieveStudentBids($stuID);
     $allBids = $bidDAO->retrieveAll();
-    // calculate remaining amount
-    if ($bidRoundStatus->getStatus() == 'open'){
-      foreach($stuBids as $value)
-      {
-        
-        $stuEdollar -= $value->getAmount();
-      }
-    }
+    // calculate remaining amount 
    ?>
 
 

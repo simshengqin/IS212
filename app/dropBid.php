@@ -1,6 +1,7 @@
 <?php
   require_once 'include/common.php';
   require_once 'include/protect.php';
+  require_once 'clearBidTwo-process.php';
 
 #Get basic information about the student to populate the page 
 
@@ -12,14 +13,14 @@
   $userid = $student->getUserid();
 //   var_dump($userid);
   $bidDAO = new BidDAO();
-  
+  $studentDAO = new StudentDAO();
 //   var_dump($bids);
   $initialize = false; # To determine whether to show confirm dopped bids dialogue box
 
 // Find the round 
-  $BidStatusDAO = new BidStatusDAO();
-  $BidStatus = $BidStatusDAO->getBidStatus();
-  $round = $BidStatus->getRound();
+  $bidStatusDAO = new BidStatusDAO();
+  $bidStatus = $bidStatusDAO->getBidStatus();
+  $round = $bidStatus->getRound();
 
   #Remove checkboxed value from database if submitted 
   if(!empty($_POST)){
@@ -28,23 +29,27 @@
         $userid = $student->getUserid();
         $codeList = [];
         foreach($_POST as $code){
-          
+          $bid = $bidDAO->retrieveStudentBidsByCourse($userid, $code);
           #If in round 2, increase vacancy 
           if ($round == 2){
             #find the section number of the student 
-            $bid = $bidDAO->retrieveStudentBidsByCourse($userid, $code);
+            
             // var_dump($bid);
             $section = $bid->getSection();
             #Retrieve vacancy of the bid 
              
-            $SectionDAO = new SectionDAO ;
-            $vacancy = $SectionDAO->retrieveVacancy($code, $section);
+            $sectionDAO = new SectionDAO();
+            $vacancy = $sectionDAO->retrieveVacancy($code, $section);
             // var_dump($vacancy);
 
-            $SectionDAO->updateVacancy($code,$section,$vacancy+1);
+            $sectionDAO->updateVacancy($code,$section,$vacancy+1);
           }
           $bidDAO->removeBidByUseridAndCode($userid, $code);
           $codeList[] = $code; # capture the list of bid(s) 
+          $studentInfo = $studentDAO->retrieveStudent($userid);
+          $studentDAO->updateEDollar($userid, $studentInfo->getEdollar() + $bid->getAmount());
+          if ($round == 2)
+            doRoundTwo();
         }
     }
   }

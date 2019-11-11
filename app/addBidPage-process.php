@@ -40,8 +40,8 @@ if (isset($_POST)) {
         }
         // var_dump($check_repeats);
         $counts = array_count_values($check_repeats);
-
-        if ($counts[$code] > 1 ){
+        
+        if (!empty($counts) && $counts[$code] > 1 ){
             // echo "Triggered!";
             if($sameSectionErrorTriggered == false){
                 $sameSectionErrorTriggered = TRUE;
@@ -102,6 +102,7 @@ if (isset($_POST)) {
                 $studentDAO = new StudentDAO();
                 $courseDAO = new CourseDAO();
                 $sectionDAO = new SectionDAO();
+                $sectionStudentDAO = new SectionStudentDAO();
 
                 $allStudentInfo = $studentDAO->retrieveAll();
                 $allCourseInfo = $courseDAO->retrieveAll();    // Get all course information (Course Class)
@@ -114,6 +115,8 @@ if (isset($_POST)) {
                     $course = $bid_data[2];
                     $section = $bid_data[3]; 
                     $bidDAO->add($userid, $amount, $course, $section);
+                    $studentInfo = $studentDAO->retrieveStudent($userid);
+                    $studentDAO->updateEDollar($userid, $studentInfo->getEdollar() - $amount);
                     
                     #retrieve the round 
                     $bidStatusDAO = new BidStatusDAO();
@@ -125,8 +128,11 @@ if (isset($_POST)) {
                         
                         //Validate if vacancy above 0. If not, throw an error 
                         //Retrieve Vacancy
-                        $SectionDAO = new SectionDAO();
-                        $vacancy = $sectionDAO->retrieveVacancy($course, $section);
+                        $sectionInfo = $sectionDAO->retrieveSectionByCourse($course,$section);
+                        $sectionSize = $sectionInfo->getSize();
+                        $enrolledStudents = $sectionStudentDAO->retrieveByCourseSection($course, $section);
+                        $vacancy = $sectionSize - sizeof($enrolledStudents);
+                        // $vacancy = $sectionDAO->retrieveVacancy($course, $section);
                         // var_dump($vacancy);
 
                         // Error message for vacancy

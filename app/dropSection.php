@@ -112,6 +112,12 @@ if (isset($_POST['dropsection'])){
 
           ?>
         </tbody>
+        <?php
+          if (isset($_POST['dropsection'])){
+            echo "<font color='red'> You successfully dropped your class! </font>";
+          }
+
+        ?>
     </table>
     <input type='submit' class="btn btn-primary" value='Drop Section(s)'>
   </form>
@@ -121,12 +127,7 @@ if (isset($_POST['dropsection'])){
 
 </div>
 
-<?php
-if (isset($_POST['dropsection'])){
-  echo "<font color='red'> You successfully dropped your class! </font>";
-}
 
-?>
 </html>
 
 
