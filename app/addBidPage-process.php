@@ -38,7 +38,7 @@ if (isset($_POST)) {
         //Validation: Does not allow bid if the same course of a different section is already in the database
         $bidDAO = new BidDAO;
         $seeIfExist = $bidDAO->retrieveStudentBidsByCourse($userid, $code);
-        var_dump($seeIfExist);
+        // var_dump($seeIfExist);
 
         if(is_string($seeIfExist) == FALSE && $value!=""){
             echo "hello";
