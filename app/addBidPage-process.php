@@ -41,7 +41,7 @@ if (isset($_POST)) {
         // var_dump($seeIfExist);
 
         if(is_string($seeIfExist) == FALSE && $value!=""){
-            echo "hello";
+            // echo "hello";
             $errors['message'][] = "Error: Already bidded for $code!";
             break;
         }
