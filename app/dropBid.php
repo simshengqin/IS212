@@ -3,6 +3,7 @@
   require_once 'include/protect.php';
   require_once 'clearBidTwo-process.php';
 
+
 #Get basic information about the student to populate the page 
 
   if (isset($_SESSION["user"]))
@@ -15,7 +16,7 @@
   $bidDAO = new BidDAO();
   $studentDAO = new StudentDAO();
 //   var_dump($bids);
-  $initialize = false; # To determine whether to show confirm dopped bids dialogue box
+  $initialize = false; # To determine whether to show confirm dropped bids dialogue box
 
 // Find the round 
   $bidStatusDAO = new BidStatusDAO();
@@ -70,10 +71,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   </head>
 
-
-
-  
-
 <div class="container">  
 <!-- Navigation Bar -->
   <nav class="navbar navbar-expand-sm bg-light navbar-light">
@@ -126,6 +123,15 @@
   </div>
 </div>
 
+<?php
+
+
+
+
+?>
+
+
+
   <!-- Display all of student's bids-->
   <div class = "row">
    <div class="col-sm-12" style='margin-top: 7.5vh'>
@@ -164,6 +170,29 @@
             ?>
           </tbody>
       </table>
+
+<?php
+  // Validation: Can only drop a bid when the round is active
+
+  // Pull round information 
+  $BidStatusDAO = new BidStatusDAO();
+  $bidStatus = $BidStatusDAO->getBidStatus();
+  $round = $bidStatus->getStatus();
+  // var_dump($round);
+  
+  // Error validation 
+  if ($round == "closed"){
+    echo "Dropping a bid can be done only during active bidding rounds";
+    echo "
+      </form>
+    </div>
+   </div>
+   </div>
+   </html>";
+
+    return;
+  }
+  ?>
       <button type='submit' class="btn btn-primary" >Drop Bid(s)</button>
     </form>
    </div>
