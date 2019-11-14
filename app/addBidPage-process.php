@@ -86,9 +86,7 @@ if (isset($_POST)) {
                         $vacancy = $sectionDAO->retrieveVacancy($code, $sectionToRemove);
                         $bidDAO->removeBidByUseridAndCode($userid, $code);
                         $sectionDAO->updateVacancy($code,$sectionToRemove,$vacancy + 1);
-                        
                     }
-
                     $bidDAO = new BidDAO;
                     $bidDAO->removeBidByUseridAndCode($userid, $code);
                     $errors['message'][] = "Error: The following course is bidded in two or more sections: $code. All sections of this course will not be bidded.";
@@ -159,8 +157,8 @@ if (isset($_POST)) {
                                 $bidDAO->removeBidByUseridAndCode($userid, $course);
                                 continue;
                             }
-
-                            $sectionDAO->updateVacancy($course,$section,$sectionDAO->retrieveVacancy($course, $section) - 1);
+                            if ($sectionDAO->retrieveVacancy($course, $section) != 0)
+                                $sectionDAO->updateVacancy($course,$section,$sectionDAO->retrieveVacancy($course, $section) - 1);
                             doRoundTwo();
                         }
                     }
