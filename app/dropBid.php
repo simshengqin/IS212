@@ -157,6 +157,10 @@
               else
               {
                 foreach ($bids as $bid){
+                  #Removing the failed bids 
+                  if($bid->getStatus()!= "pending"){
+                    continue;
+                  }
                   $code = $bid->getCode();
                   $section_number = $bid->getSection();
                   $bid_amount = $bid->getAmount();
