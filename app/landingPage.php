@@ -1,6 +1,7 @@
 <?php
   require_once 'include/common.php';
   require_once 'include/protect.php';
+  require_once 'clearBidTwo-process.php';
   
   if (isset($_SESSION["user"]))
   {
@@ -40,6 +41,8 @@
     $bidRoundStatus = $bidStatusDAO->getBidStatus();
     $stuBids = $bidDAO->retrieveStudentBids($stuID);
     $allBids = $bidDAO->retrieveAll();
+    if ($bidRoundStatus->getRound() == 2)
+      doRoundTwo();
     // calculate remaining amount 
    ?>
 

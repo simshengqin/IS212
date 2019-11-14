@@ -18,29 +18,31 @@
 
 #Remove checkboxed value from database if submitted 
 if (isset($_POST['dropsection'])){
-  $SectionStudentDAO = new SectionStudentDAO();
+  $sectionStudentDAO = new SectionStudentDAO();
   $dropsection = $_POST['dropsection'];
   // var_dump($dropsection);
 
   foreach ($dropsection as $code){
     
     #getting the section bid amount 
-    $droppingsection = $SectionStudentDAO->retrieveByCourseUserID($code,$userid);
+    $droppingSection = $sectionStudentDAO->retrieveByCourseUserID($code,$userid);
     // var_dump($droppingsection);
-    $droppingsection = $droppingsection[0];
-    $bidamount = $droppingsection->getAmount();
+    $droppingSection = $droppingSection[0];
+    $bidAmount = $droppingSection->getAmount();
     
     #Retrieve current student edollar amount 
-    $StudentDAO = new StudentDAO;
-    $edollars = $StudentDAO->retrieveStudent($userid);
+    $studentDAO = new StudentDAO;
+    $edollars = $studentDAO->retrieveStudent($userid);
     $edollars = $edollars->getEdollar();
 
     #Removing from the database 
-    $SectionStudentDAO->removeByID($userid,$code);
+    $sectionStudentDAO->removeByID($userid,$code);
 
     #Refunding the amount
-    $combinededollars = $edollars + $bidamount;
-    $StudentDAO->updateEDollar($userid,$combinededollars);
+    $combinedEdollars = $edollars + $bidAmount;
+    $studentDAO->updateEDollar($userid,$combinedEdollars);
+    $sectionDAO = new SectionDAO();
+    $sectionDAO->updateVacancy($code,$droppingSection->getSection(),$sectionDAO->retrieveVacancy($code, $droppingSection->getSection()) + 1);
 
   }
 }
@@ -109,20 +111,20 @@ if (isset($_POST['dropsection'])){
         </thead>
         <tbody>
           <?php
-            $SectionStudentDAO = new SectionStudentDAO();
-            $SectionInformation = $SectionStudentDAO->retrieveByID($userid);
+            $sectionStudentDAO = new SectionStudentDAO();
+            $sectionInformation = $sectionStudentDAO->retrieveByID($userid);
             // var_dump($SectionInformation);
-            if(count($SectionInformation) == 0)
+            if(count($sectionInformation) == 0)
               {
                 echo"<tr> <td colspan='4'> <h4 style='text-align: center;'> You currently have no sections </h4> </td> </tr>";
               }
 
             else{
-              foreach($SectionInformation as $sectionrow){
+              foreach($sectionInformation as $sectionRow){
 
-                $course = $sectionrow->getCourse();
-                $section = $sectionrow->getSection();
-                $amount = $sectionrow->getAmount();
+                $course = $sectionRow->getCourse();
+                $section = $sectionRow->getSection();
+                $amount = $sectionRow->getAmount();
               
               echo "
               <tr>
@@ -149,8 +151,8 @@ if (isset($_POST['dropsection'])){
     // Validation: Can only drop a section when the round is active
 
   // Pull round information 
-  $BidStatusDAO = new BidStatusDAO();
-  $bidStatus = $BidStatusDAO->getBidStatus();
+  $bidStatusDAO = new BidStatusDAO();
+  $bidStatus = $bidStatusDAO->getBidStatus();
   $round = $bidStatus->getStatus();
   // var_dump($round);
   

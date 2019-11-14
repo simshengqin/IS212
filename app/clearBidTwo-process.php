@@ -38,7 +38,8 @@ function doRoundTwo($convertsection = false){
        
         if ($seatsAvailable == 0){
             $nthBid = $biddedCoursesWithEnrolled[$sectionSize - 1]; 
-            $sectionDAO -> updateMinBid($course,$section, $nthBid->getAmount() + 1);
+            if ($currentMinBid < $nthBid->getAmount() + 1)
+                $sectionDAO -> updateMinBid($course,$section, $nthBid->getAmount() + 1);
             if (sizeof($biddedCoursesWithEnrolled) <= $sectionSize)
                 $status = 'success';
             elseif ($amount < $nthBid->getAmount() + 1)
