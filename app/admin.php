@@ -177,7 +177,7 @@ require_once 'clearBidTwo-process.php';
   }
 
   #Extract information from num-record-loaded only after bootstrap
-  if($bidStatus->getRound() == '1' && $bidStatus->getStatus() == 'open'){
+  if($bidStatus->getRound() == '1' && $bidStatus->getStatus() == 'open' && isset($_SESSION['bootstrap_error'])){
     $tableSuccess = $_SESSION['bootstrap_error']['num-record-loaded'];
   $status = $_SESSION['bootstrap_error']['status'];
   // var_dump($tableSuccess);
