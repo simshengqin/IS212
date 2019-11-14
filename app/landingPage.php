@@ -25,6 +25,7 @@
 <body>
 
   <?php
+
     $studentDAO = new StudentDAO();
     $stuName = $student->getName();
     $stuID = $student->getUserid();
@@ -45,6 +46,7 @@
     if ($round == '2')
       doRoundTwo();
     // calculate remaining amount 
+
    ?>
 
 <div class="container">
