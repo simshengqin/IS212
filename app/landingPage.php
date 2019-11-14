@@ -35,9 +35,6 @@
     $sectionStudentDAO = new SectionStudentDAO();
     $sectionInfo = $sectionStudentDAO->retrieveByID($stuID);
 
-            
-            
-
     $bidDAO = new BidDAO();
     $bidStatusDAO = new BidStatusDAO();
     $bidRoundStatus = $bidStatusDAO->getBidStatus();
@@ -45,8 +42,6 @@
     $allBids = $bidDAO->retrieveAll();
     // calculate remaining amount 
    ?>
-
-
 
 <div class="container">
 
@@ -82,12 +77,10 @@
 
  <br/>
 
-
 <?php
   echo "<h3> Welcome $stuName</h3>";
   echo "<h3> Current e$: $stuEdollar </h3>";
  ?> 
-
 
  <div class = "row">
    <div class="col-sm-12" style='margin-top: 7.5vh'>
@@ -114,7 +107,6 @@
             echo "<tbody>";
             $sectionDAO = new SectionDAO();
             $bidDAO = new BidDAO();
-
             
             foreach($allBids as $value)
             {
