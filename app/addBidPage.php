@@ -76,7 +76,7 @@
     $sizes = [];
 
     
-    $day_of_week = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+    $day_of_week = ['Monday','Tuesday','Wednesday','Thursday','Friday', 'Saturday', 'Sunday'];
     foreach ($allSections as $section) {
       if (!in_array($section->getCourse(),$courses)) {
         $courses[] = $section->getCourse();
