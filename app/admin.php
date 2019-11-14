@@ -44,8 +44,8 @@ require_once 'clearBidTwo-process.php';
 <h3> Welcome Admin! </h3>
 
 <br>
-<?php
 
+<?php
   $bidStatusDAO = new BidStatusDAO();
   $bidDAO = new BidDAO();
   $bidStatus = $bidStatusDAO->getBidStatus();
@@ -166,8 +166,61 @@ require_once 'clearBidTwo-process.php';
                 <td>'.$error['line'].'</td>
                 <td>'.implode(', ', $error['message']).'</td></tr>';
     }
-  
+    #Close table
+    echo "
+    </tbody>
+    </table>
+    </div>
+    </div>";  
   }
+
+  #Extract information from num-record-loaded
+  $tableSuccess = $_SESSION['bootstrap_error']['num-record-loaded'];
+  $status = $_SESSION['bootstrap_error']['status'];
+  // var_dump($tableSuccess);
+  $tableSuccessExtracted = [];
+  // var_dump($tableSuccess[0]);
+
+  for ($index=0;$index<sizeof($tableSuccess);$index++){
+    foreach ($tableSuccess[$index] as $key=>$value){
+      $tableSuccessExtracted[$key] = $value;
+    }
+  }
+
+  // var_dump($tableSuccessExtracted);
+
+  #Show success information on a table
+
+  #Header 
+  echo "
+  <div class = 'row'>
+  <div class='col-sm-12' style='margin-top: 7.5vh'>
+    <table class='table table-striped'>
+      <h3>" .ucfirst($status)."! <br> Line(s) Processed </h3>
+      <thead>
+        <tr>
+          <th>File</th>
+          <th>Line</th>
+        </tr>
+        </thead>
+        <tbody>";
+  
+  foreach ($tableSuccessExtracted as $key => $value){
+    echo "
+    <tr> 
+    <td> $key </td>
+    <td> $value </td>
+    </tr>
+    ";
+  }
+  
+  #Close table
+  echo "
+  </tbody>
+  </table>
+  </div>
+  </div>"; 
+
 ?>
 
 </div>
