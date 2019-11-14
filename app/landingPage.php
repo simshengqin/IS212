@@ -24,12 +24,13 @@
 <body>
 
   <?php
-  
+    $studentDAO = new StudentDAO();
     $stuName = $student->getName();
     $stuID = $student->getUserid();
     $stuBids = [];
     $stuSections = [];
-    $stuEdollar = $student->getEdollar();
+    $studentInfo = $studentDAO->retrieveStudent($stuID);
+    $stuEdollar = $studentInfo->getEdollar();
 
     $sectionStudentDAO = new SectionStudentDAO();
     $sectionInfo = $sectionStudentDAO->retrieveByID($stuID);

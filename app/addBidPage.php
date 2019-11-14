@@ -7,19 +7,16 @@
   $studentDAO = new StudentDAO();
   $student = $_SESSION["user"];     //Student class
   $userid = $student-> getUserid();
+  $studentInfo = $studentDAO->retrieveStudent($userid);
   if(!isset($errors)){
     $errors = [];
   }
   
   $bidDAO = new BidDAO();
   $stuBids = $bidDAO->retrieveStudentBids($userid);
-  $stuEdollar = $student -> getEdollar();
+  $stuEdollar = $studentInfo->getEdollar();
   // var_dump($_POST);
 
-  foreach($stuBids as $value)
-    {
-      $stuEdollar -= $value->getAmount();
-    }
   
   $name= $student -> getName();
 
