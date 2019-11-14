@@ -1,6 +1,7 @@
 <?php
   require_once 'include/common.php';
   require_once 'include/protect.php';
+  require_once 'clearBidTwo-process.php';
 
 #Get basic information about the student to populate the page 
 
@@ -41,6 +42,15 @@ if (isset($_POST['dropsection'])){
     #Refunding the amount
     $combinededollars = $edollars + $bidamount;
     $StudentDAO->updateEDollar($userid,$combinededollars);
+    $sectionDAO = new SectionDAO();
+    $vacancy = $sectionDAO->retrieveVacancy($code, $droppingsection);
+    $sectionDAO->updateVacancy($code,$droppingsection,$vacancy+1);
+    
+    $bidStatusDAO = new BidStatusDAO();
+    $bidStatus = $bidStatusDAO->getBidStatus();
+    $round = $bidStatus->getRound();
+    if ($round == '2')
+      doRoundTwo();
 
   }
 }
