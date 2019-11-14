@@ -41,7 +41,8 @@
     $bidRoundStatus = $bidStatusDAO->getBidStatus();
     $stuBids = $bidDAO->retrieveStudentBids($stuID);
     $allBids = $bidDAO->retrieveAll();
-    if ($bidRoundStatus->getRound() == 2)
+    $round = $bidRoundStatus->getRound();
+    if ($round == '2')
       doRoundTwo();
     // calculate remaining amount 
    ?>

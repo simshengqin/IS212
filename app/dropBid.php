@@ -44,6 +44,7 @@
             // var_dump($vacancy);
 
             $sectionDAO->updateVacancy($code,$section,$vacancy+1);
+            doRoundTwo();
           }
           $bidDAO->removeBidByUseridAndCode($userid, $code);
           $codeList[] = $code; # capture the list of bid(s) 
