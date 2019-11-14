@@ -42,8 +42,10 @@ function doRoundOne() {
       if ($clearingPrice == $student->getAmount())
         $count++;
     }
-    if ($count > 1)
+    if ($count > 1){
       $multipleStudentWithClearingPrice = True;
+    }
+    
 
     # access each key & value pair 
     for ($i=0; $i<$sectionsize;$i++){
@@ -52,15 +54,14 @@ function doRoundOne() {
       }
       $student_data = $allStudents[$i];
       $userid = $student_data->getUserid();
-      $sectionStudentData = $sectionStudent->retrieveByCourseSectionUser($value['code'], $value['section'], $userid);
+      // $sectionStudentData = $sectionStudent->retrieveByCourseSectionUser($value['code'], $value['section'], $userid);
       $amount = $student_data->getAmount();
       $section = $student_data->getSection();
       $course=$student_data->getCode();
-      $bidDAO->updateStatus($userid,$course,$section,"success");
       $student = $studentDAO->retrieveStudent($userid);
       $studentEdollar = $student->getEdollar();
       // To prevent duplicates 
-      if (empty($sectionStudentData) && ($amount > $clearingPrice || ($amount == $clearingPrice && !$multipleStudentWithClearingPrice))){
+      if ($amount > $clearingPrice || ($amount == $clearingPrice && !$multipleStudentWithClearingPrice)){
         $sectionStudent->add($userid,$course,$section,$amount);
         $bidDAO->updateStatus($userid,$course,$section,"success");
         $sectionDAO->updateVacancy($course,$section, $sectionInfo->getVacancy()-1);

@@ -6,6 +6,7 @@ class Bid {
     private $amount;
     private $code;
     private $section;
+    private $status;
 
     public function __construct($userid='', $amount='', $code='', $section='', $status='pending')
     {

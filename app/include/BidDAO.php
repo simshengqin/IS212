@@ -94,13 +94,13 @@ class BidDAO {
         $result = [];
 
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $result[] = new Bid($row['userid'], $row['amount'],$row['code'], $row['section']);
+            $result[] = new Bid($row['userid'], $row['amount'],$row['code'], $row['section'], $row['status']);
         }
         return $result;
     }
 
     public function retrieveStudentBidsByCourse($userid, $course){
-        $sql = 'select userid, amount, code, section from bid where userid=:userid and code =:code';
+        $sql = 'select userid, amount, code, section, status from bid where userid=:userid and code =:code';
     
         $connMgr = new ConnectionManager();
         $conn = $connMgr->getConnection();
@@ -115,7 +115,7 @@ class BidDAO {
     
         while($row = $stmt->fetch(PDO::FETCH_ASSOC))
         {
-            $result = new Bid($row['userid'], $row['amount'],$row['code'], $row['section']);
+            $result = new Bid($row['userid'], $row['amount'],$row['code'], $row['section'], $row['status']);
         }
         return $result;
     }
@@ -144,7 +144,7 @@ class BidDAO {
     }
 
     public function retrieveStudentBids($userid){
-    $sql = 'select userid, amount, code, section from bid where userid=:userid';
+    $sql = 'select userid, amount, code, section, status from bid where userid=:userid';
 
     $connMgr = new ConnectionManager();
     $conn = $connMgr->getConnection();
@@ -158,7 +158,7 @@ class BidDAO {
 
     while($row = $stmt->fetch(PDO::FETCH_ASSOC))
     {
-        $result[] = new Bid($row['userid'], $row['amount'],$row['code'], $row['section']);
+        $result[] = new Bid($row['userid'], $row['amount'],$row['code'], $row['section'], $row['status']);
     }
 
     return $result;
