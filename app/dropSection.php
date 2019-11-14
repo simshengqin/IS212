@@ -21,8 +21,27 @@ if (isset($_POST['dropsection'])){
   $SectionStudentDAO = new SectionStudentDAO();
   $dropsection = $_POST['dropsection'];
   // var_dump($dropsection);
+
   foreach ($dropsection as $code){
+    
+    #getting the section bid amount 
+    $droppingsection = $SectionStudentDAO->retrieveByCourseUserID($code,$userid);
+    // var_dump($droppingsection);
+    $droppingsection = $droppingsection[0];
+    $bidamount = $droppingsection->getAmount();
+    
+    #Retrieve current student edollar amount 
+    $StudentDAO = new StudentDAO;
+    $edollars = $StudentDAO->retrieveStudent($userid);
+    $edollars = $edollars->getEdollar();
+
+    #Removing from the database 
     $SectionStudentDAO->removeByID($userid,$code);
+
+    #Refunding the amount
+    $combinededollars = $edollars + $bidamount;
+    $StudentDAO->updateEDollar($userid,$combinededollars);
+
   }
 }
       
@@ -121,7 +140,7 @@ if (isset($_POST['dropsection'])){
         </tbody>
         <?php
           if (isset($_POST['dropsection'])){
-            echo "<font color='red'> You successfully dropped your class! </font>";
+            echo "<font color='blue'> You successfully dropped your class! </font>";
           }
 
         ?>

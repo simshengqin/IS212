@@ -268,15 +268,15 @@
               {
                 $checker = $section->getCourse().$section->getSection();
                 $display = true;
-                foreach($stuCurrentBids as $compare)
-                {
-                  if($compare == $checker)
-                  {
-                    $display = false;
-                  }
-                }
-                if($display)
-                {
+                // foreach($stuCurrentBids as $compare)
+                // {
+                //   if($compare == $checker)
+                //   {
+                //     $display = false;
+                //   }
+                // }
+                // if($display)
+                // {
                   echo "<tr>";
                   echo "<td>{$section->getCourse()}</td>";
                   echo "<td>{$section->getSection()}</td>";
@@ -286,10 +286,12 @@
                   echo "<td>{$section->getInstructor()}</td>";  
                   echo "<td>{$section->getVenue()}</td>";
                   echo "<td>{$section->getMinbid()}</td>";
-                  echo "<td>{$section->getVacancy()}/{$section->getSize()}</td>";
+                  $sectionStudentDAO = new SectionStudentDAO();
+                  $enrolledStudents = $sectionStudentDAO->retrieveByCourseSection($section->getCourse(), $section->getSection());
+                  echo "<td>".($section->getSize() - sizeof($enrolledStudents))."/{$section->getSize()}</td>";
                   echo "<td><input type='number' step='0.01' name={$section->getCourse()}.{$section->getSection()} min='10' ></td>";
                   echo "</tr>";
-                }
+                // }
             }
             
             ?>
