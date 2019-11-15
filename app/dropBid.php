@@ -158,7 +158,7 @@
               {
                 foreach ($bids as $bid){
                   #Removing the failed bids 
-                  if($bid->getStatus()!= "pending"){
+                  if($bid->getStatus()!= "pending" && $round == 1){
                     continue;
                   }
                   $code = $bid->getCode();

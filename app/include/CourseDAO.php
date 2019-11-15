@@ -46,7 +46,7 @@ class CourseDAO {
         }
         return $result;
     }
-
+    
     public function retrieveCourse($course){
         #$sql = 'select * from section';
         $sql = "SELECT * FROM course WHERE course = :course";

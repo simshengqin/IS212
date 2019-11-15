@@ -40,11 +40,11 @@ if (isset($_POST['dropsection'])){
     $sectionStudentDAO->removeByID($userid,$code);
 
     #Refunding the amount
-    $combinededollars = $edollars + $bidamount;
-    $StudentDAO->updateEDollar($userid,$combinededollars);
+    $combinededollars = $edollars + $bidAmount;
+    $studentDAO->updateEDollar($userid,$combinededollars);
     $sectionDAO = new SectionDAO();
-    $vacancy = $sectionDAO->retrieveVacancy($code, $droppingsection);
-    $sectionDAO->updateVacancy($code,$droppingsection,$vacancy+1);
+    $vacancy = $sectionDAO->retrieveVacancy($code, $droppingSection->getSection());
+    $sectionDAO->updateVacancy($code,$droppingSection->getSection(),$vacancy+1);
     
     $bidStatusDAO = new BidStatusDAO();
     $bidStatus = $bidStatusDAO->getBidStatus();
