@@ -50,7 +50,7 @@ require_once 'clearBidTwo-process.php';
   $bidDAO = new BidDAO();
   $bidStatus = $bidStatusDAO->getBidStatus();
   if (isset($_POST['round']) && (isset($_POST['status']))){
-    #update bids according to the $_POST response 
+    # update bids according to the $_POST response 
     if (!($bidStatus->getRound() == '2' && $bidStatus->getStatus() == 'cleared'))
       $bidStatusDAO->updateBidStatus($_POST['round'], $_POST['status']);
 
@@ -59,9 +59,7 @@ require_once 'clearBidTwo-process.php';
     if ($bidStatus->getRound() == '1' && $bidStatus->getStatus() == 'open')
     {
       doRoundOne();
-      $bidStatusDAO->updateBidStatus('1', 'closed');
-
-      
+      $bidStatusDAO->updateBidStatus('1', 'closed');  
     }
     if ($_POST['round'] == '2' && $_POST['status'] == 'open')
       $bidDAO->removeAll();
