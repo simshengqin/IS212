@@ -4,9 +4,6 @@
 function doRoundOne() {
   $bidDAO = new BidDAO();
   $allCodeandSection = $bidDAO->getUniqueCodeAndSection();
-#sort code and section
-//   var_dump($allCodeandSection);
-
 
   foreach($allCodeandSection as $key => $value)
   {
@@ -25,7 +22,7 @@ function doRoundOne() {
     // var_dump($section);
     // var_dump($sectionsize);
 
-    $sectionStudent = new sectionStudentDAO();
+    $sectionStudent = new SectionStudentDAO();
     $studentDAO = new StudentDAO();
 
     $multipleStudentWithClearingPrice = False;
