@@ -445,7 +445,8 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     //---------------------------------//
     foreach ($bidInfo as $bid) {
         if (isset($section) && ($bid['day'] == $section->getDay())  && ($bid['start'] == $section->getStart() || $bid['end'] == $section->getEnd() || 
-                            ($section->getStart() < $bid['end'] && $section->getStart() > $bid['start']) || ($section->getEnd() < $bid['end'] && $section->getEnd() > $bid['start']))){
+            ($section->getStart() < $bid['end'] && $section->getStart() > $bid['start']) || ($section->getEnd() < $bid['end'] && $section->getEnd() > $bid['start']) ||
+            ($bid['start'] < $section->getEnd() && $bid['start'] > $section->getStart()) || ($bid['end'] < $section->getEnd() && $bid['end'] > $section->getStart()))){
             $message[] = "class timetable clash";
         }
     }
@@ -453,7 +454,8 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     if (!in_array("class timetable clash", $message)){
         foreach($enrolledClasses as $class) {
             if (isset($section) && ($class['day'] == $section->getDay())  && ($class['start'] == $section->getStart() || $class['end'] == $section->getEnd() || 
-                            ($section->getStart() < $class['end'] && $section->getStart() > $class['start']) || ($section->getEnd() < $class['end'] && $section->getEnd() > $class['start']))){
+                ($section->getStart() < $class['end'] && $section->getStart() > $class['start']) || ($section->getEnd() < $class['end'] && $section->getEnd() > $class['start']) ||
+                ($class['start'] < $section->getEnd() && $class['start'] > $section->getStart()) || ($class['end'] < $section->getEnd() && $class['end'] > $section->getStart()))){
             $message[] = "class timetable clash";
             }
         }
@@ -464,7 +466,8 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     //--------------------------------//
     foreach ($bidInfo as $bid) {
         if (($bid['exam date'] == $course->getExamdate()) && ($bid['exam start'] == $course->getExamstart() || $bid['exam end'] == $course->getExamend() || 
-            ($course->getExamstart() < $bid['exam end'] && $course->getExamstart() > $bid['exam start']) || ($course->getExamend() < $bid['exam end'] && $course->getExamend() > $bid['exam start']))){
+            ($course->getExamstart() < $bid['exam end'] && $course->getExamstart() > $bid['exam start']) || ($course->getExamend() < $bid['exam end'] && $course->getExamend() > $bid['exam start']) ||
+            ($bid['exam start'] < $course->getExamend() && $bid['exam start'] > $course->getExamstart()) || ($bid['exam end'] < $course->getExamend() && $bid['exam end'] > $course->getExamstart()))){
             $message[] = "exam timetable clash";
         }
     }
@@ -472,7 +475,8 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     if (!in_array("exam timetable clash", $message)){
         foreach($enrolledClasses as $class) {
             if (($class['exam date'] == $course->getExamdate()) && ($class['exam start'] == $course->getExamstart() || $class['exam end'] == $course->getExamend() || 
-            ($course->getExamstart() < $class['exam end'] && $course->getExamstart() > $class['exam start']) || ($course->getExamend() < $class['exam end'] && $course->getExamend() > $class['exam start']))){
+            ($course->getExamstart() < $class['exam end'] && $course->getExamstart() > $class['exam start']) || ($course->getExamend() < $class['exam end'] && $course->getExamend() > $class['exam start']) ||
+            ($class['exam start'] < $course->getExamend() && $class['exam start'] > $course->getExamstart()) || ($class['exam end'] < $course->getExamend() && $class['exam end'] > $course->getExamstart()))){
             $message[] = "exam timetable clash";
             }
         }

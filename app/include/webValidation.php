@@ -35,6 +35,7 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     $courseCompletedDAO = new CourseCompletedDAO();
     $sectionStudentDAO = new SectionStudentDAO();
     $sectionDAO = new SectionDAO();
+    $studentDAO = new StudentDAO();
     $enrolledStudent = $sectionStudentDAO->retrieveByCourseUserID($bidCode, $userid);
     $sectionInfo = $sectionDAO->retrieveSectionByCourse($bidCode,$bidSection);
     $enrolledClasses = $sectionStudentDAO->retrieveStudentEnrolledWithInfo($userid);
@@ -100,8 +101,9 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     // Check for class timetable clash //
     //---------------------------------//
     foreach ($bidInfo as $bid) {
-        if (isset($section) && ($bid['day'] == $section->getDay())  && ($bid['start'] == $section->getStart() || $bid['end'] == $section->getEnd() || 
-                ($section->getStart() < $bid['end'] && $section->getStart() > $bid['start']) || ($section->getEnd() < $bid['end'] && $section->getEnd() > $bid['start']))){
+        if (isset($section) && ($bid['day'] == $section->getDay()) && ($bid['start'] == $section->getStart() || $bid['end'] == $section->getEnd() || 
+            ($section->getStart() < $bid['end'] && $section->getStart() > $bid['start']) || ($section->getEnd() < $bid['end'] && $section->getEnd() > $bid['start']) ||
+            ($bid['start'] < $section->getEnd() && $bid['start'] > $section->getStart()) || ($bid['end'] < $section->getEnd() && $bid['end'] > $section->getStart()))){
             $message[] = "Course: $bidCode Section: $bidSection<br>Error: Class Timetable Clash";
         }
     }
@@ -109,19 +111,20 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     if (!in_array("Course: $bidCode Section: $bidSection<br>Error: Class Timetable Clash", $message)){
         foreach($enrolledClasses as $class) {
             if (isset($section) && ($class['day'] == $section->getDay())  && ($class['start'] == $section->getStart() || $class['end'] == $section->getEnd() || 
-                ($section->getStart() < $class['end'] && $section->getStart() > $class['start']) || ($section->getEnd() < $class['end'] && $section->getEnd() > $class['start']))){
+                ($section->getStart() < $class['end'] && $section->getStart() > $class['start']) || ($section->getEnd() < $class['end'] && $section->getEnd() > $class['start']) ||
+                ($class['start'] < $section->getEnd() && $class['start'] > $section->getStart()) || ($class['end'] < $section->getEnd() && $class['end'] > $section->getStart()))){
             $message[] = "Course: $bidCode Section: $bidSection<br>Error: Class Timetable Clash";
             }
         }
     }
-
 
     //--------------------------------//
     // Check for exam timetable clash //
     //--------------------------------//
     foreach ($bidInfo as $bid) {
         if (($bid['exam date'] == $course->getExamdate()) && ($bid['exam start'] == $course->getExamstart() || $bid['exam end'] == $course->getExamend() || 
-            ($course->getExamstart() < $bid['exam end'] && $course->getExamstart() > $bid['exam start']) || ($course->getExamend() < $bid['exam end'] && $course->getExamend() > $bid['exam start']))){
+            ($course->getExamstart() < $bid['exam end'] && $course->getExamstart() > $bid['exam start']) || ($course->getExamend() < $bid['exam end'] && $course->getExamend() > $bid['exam start']) ||
+            ($bid['exam start'] < $course->getExamend() && $bid['exam start'] > $course->getExamstart()) || ($bid['exam end'] < $course->getExamend() && $bid['exam end'] > $course->getExamstart()))){
             $message[] = "Course: $bidCode Section: $bidSection<br>Error: Exam Timetable Clash";
         }
     }
@@ -129,11 +132,13 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     if (!in_array("Course: $bidCode Section: $bidSection<br>Error: Exam Timetable Clash", $message)){
         foreach($enrolledClasses as $class) {
             if (($class['exam date'] == $course->getExamdate()) && ($class['exam start'] == $course->getExamstart() || $class['exam end'] == $course->getExamend() || 
-            ($course->getExamstart() < $class['exam end'] && $course->getExamstart() > $class['exam start']) || ($course->getExamend() < $class['exam end'] && $course->getExamend() > $class['exam start']))){
+            ($course->getExamstart() < $class['exam end'] && $course->getExamstart() > $class['exam start']) || ($course->getExamend() < $class['exam end'] && $course->getExamend() > $class['exam start']) ||
+            ($class['exam start'] < $course->getExamend() && $class['exam start'] > $course->getExamstart()) || ($class['exam end'] < $course->getExamend() && $class['exam end'] > $course->getExamstart()))){
             $message[] = "Course: $bidCode Section: $bidSection<br>Error: Exam Timetable Clash";
             }
         }
     }
+
 
 
 
@@ -177,15 +182,13 @@ function validateBid($bid_data, $row, $allStudentInfo, $allCourseInfo, $sections
     if ($bidAmount < $sectionInfo->getMinbid()){
         $message[] = "Course: $bidCode Section: $bidSection <br>Error: Please bid higher than the minimum bid";
     }
-    // if (sizeof($message) == 0) {
-    //     $bidDAO->add($bid_data[0], $bid_data[1], $bid_data[2], $bid_data[3]);
+  
     
-    //     // Check if student has enough e-dollars 
-    //     $studentDAO = new StudentDAO();
-    //     $student = $studentDAO->retrieveStudent($userid);
-    //     if($bidAmount <= $student->getEdollar()){                           
-    //         $eDollar = $student->getEdollar()-$bidAmount;   
-    //         foreach($bidInfo as $bid) {    
+    $studentInfo = $studentDAO->retrieveStudent($userid);
+    if ($studentInfo->getEdollar() < $bidAmount){
+        $message[] = "Course: $bidCode Section: $bidSection <br>Error: You do not have sufficient e$";
+    }
+
     
     if (sizeof($message)!=0) {  // if there is/are error(s) in $message, add filename and row
         $error['file'] = 'bid.csv';
