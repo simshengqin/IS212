@@ -146,6 +146,12 @@ require_once 'clearBidTwo-process.php';
       ';
   }
   
+  #Validation if no file is uploaded 
+  if ($_SESSION['bootstrap_error'][0]== 'input files not found'){
+    echo "<font color = 'red'> Specified files not uploaded </font>";
+    exit;
+  }
+
   if (isset($_SESSION['bootstrap_error']['error']) && sizeof($_SESSION['bootstrap_error']['error']) != 0 
               && ($bidStatus->getRound() == '1' && $bidStatus->getStatus() == 'open')) {    // To prevent it from constantly appearing
     echo
