@@ -43,6 +43,7 @@
     $stuBids = $bidDAO->retrieveStudentBids($stuID);
     $allBids = $bidDAO->retrieveAll();
     $round = $bidRoundStatus->getRound();
+    $status = $bidRoundStatus->getStatus();
     if ($round == '2')
       doRoundTwo();
     // calculate remaining amount 
@@ -86,6 +87,8 @@
 <?php
   echo "<h3> Welcome $stuName</h3>";
   echo "<h3> Current e$: $stuEdollar </h3>";
+  echo "<h3> Round: $round </h3>";
+  echo "<h3> Status: " . ucfirst($status) ."</h3>";
  ?> 
 
  <div class = "row">
