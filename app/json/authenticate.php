@@ -35,7 +35,7 @@ else{
         else{
             $result = [
                 'status' => 'error',
-                'message' => 'invalid password'
+                'message' => ['invalid password']
             ];
         }
     } 
@@ -45,7 +45,7 @@ else{
         if ($student == null){                      // if userid is not found
             $result = [
                 'status' => 'error',
-                'message' => 'invalid username'
+                'message' => ['invalid username']
             ];
         }
         elseif ($student->getPassword() == $password) {       // check password
@@ -56,7 +56,7 @@ else{
         else {                                              // if wrong password
             $result = [
                 'status' => 'error',
-                'message' => 'invalid password'
+                'message' => ['invalid password']
             ];
         }
         
