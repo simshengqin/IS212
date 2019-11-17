@@ -19,13 +19,19 @@ class Sort {
 		return strcmp(end($a),end($b));
 	}
 
+	function bidStatus($a, $b)
+	{
+		return $a['amount'] < $b['amount'] ? 1:-1;
+	}
 #####################
 ## Bid Amount Sort ##
 #####################
 
-	function bidAmount ($a, $b)
+	function bidAmount($a, $b)
 	{
-	return $a['amount'] < $b['amount'] ? 1:-1;
+		if ($a['amount'] == $b['amount'])
+			return strcmp($a['userid'], $b['userid']);
+		return $a['amount'] < $b['amount'] ? 1:-1;
 	}
 
 ################
@@ -99,7 +105,6 @@ class Sort {
 			return strcmp($a['userid'], $b['userid']);
 		return strcmp($a['course'], $b['course']);
 	}
-
 
 
 #####################
