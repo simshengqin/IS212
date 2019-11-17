@@ -1,0 +1,40 @@
+{
+    "status": "error",
+    "num-record-loaded": [
+        {
+            "bid.csv": 2
+        },
+        {
+            "course.csv": 9
+        },
+        {
+            "course_completed.csv": 0
+        },
+        {
+            "prerequisite.csv": 5
+        },
+        {
+            "section.csv": 17
+        },
+        {
+            "student.csv": 8
+        }
+    ],
+    "error": [
+        {
+            "file": "course_completed.csv",
+            "line": 2,
+            "message": [
+                "invalid userid"
+            ]
+        },
+        {
+            "file": "student.csv",
+            "line": 5,
+            "message": [
+                "duplicate userid"
+            ]
+        }
+    ]
+}
+

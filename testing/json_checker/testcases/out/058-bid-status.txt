@@ -1,0 +1,13 @@
+{
+    "status": "success",
+    "vacancy": 1,
+    "min-bid-amount": 53.12,
+    "students": [
+        {
+            "userid": "shengqin.2018",
+            "amount": 52.12,
+            "balance": 95.88,
+            "status": "success"
+        }
+    ]
+}

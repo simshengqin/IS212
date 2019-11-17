@@ -1,0 +1,8 @@
+{
+    "status": "success",
+    "userid": "brendon.2018",
+    "password": "kpop",
+    "name": "Brendon Lim",
+    "school": "SIS",
+    "edollar": 116.0
+}

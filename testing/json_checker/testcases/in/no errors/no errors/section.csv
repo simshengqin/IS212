@@ -1,0 +1,26 @@
+course,section,day,start,end,instructor,venue,size
+IS100,S1,1,8:00,11:00,Dilip Kumar ,Seminar Rm 2-1,5
+IS100,S2,2,12:30,15:30,Jackie Chan,Class Rm 3-1,2
+IS100,S3,3,19:00,22:00,Dev Anand ,Seminar Rm 2-4,5
+IS120,S1,1,12:30,13:30,Jackie Chan,Seminar Rm 2-1,10
+IS120,S2,2,12:30,13:30,Jackie Chan,Seminar Rm 3-1,10
+IS102,S1,1,12:00,15:00,Raj Kapoor,Class Rm 1-1,5
+IS102,S2,3,8:00,11:00,Raj Kapoor,Seminar Rm 1-1,5
+IS102,S3,5,19:00,22:00,Raj Kapoor,Class Rm 1-1,5
+IS103,S1,4,19:00,22:00,Raj Kapoor,Seminar Rm 2-5,5
+IS001,S1,1,8:00,11:00,Jay Chou,Seminar Rm 4-1,3
+IS001,S2,2,8:00,11:00,Jay Chou,Seminar Rm 4-1,3
+IS002,S1,4,12:30,15:30,Huzir Sulaiman,Seminar Rm 4-2,4
+IS003,S1,2,8:00,11:00,Jaclyn Victor,Class Rm 1-4,3
+IS003,S2,3,12:30,13:30,Jaclyn Victor,Class Rm 1-4,3
+IS004,S1,4,12:00,15:00,Chacko Vadaketh,Seminar Rm 2-6,4
+IS004,S2,5,12:00,15:00,Chacko Vadaketh,Seminar Rm 2-6,4
+IS005,S1,2,8:00,11:00,David Arumugam,Seminar Rm 2-2,5
+MGMT001,S1,1,8:00,10:00,Ekin Cheng,Seminar Rm 2-1,4
+MGMT001,S2,1,8:00,10:00,David Chiang,Seminar Rm 2-2,4
+MGMT001,S3,1,16:00,18:00,David Chiang,Seminar Rm 2-2,4
+MGMT002,S1,2,13:30,15:00,Amitabh Bachchan ,Seminar Rm 2-1,4
+MGMT002,S2,3,13:30,15:00,Amitabh Bachchan ,Seminar Rm 2-1,4
+ECON001,S1,4,14:30,16:30,Jay Chou,Seminar Rm 2-1,10
+ECON002,S2,5,14:30,16:30,Jay Chou,Seminar Rm 2-1,10
+ECON003,S3,2,14:30,16:30,Jay Chou,Seminar Rm 2-1,10
