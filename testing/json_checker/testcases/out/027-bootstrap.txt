@@ -1,0 +1,34 @@
+{
+    "status": "error",
+    "num-record-loaded": [
+        {
+            "bid.csv": 1
+        },
+        {
+            "course.csv": 9
+        },
+        {
+            "course_completed.csv": 1
+        },
+        {
+            "prerequisite.csv": 5
+        },
+        {
+            "section.csv": 17
+        },
+        {
+            "student.csv": 9
+        }
+    ],
+    "error": [
+        {
+            "file": "bid.csv",
+            "line": 2,
+            "message": [
+                "not own school course",
+                "incomplete prerequisites"
+            ]
+        }
+    ]
+}
+

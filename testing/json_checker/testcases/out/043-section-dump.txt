@@ -1,0 +1,9 @@
+{
+    "status": "success",
+    "students": [
+        {
+            "userid": "brendon.2018",
+            "amount": 32.0
+        }
+    ]
+}

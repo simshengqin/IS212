@@ -1,0 +1,19 @@
+{
+    "status": "success",
+    "vacancy": 1,
+    "min-bid-amount": 67.0,
+    "students": [
+        {
+            "userid": "victorlong.2018",
+            "amount": 66.0,
+            "balance": 82.0,
+            "status": "success"
+        },
+        {
+            "userid": "shengqin.2018",
+            "amount": 52.12,
+            "balance": 95.88,
+            "status": "fail"
+        }
+    ]
+}

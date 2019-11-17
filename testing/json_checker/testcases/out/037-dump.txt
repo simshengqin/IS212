@@ -1,0 +1,491 @@
+{
+    "status": "success",
+    "course": [
+        {
+            "course": "ECON001",
+            "school": "SOE",
+            "title": "Introduction to economics",
+            "description": "Economics is the social science of studying the production, distribution and consumption of goods and services and It is a complex social science that spans from mathematics to psychology",
+            "exam date": "20191120",
+            "exam start": "1800",
+            "exam end": "2100"
+        },
+        {
+            "course": "ECON002",
+            "school": "SOE",
+            "title": "Microeconomics",
+            "description": "Microeconomics is a branch of economics that studies the behaviour of individuals and firms in making decisions regarding the allocation of scarce resources and the interactions among these individuals and firms.",
+            "exam date": "20191124",
+            "exam start": "800",
+            "exam end": "1045"
+        },
+        {
+            "course": "ECON003",
+            "school": "SOE",
+            "title": "Macroeconomics",
+            "description": "Macroeconomics is a branch of economics dealing with the performance, structure, behavior, and decision-making of an economy as a whole. This includes regional, national, and global economies.",
+            "exam date": "20191123",
+            "exam start": "800",
+            "exam end": "1145"
+        },
+        {
+            "course": "IS001",
+            "school": "SIS",
+            "title": "Internet of things",
+            "description": "The Internet of Things is a system of interrelated computing devices, mechanical and digital machines, objects, animals or people that are provided with unique identifiers and the ability to transfer data over a network without requiring human-to-human or human-to-computer interaction.",
+            "exam date": "20191118",
+            "exam start": "900",
+            "exam end": "1100"
+        },
+        {
+            "course": "IS002",
+            "school": "SIS",
+            "title": "Object-oriented programming",
+            "description": "Object-oriented programming is a programming paradigm based on the concept of \"objects\", which can contain data, in the form of fields, and code, in the form of procedures.",
+            "exam date": "20191118",
+            "exam start": "1400",
+            "exam end": "1600"
+        },
+        {
+            "course": "IS003",
+            "school": "SIS",
+            "title": "Introduction to AI",
+            "description": "In computer science, artificial intelligence, sometimes called machine intelligence, is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans.",
+            "exam date": "20191121",
+            "exam start": "1400",
+            "exam end": "1600"
+        },
+        {
+            "course": "IS004",
+            "school": "SIS",
+            "title": "Business Analytics",
+            "description": "Business analytics refers to the skills, technologies, practices for continuous iterative exploration and investigation of past business performance to gain insight and drive business planning.",
+            "exam date": "20191125",
+            "exam start": "800",
+            "exam end": "945"
+        },
+        {
+            "course": "IS005",
+            "school": "SIS",
+            "title": "Financial technology",
+            "description": "Financial technology, often shortened to fintech, is the technology and innovation that aims to compete with traditional financial methods in the delivery of financial services. It is an emerging industry that uses technology to improve activities in finance.",
+            "exam date": "20191125",
+            "exam start": "1400",
+            "exam end": "1600"
+        },
+        {
+            "course": "IS100",
+            "school": "SIS",
+            "title": "Introduction to programming",
+            "description": "Programming is the act of instructing computers to carry out tasks",
+            "exam date": "20191119",
+            "exam start": "800",
+            "exam end": "945"
+        },
+        {
+            "course": "IS102",
+            "school": "SIS",
+            "title": "Intermediate programming",
+            "description": "Intermediate Programming. To change directions for a second, I'd like to define the term intermediate programming. I feel like intermediate programming is the level of programming most non-senior professional programmers occupy.",
+            "exam date": "20191120",
+            "exam start": "900",
+            "exam end": "1100"
+        },
+        {
+            "course": "IS103",
+            "school": "SIS",
+            "title": "advanced programming",
+            "description": "Advanced Programming Concepts. Advanced Programming Concepts. Advanced software development with an object-oriented focus. Design, implementation, and testing of several large programs in a Java and Linux environment using current technologies.",
+            "exam date": "20191119",
+            "exam start": "1145",
+            "exam end": "1400"
+        },
+        {
+            "course": "IS120",
+            "school": "SIS",
+            "title": "Business Process Improvement",
+            "description": "Business process improvement (BPI) is a management exercise in which enterprise leaders use various methodologies to analyze their procedures to identify areas where they can improve accuracy, effectiveness and\/or efficiency and then redesign those processes to realize the improvements.",
+            "exam date": "20191121",
+            "exam start": "800",
+            "exam end": "1045"
+        },
+        {
+            "course": "MGMT001",
+            "school": "SOB",
+            "title": "Introduction for Business Studies",
+            "description": "Business studies is the study of the management of individuals to maintain collective productivity, which accomplishes particular creative and productive goals, usually to generate profits.",
+            "exam date": "20191120",
+            "exam start": "1400",
+            "exam end": "1600"
+        },
+        {
+            "course": "MGMT002",
+            "school": "SOB",
+            "title": "Business Studies",
+            "description": "combines elements of accountancy, finance, marketing, organizational studies and economics. Business Studies is a broad subject in the Social Sciences, allowing the in-depth study of a range of specialties such as accountancy, finance, organisation, human resources management and marketing",
+            "exam date": "20191122",
+            "exam start": "1800",
+            "exam end": "2100"
+        }
+    ],
+    "section": [
+        {
+            "course": "ECON001",
+            "section": "S1",
+            "day": "Thursday",
+            "start": "1430",
+            "end": "1630",
+            "instructor": "Jay Chou",
+            "venue": "Seminar Rm 2-1",
+            "size": 10
+        },
+        {
+            "course": "ECON002",
+            "section": "S2",
+            "day": "Friday",
+            "start": "1430",
+            "end": "1630",
+            "instructor": "Jay Chou",
+            "venue": "Seminar Rm 2-1",
+            "size": 10
+        },
+        {
+            "course": "ECON003",
+            "section": "S3",
+            "day": "Tuesday",
+            "start": "1430",
+            "end": "1630",
+            "instructor": "Jay Chou",
+            "venue": "Seminar Rm 2-1",
+            "size": 10
+        },
+        {
+            "course": "IS001",
+            "section": "S1",
+            "day": "Monday",
+            "start": "800",
+            "end": "1100",
+            "instructor": "Jay Chou",
+            "venue": "Seminar Rm 4-1",
+            "size": 3
+        },
+        {
+            "course": "IS001",
+            "section": "S2",
+            "day": "Tuesday",
+            "start": "800",
+            "end": "1100",
+            "instructor": "Jay Chou",
+            "venue": "Seminar Rm 4-1",
+            "size": 3
+        },
+        {
+            "course": "IS002",
+            "section": "S1",
+            "day": "Thursday",
+            "start": "1230",
+            "end": "1530",
+            "instructor": "Huzir Sulaiman",
+            "venue": "Seminar Rm 4-2",
+            "size": 4
+        },
+        {
+            "course": "IS003",
+            "section": "S1",
+            "day": "Tuesday",
+            "start": "800",
+            "end": "1100",
+            "instructor": "Jaclyn Victor",
+            "venue": "Class Rm 1-4",
+            "size": 3
+        },
+        {
+            "course": "IS003",
+            "section": "S2",
+            "day": "Wednesday",
+            "start": "1230",
+            "end": "1330",
+            "instructor": "Jaclyn Victor",
+            "venue": "Class Rm 1-4",
+            "size": 3
+        },
+        {
+            "course": "IS004",
+            "section": "S1",
+            "day": "Thursday",
+            "start": "1200",
+            "end": "1500",
+            "instructor": "Chacko Vadaketh",
+            "venue": "Seminar Rm 2-6",
+            "size": 4
+        },
+        {
+            "course": "IS004",
+            "section": "S2",
+            "day": "Friday",
+            "start": "1200",
+            "end": "1500",
+            "instructor": "Chacko Vadaketh",
+            "venue": "Seminar Rm 2-6",
+            "size": 4
+        },
+        {
+            "course": "IS005",
+            "section": "S1",
+            "day": "Tuesday",
+            "start": "800",
+            "end": "1100",
+            "instructor": "David Arumugam",
+            "venue": "Seminar Rm 2-2",
+            "size": 5
+        },
+        {
+            "course": "IS100",
+            "section": "S1",
+            "day": "Monday",
+            "start": "800",
+            "end": "1100",
+            "instructor": "Dilip Kumar",
+            "venue": "Seminar Rm 2-1",
+            "size": 5
+        },
+        {
+            "course": "IS100",
+            "section": "S2",
+            "day": "Tuesday",
+            "start": "1230",
+            "end": "1530",
+            "instructor": "Jackie Chan",
+            "venue": "Class Rm 3-1",
+            "size": 5
+        },
+        {
+            "course": "IS100",
+            "section": "S3",
+            "day": "Wednesday",
+            "start": "1900",
+            "end": "2200",
+            "instructor": "Dev Anand",
+            "venue": "Seminar Rm 2-4",
+            "size": 5
+        },
+        {
+            "course": "IS102",
+            "section": "S1",
+            "day": "Monday",
+            "start": "1200",
+            "end": "1500",
+            "instructor": "Raj Kapoor",
+            "venue": "Class Rm 1-1",
+            "size": 5
+        },
+        {
+            "course": "IS102",
+            "section": "S2",
+            "day": "Wednesday",
+            "start": "800",
+            "end": "1100",
+            "instructor": "Raj Kapoor",
+            "venue": "Seminar Rm 1-1",
+            "size": 5
+        },
+        {
+            "course": "IS102",
+            "section": "S3",
+            "day": "Friday",
+            "start": "1900",
+            "end": "2200",
+            "instructor": "Raj Kapoor",
+            "venue": "Class Rm 1-1",
+            "size": 5
+        },
+        {
+            "course": "IS103",
+            "section": "S1",
+            "day": "Thursday",
+            "start": "1900",
+            "end": "2200",
+            "instructor": "Raj Kapoor",
+            "venue": "Seminar Rm 2-5",
+            "size": 5
+        },
+        {
+            "course": "IS120",
+            "section": "S1",
+            "day": "Monday",
+            "start": "1230",
+            "end": "1330",
+            "instructor": "Jackie Chan",
+            "venue": "Seminar Rm 2-1",
+            "size": 10
+        },
+        {
+            "course": "IS120",
+            "section": "S2",
+            "day": "Tuesday",
+            "start": "1230",
+            "end": "1330",
+            "instructor": "Jackie Chan",
+            "venue": "Seminar Rm 3-1",
+            "size": 10
+        },
+        {
+            "course": "MGMT001",
+            "section": "S1",
+            "day": "Monday",
+            "start": "800",
+            "end": "1000",
+            "instructor": "Ekin Cheng",
+            "venue": "Seminar Rm 2-1",
+            "size": 4
+        },
+        {
+            "course": "MGMT001",
+            "section": "S2",
+            "day": "Monday",
+            "start": "800",
+            "end": "1000",
+            "instructor": "David Chiang",
+            "venue": "Seminar Rm 2-2",
+            "size": 4
+        },
+        {
+            "course": "MGMT001",
+            "section": "S3",
+            "day": "Monday",
+            "start": "1600",
+            "end": "1800",
+            "instructor": "David Chiang",
+            "venue": "Seminar Rm 2-2",
+            "size": 4
+        },
+        {
+            "course": "MGMT002",
+            "section": "S1",
+            "day": "Tuesday",
+            "start": "1330",
+            "end": "1500",
+            "instructor": "Amitabh Bachchan",
+            "venue": "Seminar Rm 2-1",
+            "size": 4
+        },
+        {
+            "course": "MGMT002",
+            "section": "S2",
+            "day": "Wednesday",
+            "start": "1330",
+            "end": "1500",
+            "instructor": "Amitabh Bachchan",
+            "venue": "Seminar Rm 2-1",
+            "size": 4
+        }
+    ],
+    "student": [
+        {
+            "userid": "Arjun.2019",
+            "password": "football",
+            "name": "Arjun",
+            "school": "SOA",
+            "edollar": 232.0
+        },
+        {
+            "userid": "brendon.2018",
+            "password": "kpop",
+            "name": "Brendon Lim",
+            "school": "SIS",
+            "edollar": 148.0
+        },
+        {
+            "userid": "daeun.2018",
+            "password": "icecream",
+            "name": "Da Eun",
+            "school": "SIS",
+            "edollar": 200.0
+        },
+        {
+            "userid": "felicity.2017",
+            "password": "joness7",
+            "name": "Felicity Jones",
+            "school": "SOE",
+            "edollar": 50.0
+        },
+        {
+            "userid": "matthew.2018",
+            "password": "helloworld",
+            "name": "Matthew Tan",
+            "school": "SIS",
+            "edollar": 260.0
+        },
+        {
+            "userid": "rachel.2019",
+            "password": "candy1",
+            "name": "Rachel low",
+            "school": "SOB",
+            "edollar": 198.0
+        },
+        {
+            "userid": "shengqin.2018",
+            "password": "laptop",
+            "name": "Sim Sheng Qin",
+            "school": "SIS",
+            "edollar": 230.0
+        },
+        {
+            "userid": "victorlong.2018",
+            "password": "blackcoffee",
+            "name": "Vittorio Carecci",
+            "school": "SIS",
+            "edollar": 266.0
+        },
+        {
+            "userid": "wilson.2019",
+            "password": "surFacePro",
+            "name": "wilson Low",
+            "school": "SOB",
+            "edollar": 150.0
+        }
+    ],
+    "prerequisite": [
+        {
+            "course": "ECON002",
+            "prerequisite": "ECON001"
+        },
+        {
+            "course": "ECON003",
+            "prerequisite": "ECON002"
+        },
+        {
+            "course": "IS102",
+            "prerequisite": "IS100"
+        },
+        {
+            "course": "IS103",
+            "prerequisite": "IS102"
+        },
+        {
+            "course": "MGMT002",
+            "prerequisite": "MGMT001"
+        }
+    ],
+    "bid": [
+        {
+            "userid": "victorlong.2018",
+            "amount": 21.0,
+            "course": "IS100",
+            "section": "S2"
+        },
+        {
+            "userid": "victorlong.2018",
+            "amount": 13.0,
+            "course": "IS120",
+            "section": "S1"
+        }
+    ],
+    "completed-course": [
+        {
+            "userid": "matthew.2018",
+            "course": "IS100"
+        }
+    ],
+    "section-student": []
+}
