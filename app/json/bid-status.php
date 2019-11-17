@@ -151,7 +151,7 @@ if (sizeof($errors)==0){
         foreach ($biddedCourses as $studentBid) {
             $student = [];
             $student["userid"] = $studentBid->getUserid();
-            $student["amount"] = $studentBid->getAmount();
+            $student["amount"] = (float) $studentBid->getAmount();
             $student["balance"] = (float) $studentDAO->retrieveStudent($studentBid->getUserid())->getEdollar();
             $student["status"] = $studentBid->getStatus();
             $students[] = $student;
@@ -166,21 +166,20 @@ if (sizeof($errors)==0){
          if (sizeof($biddedCourses) == 0 || sizeof($enrolledStudents) == 0) {
              $minBidAmount = 10.0;
          }
-         # When number of bids are less than the vacancy, report the lowest bid amount, which will be the last bid as bids are sorted in descending order
-         elseif (sizeof($biddedCourses) < $sectionSize) {
-             $minBidAmount = end($biddedCourses)->getAmount();
-         }
-         elseif (sizeof($biddedCourses) >= $sectionSize){
-             $minBidAmount = $biddedCourses[$sectionSize-1]->getAmount();
-         }
+         else {
+         $minBidAmount = $biddedCourses[0]->getAmount();
+        }
+
          ###Get students Balance is wrong, still need to redo###
          foreach ($biddedCourses as $studentBid) {
              $student = [];
              $student["userid"] = $studentBid->getUserid();
-             $student["amount"] = $studentBid->getAmount();
+             $student["amount"] = (float) $studentBid->getAmount();
              $student["balance"] = (float) $studentDAO->retrieveStudent($studentBid->getUserid())->getEdollar();
              $student["status"] = $studentBid->getStatus();
              $students[] = $student;
+             if ($student["status"] == 'success' && $studentBid->getAmount() < $minBidAmount)
+                $minBidAmount = $studentBid->getAmount();
          }       
     }
     elseif ($round == 2 && $bidStatus == "open") {
@@ -192,28 +191,37 @@ if (sizeof($errors)==0){
          foreach ($biddedCourses as $studentBid) {
              $student = [];
              $student["userid"] = $studentBid->getUserid();
-             $student["amount"] = $studentBid->getAmount();
+             $student["amount"] = (float) $studentBid->getAmount();
              $student["balance"] = (float) $studentDAO->retrieveStudent($studentBid->getUserid())->getEdollar();
              $student["status"] = $studentBid->getStatus();
              $students[] = $student;
          }
     }
     elseif ($round == 2 && $bidStatus == "closed" ) {
-         ###Get vacancy###
-         $seatsAvailable = $sectionSize - $noOfEnrolledStudents;
-         ###Get Min-bid amount###
-         $minBidAmount = $sectionDAO->retrieveMinBid($course, $section);
+        ###Get vacancy###
+        $seatsAvailable = $sectionSize - $noOfEnrolledStudents;
+        if (sizeof($biddedCourses) != 0)
+            $minBidAmount = $biddedCourses[0]->getAmount();
+        else
+            $minBidAmount = 10.0;
          ###Get all student bids###
-         foreach ($biddedCourses as $studentBid) {
-             $student = [];
-             $student["userid"] = $studentBid->getUserid();
-             $student["amount"] = $studentBid->getAmount();
-             $student["balance"] = (float) $studentDAO->retrieveStudent($studentBid->getUserid())->getEdollar();
-             $student["status"] = $studentBid->getStatus();
-             $students[] = $student;
-         }        
+         foreach ($enrolledStudents as $studentBid){
+                $student = [];
+                $student["userid"] = $studentBid->getUserid();
+                $student["amount"] = (float) $studentBid->getAmount();
+                $student["balance"] = (float) $studentDAO->retrieveStudent($studentBid->getUserid())->getEdollar();
+                $student["status"] = "success";
+                $students[] = $student;
+        }
+
+        foreach ($biddedCourses as $studentBid) {   
+            if ($studentBid->getStatus() == 'success' && $studentBid->getAmount() < $minBidAmount)
+                $minBidAmount = $studentBid->getAmount();
+        }
+
     }
-    $result["vacancy"] = $seatsAvailable;
+    $students = $sort->sort_it($students, 'bidStatus');
+    $result["vacancy"] = (int) $seatsAvailable;
     $result["min-bid-amount"] = (float) $minBidAmount;
     $result["students"] = $students;
 }

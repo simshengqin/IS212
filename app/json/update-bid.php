@@ -356,7 +356,7 @@ if (sizeof($errors)==0){
         header('Content-Type: application/json');
         echo json_encode($result, JSON_PRETTY_PRINT);    
     } 
-    else {
+    elseif ($bidRoundStatus->getRound() == 2) {
         if (!$existSameCourseSameUser){    
             $bidDAO->add($data['userid'], $data['amount'], $data['course'], $data['section']);
             $studentDAO->updateEDollar($data['userid'], $student->getEdollar() - $data['amount']);
@@ -370,6 +370,21 @@ if (sizeof($errors)==0){
             $sectionDAO->updateVacancy($data['course'], $data['section'], $section->getVacancy() - 1);
         }
         doRoundTwo();
+        $result = [
+            "status" => "success"
+        ];
+        header('Content-Type: application/json');
+        echo json_encode($result, JSON_PRETTY_PRINT);
+    }
+    elseif ($bidRoundStatus->getRound() == 1){
+        if (!$existSameCourseSameUser){    
+            $bidDAO->add($data['userid'], $data['amount'], $data['course'], $data['section']);
+            $studentDAO->updateEDollar($data['userid'], $student->getEdollar() - $data['amount']);
+        }
+        else{
+            $bidDAO->updateBid($data['userid'], $data['amount'], $data['course'], $data['section']);
+            $studentDAO->updateEDollar($data['userid'], $student->getEdollar() + $bidList->getAmount() - $data['amount']);
+        }
         $result = [
             "status" => "success"
         ];

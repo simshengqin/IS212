@@ -22,7 +22,8 @@ http://<host>/app/json/bid-dump.php?r={
          "section": "S1"
 }
 */
-$request = $_GET['r'];
+
+$request = $_REQUEST['r'];
 $data = json_decode($request, true);
 
 
